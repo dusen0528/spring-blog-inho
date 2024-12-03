@@ -1,4 +1,4 @@
-package com.nhnacademy.blog.config.context;
+package com.nhnacademy.blog.common.context;
 
 public interface Context {
     //Object를 등록합니다.

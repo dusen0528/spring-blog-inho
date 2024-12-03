@@ -1,11 +1,9 @@
 package com.nhnacademy.blog.config.init;
 
+import com.nhnacademy.blog.config.impl.InitProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
-import java.lang.annotation.Target;
-
-import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 public class InitProcessorTest {
 

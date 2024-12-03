@@ -1,6 +1,6 @@
-package com.nhnacademy.blog.config.transactional;
+package com.nhnacademy.blog.common.transactional;
 
-import com.nhnacademy.blog.config.db.DbUtils;
+import com.nhnacademy.blog.common.db.DbUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;

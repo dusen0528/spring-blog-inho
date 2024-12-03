@@ -33,7 +33,7 @@ public class Member {
     }
 
     public static Member ofNewMember(String mbEmail, String mbName, String mbPassword, String mbMobile) {
-        return new Member(null, mbEmail, mbName, mbPassword, mbMobile, LocalDateTime.now(), null, null);
+        return new Member(null, mbEmail, mbName, mbPassword, mbMobile, null, null, null);
     }
 
     public static Member ofExistingMember(Long mbNo, String mbEmail, String mbName, String mbPassword, String mbMobile,LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime withdrawalAt) {
@@ -72,4 +72,17 @@ public class Member {
         return withdrawalAt;
     }
 
+    @Override
+    public String toString() {
+        return "Member{" +
+                "mbNo=" + mbNo +
+                ", mbEmail='" + mbEmail + '\'' +
+                ", mbName='" + mbName + '\'' +
+                ", mbPassword='" + mbPassword + '\'' +
+                ", mbMobile='" + mbMobile + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", withdrawalAt=" + withdrawalAt +
+                '}';
+    }
 }

@@ -1,14 +1,17 @@
-package com.nhnacademy.blog.config.init;
+package com.nhnacademy.blog.config.impl;
 
-import com.nhnacademy.blog.config.init.annotation.InitOrder;
+import com.nhnacademy.blog.common.annotation.InitOrder;
+import com.nhnacademy.blog.common.init.Initializeable;
+import com.nhnacademy.blog.config.StartProcessor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 @Slf4j
-public class InitProcessor {
+public class InitProcessor implements StartProcessor {
     //service loader 참고
     //https://medium.com/@manvendrapsingh/java-extension-mechanism-self-discovery-bean-instantiation-beeeeafcaa7f
 
+    @Override
     public void process() {
         List<InitializableWrapper> initializableWrappers = getClassFromLoader();
         for (InitializableWrapper initializableWrapper : initializableWrappers) {

@@ -1,6 +1,6 @@
-package com.nhnacademy.blog.config.context;
+package com.nhnacademy.blog.common.context;
 
-import com.nhnacademy.blog.config.context.exception.BeanNotFoundException;
+import com.nhnacademy.blog.common.context.exception.BeanNotFoundException;
 
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,8 +38,9 @@ public class ApplicationContext  implements Context{
     }
 
     private void objectNameCheck(String name){
-        if(Objects.isNull(name) || name.length()==0){
+        if(Objects.isNull(name) || name.isEmpty()){
             throw new IllegalArgumentException(name);
         }
     }
+
 }

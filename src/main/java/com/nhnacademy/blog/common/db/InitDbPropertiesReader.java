@@ -1,9 +1,9 @@
-package com.nhnacademy.blog.config.db;
+package com.nhnacademy.blog.common.db;
 
-import com.nhnacademy.blog.config.context.Context;
-import com.nhnacademy.blog.config.context.ContextHolder;
-import com.nhnacademy.blog.config.init.annotation.InitOrder;
-import com.nhnacademy.blog.config.init.Initializeable;
+import com.nhnacademy.blog.common.context.Context;
+import com.nhnacademy.blog.common.context.ContextHolder;
+import com.nhnacademy.blog.common.annotation.InitOrder;
+import com.nhnacademy.blog.common.init.Initializeable;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.InputStream;

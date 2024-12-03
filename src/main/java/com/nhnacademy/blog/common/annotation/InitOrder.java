@@ -1,4 +1,4 @@
-package com.nhnacademy.blog.config.init.annotation;
+package com.nhnacademy.blog.common.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

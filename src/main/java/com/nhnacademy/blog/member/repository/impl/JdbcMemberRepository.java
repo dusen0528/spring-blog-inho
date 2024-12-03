@@ -1,7 +1,9 @@
 package com.nhnacademy.blog.member.repository.impl;
 
-import com.nhnacademy.blog.config.transactional.DbConnectionThreadLocal;
+import com.nhnacademy.blog.common.repository.JdbcRepository;
+import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 import com.nhnacademy.blog.member.domain.Member;
+import com.nhnacademy.blog.member.dto.MemberUpdateRequestDto;
 import com.nhnacademy.blog.member.repository.MemberRepository;
 import com.nhnacademy.blog.util.ReflectionUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +14,13 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
-public class JdbcMemberRepository implements MemberRepository {
+public class JdbcMemberRepository implements MemberRepository, JdbcRepository {
+    public static final String BEAN_NAME="memberRepository";
+
+    @Override
+    public String getBeanName() {
+        return BEAN_NAME;
+    }
 
     @Override
     public int save(Member member) {
@@ -27,26 +35,26 @@ public class JdbcMemberRepository implements MemberRepository {
                         mb_mobile,
                         created_at
                     ) 
-                    values(?,?,?,?,?,?,?);
+                    values(?,?,?,?,?);
                 """;
 
-        try ( PreparedStatement psmt = connection.prepareStatement(sql) ){
+        try ( PreparedStatement psmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
             int index=1;
             psmt.setString(index++, member.getMbEmail());
             psmt.setString(index++, member.getMbName());
             psmt.setString(index++, member.getMbPassword());
             psmt.setString(index++, member.getMbMobile());
             //datetime <--> LocalDateTime간 변환 timestamp로 변환후 처리해야 함.
-            psmt.setTimestamp(index++, Timestamp.valueOf(member.getCreatedAt()));
+            psmt.setTimestamp(index++, Timestamp.valueOf(LocalDateTime.now()));
 
             int rows =  psmt.executeUpdate();
 
             if(rows > 0) {
                 try(ResultSet rs = psmt.getGeneratedKeys()) {
                     if(rs.next()) {
-                        long mbId = rs.getLong(1);
-                        log.debug("inserted member with mbId={}", mbId);
-                        ReflectionUtils.setField(member, "mbId", mbId);
+                        long mbNo = rs.getLong(1);
+                        log.debug("inserted member with mbNo={}", mbNo);
+                        ReflectionUtils.setField(member, "mbNo", mbNo);
                     }
                 }
             }
@@ -58,8 +66,31 @@ public class JdbcMemberRepository implements MemberRepository {
     }
 
     @Override
-    public int update(Member member) {
-        return 0;
+    public int update(MemberUpdateRequestDto memberUpdateRequestDto) {
+        Connection connection = DbConnectionThreadLocal.getConnection();
+
+        String sql = """
+                update members set
+                    mb_email=?,
+                    mb_name=?,
+                    mb_password=?,
+                    mb_mobile=?,
+                    updated_at=?
+                where mb_no=?;
+                """;
+
+        try(PreparedStatement psmt = connection.prepareStatement(sql)){
+            int index=1;
+            psmt.setString(index++, memberUpdateRequestDto.getMbEmail());
+            psmt.setString(index++, memberUpdateRequestDto.getMbName());
+            psmt.setString(index++, memberUpdateRequestDto.getMbPassword());
+            psmt.setString(index++, memberUpdateRequestDto.getMbMobile());
+            psmt.setTimestamp(index++, Timestamp.valueOf(LocalDateTime.now()));
+            return psmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
@@ -70,13 +101,32 @@ public class JdbcMemberRepository implements MemberRepository {
                 """;
 
         try ( PreparedStatement psmt = connection.prepareStatement(sql) ){
-            int index=1;
-            psmt.setLong(index,mbNo);
+            psmt.setLong(1,mbNo);
             return psmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
+    }
+
+    @Override
+    public int changePassword(long mbNo, String mbPassword) {
+        Connection connection = DbConnectionThreadLocal.getConnection();
+        String sql = """
+                    update members 
+                    set 
+                        mb_password=?
+                    where mb_no=?;
+                """;
+
+        try ( PreparedStatement psmt = connection.prepareStatement(sql) ){
+            int index=1;
+            psmt.setString(index++,mbPassword);
+            psmt.setLong(index++,mbNo);
+            return psmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

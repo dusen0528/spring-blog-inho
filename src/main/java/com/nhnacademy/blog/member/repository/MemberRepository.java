@@ -1,6 +1,8 @@
 package com.nhnacademy.blog.member.repository;
 
+import com.nhnacademy.blog.common.repository.JdbcRepository;
 import com.nhnacademy.blog.member.domain.Member;
+import com.nhnacademy.blog.member.dto.MemberUpdateRequestDto;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -10,9 +12,11 @@ public interface MemberRepository {
     //등록
     int save(Member member);
     //수정
-    int update(Member member);
+    int update(MemberUpdateRequestDto memberUpdateRequestDto);
     //삭제
     int delete(long mbNo);
+    //회원 비밀번호 변경
+    int changePassword(long mbNo, String mbPassword);
 
     //아이디를 이용한 조회
     Optional<Member> findByMbNo(long mbNo);
@@ -27,7 +31,6 @@ public interface MemberRepository {
     boolean existsByMbEmail(String mbEmail);
     //회원 모바일 연락처 존재여부
     boolean existsByMbMobile(String mbMobile);
-
     //회원 탈퇴시 탈퇴일자 변경
     int updateWithdrawalAt(long mbNo, LocalDateTime updateWithdrawalAt);
 

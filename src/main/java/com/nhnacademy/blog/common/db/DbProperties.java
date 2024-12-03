@@ -1,4 +1,4 @@
-package com.nhnacademy.blog.config.db;
+package com.nhnacademy.blog.common.db;
 
 public class DbProperties {
     public static final String BEAN_NAME="dbProperties";
