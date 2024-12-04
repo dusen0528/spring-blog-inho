@@ -1,6 +1,5 @@
 package com.nhnacademy.blog.member.repository;
 
-import com.nhnacademy.blog.common.repository.JdbcRepository;
 import com.nhnacademy.blog.member.domain.Member;
 import com.nhnacademy.blog.member.dto.MemberUpdateRequestDto;
 

@@ -1,0 +1,43 @@
+package com.nhnacademy.blog.common.db;
+
+import com.nhnacademy.blog.common.annotation.Qualifier;
+import com.nhnacademy.blog.common.annotation.stereotype.Component;
+import org.apache.commons.dbcp2.BasicDataSource;
+import javax.sql.DataSource;
+import java.time.Duration;
+
+@Component(name = BlogDataSource.BEAN_NAME )
+public class BlogDataSource {
+    public static final String BEAN_NAME="dataSource";
+
+    private final DbProperties dbProperties;
+    private final DataSource dataSource;
+
+    public BlogDataSource(@Qualifier(DbProperties.BEAN_NAME) DbProperties dbProperties) {
+        this.dbProperties = dbProperties;
+        this.dataSource = createDataSource(dbProperties);
+    }
+
+    private static DataSource createDataSource(DbProperties dbProperties){
+        BasicDataSource basicDataSource = new BasicDataSource();
+
+        basicDataSource.setUrl(dbProperties.getUrl());
+        basicDataSource.setUsername(dbProperties.getUsername());
+        basicDataSource.setPassword(dbProperties.getPassword());
+
+        basicDataSource.setInitialSize(dbProperties.getInitialSize());
+        basicDataSource.setMaxTotal(dbProperties.getMaxTotal());
+        basicDataSource.setMaxIdle(dbProperties.getMaxIdle());
+        basicDataSource.setMinIdle(dbProperties.getMinIdle());
+
+        basicDataSource.setMaxWait(Duration.ofSeconds(dbProperties.getMaxWait()));
+        basicDataSource.setValidationQuery(dbProperties.getValidationQuery());
+        basicDataSource.setTestOnBorrow(dbProperties.isTestOnBorrow());
+        return basicDataSource;
+    }
+
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+}

@@ -1,16 +1,45 @@
 package com.nhnacademy.blog.common.context;
 
 import com.nhnacademy.blog.common.context.exception.BeanNotFoundException;
+import com.nhnacademy.blog.common.init.Initializeable;
+import com.nhnacademy.blog.common.reflection.ClassWrapper;
+import com.nhnacademy.blog.common.reflection.ReflectionUtils;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+@Slf4j
 public class ApplicationContext  implements Context{
     ConcurrentMap<String, Object> beanMap;
 
     public ApplicationContext() {
+        //map 초기화
         this.beanMap = new ConcurrentHashMap<>();
+        initialize();
+    }
+
+    private void initialize(){
+
+        log.debug("Initializeable based, initializing application context");
+
+        //Initializeable 구현 class를 scan 한다.
+        List<ClassWrapper<Initializeable>> classWrappers = ReflectionUtils.classScan("com.nhnacademy.blog", Initializeable.class);
+
+        //initialize method 호출
+        for(ClassWrapper<Initializeable> classWrapper : classWrappers){
+            log.debug("registering bean : {}", classWrapper.getClazz().getSimpleName());
+
+            try {
+                Initializeable initializeable = classWrapper.getClazz().getDeclaredConstructor().newInstance();
+                initializeable.initialize(this);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        log.debug("size:{}", classWrappers.size());
     }
 
     @Override

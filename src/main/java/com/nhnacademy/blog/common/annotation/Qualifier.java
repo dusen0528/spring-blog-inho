@@ -5,8 +5,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.TYPE)
+/**
+ * @Qualifier("doSomething")
+ * ex)beanName이 doSomething인 객체를 주입
+ */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface InitOrder {
-   int value() default 1;
+@Target({ElementType.PARAMETER})
+public @interface Qualifier {
+    String value();
 }

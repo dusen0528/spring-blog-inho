@@ -2,13 +2,10 @@ package com.nhnacademy.blog.member.repository.impl;
 
 import com.nhnacademy.blog.common.context.Context;
 import com.nhnacademy.blog.common.context.ContextHolder;
-import com.nhnacademy.blog.config.impl.InitProcessor;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
-import com.nhnacademy.blog.config.impl.RepositoryProcessor;
 import com.nhnacademy.blog.member.domain.Member;
 import com.nhnacademy.blog.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.AfterClass;
 import org.junit.jupiter.api.*;
 
 import java.util.Optional;
@@ -23,18 +20,17 @@ class JdbcMemberRepositoryTest {
     @BeforeAll
     static void beforeAll() {
 
-        //connection pool(dbcp2) 생성 및 초기화
-        InitProcessor initProcessor = new InitProcessor();
-        initProcessor.process();
-
-        //repository 생성
-        RepositoryProcessor repositoryProcessor = new RepositoryProcessor();
-        repositoryProcessor.process();
+//        //connection pool(dbcp2) 생성 및 초기화
+//        InitProcessor initProcessor = new InitProcessor();
+//        initProcessor.process();
+//
+//        //repository 생성
+//        RepositoryProcessor repositoryProcessor = new RepositoryProcessor();
+//        repositoryProcessor.process();
 
         Context context = ContextHolder.getApplicationContext();
         memberRepository = (MemberRepository) context.getBean(JdbcMemberRepository.BEAN_NAME);
         DbConnectionThreadLocal.initialize();
-
 
     }
 

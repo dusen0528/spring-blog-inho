@@ -1,8 +1,8 @@
-package com.nhnacademy.blog.common.db;
+package com.nhnacademy.blog.common.init.impl;
 
 import com.nhnacademy.blog.common.context.Context;
-import com.nhnacademy.blog.common.context.ContextHolder;
 import com.nhnacademy.blog.common.annotation.InitOrder;
+import com.nhnacademy.blog.common.db.DbProperties;
 import com.nhnacademy.blog.common.init.Initializeable;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,6 +14,7 @@ import java.util.Properties;
 @Slf4j
 @InitOrder(value = 1)
 public class InitDbPropertiesReader implements Initializeable {
+    private Context context;
 
     private final static String DEFAULT_DB_PROPERTIES_FILE="db.properties";
     private final String dbPropertiesFile;
@@ -30,14 +31,14 @@ public class InitDbPropertiesReader implements Initializeable {
     }
 
     @Override
-    public void initialize() {
+    public void initialize(Context context) {
+        this.context = context;
         Properties properties = readProperties();
         Map<String, String> map = getMapFromProperties(properties);
         //properties 객체로 변환
         DbProperties dbProperties = getDbPropertiesFromMap(map);
 
-        //dbProperties를 context에 bean으로 등록, name = DbProperties.BEAN_NAME을 사용 합니다.
-        Context context = ContextHolder.getApplicationContext();
+        log.debug("context:{}",context);
         context.registerBean(DbProperties.BEAN_NAME,dbProperties);
     }
 

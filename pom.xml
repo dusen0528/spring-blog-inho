@@ -81,6 +81,14 @@
             <version>9.1.0</version>
         </dependency>
 
+        <!-- reflection api -->
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.10.2</version>
+        </dependency>
+
+
     </dependencies>
 
 </project>

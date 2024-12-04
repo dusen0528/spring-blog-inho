@@ -1,8 +1,8 @@
-package com.nhnacademy.blog.common.db;
+package com.nhnacademy.blog.common.init.impl;
 
 import com.nhnacademy.blog.common.context.Context;
-import com.nhnacademy.blog.common.context.ContextHolder;
 import com.nhnacademy.blog.common.annotation.InitOrder;
+import com.nhnacademy.blog.common.db.DbProperties;
 import com.nhnacademy.blog.common.init.Initializeable;
 import org.apache.commons.dbcp2.BasicDataSource;
 
@@ -12,14 +12,14 @@ import java.time.Duration;
 @InitOrder(value = 2)
 public class InitDataSource implements Initializeable {
     public static final String BEAN_NAME = "dataSource";
-
+    private Context context;
     @Override
-    public void initialize() {
-        Context context = ContextHolder.getApplicationContext();
+    public void initialize(Context context) {
         DbProperties dbProperties = (DbProperties) context.getBean(DbProperties.BEAN_NAME);
         DataSource dataSource = createDataSource(dbProperties);
         context.registerBean(BEAN_NAME,dataSource);
     }
+
     private DataSource createDataSource(DbProperties dbProperties){
         BasicDataSource basicDataSource = new BasicDataSource();
 

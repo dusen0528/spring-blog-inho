@@ -1,11 +1,11 @@
 package com.nhnacademy.blog.member.repository.impl;
 
-import com.nhnacademy.blog.common.repository.JdbcRepository;
+import com.nhnacademy.blog.common.annotation.stereotype.Repository;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 import com.nhnacademy.blog.member.domain.Member;
 import com.nhnacademy.blog.member.dto.MemberUpdateRequestDto;
 import com.nhnacademy.blog.member.repository.MemberRepository;
-import com.nhnacademy.blog.util.ReflectionUtils;
+import com.nhnacademy.blog.common.reflection.ReflectionUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
@@ -14,13 +14,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
-public class JdbcMemberRepository implements MemberRepository, JdbcRepository {
+@Repository(name = JdbcMemberRepository.BEAN_NAME)
+public class JdbcMemberRepository implements MemberRepository {
     public static final String BEAN_NAME="memberRepository";
-
-    @Override
-    public String getBeanName() {
-        return BEAN_NAME;
-    }
 
     @Override
     public int save(Member member) {
