@@ -14,6 +14,6 @@ package com.nhnacademy.blog.common.context.exception;
 
 public class BeanNotFoundException extends RuntimeException {
     public BeanNotFoundException(String message) {
-        super(String.format("Object Not Found : %s",message));
+        super(String.format("Bean Not Found : %s",message));
     }
 }

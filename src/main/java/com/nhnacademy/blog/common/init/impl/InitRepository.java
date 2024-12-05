@@ -8,7 +8,6 @@ import com.nhnacademy.blog.common.reflection.ClassWrapper;
 import com.nhnacademy.blog.common.reflection.ReflectionUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +35,6 @@ public class InitRepository implements Initializeable {
             if(Objects.nonNull(repository)) {
                 context.registerBean(repository.name(), instance);
             }
-
         }
     }
 }

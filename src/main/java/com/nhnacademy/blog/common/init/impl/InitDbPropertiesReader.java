@@ -55,6 +55,7 @@ public class InitDbPropertiesReader implements Initializeable {
         int maxWait = Integer.parseInt(map.get("maxWait"));
         String validationQuery = map.get("validationQuery");
         boolean testOnBorrow = Boolean.parseBoolean(map.get("testOnBorrow"));
+        boolean spy = Boolean.parseBoolean(map.get("spy"));
 
         DbProperties dbProperties = new DbProperties(
                 url,
@@ -66,7 +67,8 @@ public class InitDbPropertiesReader implements Initializeable {
                 minIdle,
                 maxWait,
                 validationQuery,
-                testOnBorrow
+                testOnBorrow,
+                spy
         );
         log.debug("dbProperties: {}", dbProperties);
 

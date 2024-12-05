@@ -2,6 +2,7 @@ package com.nhnacademy.blog.common.reflection;
 
 import com.nhnacademy.blog.common.annotation.InitOrder;
 import com.nhnacademy.blog.common.annotation.Qualifier;
+import com.nhnacademy.blog.common.context.Context;
 import com.nhnacademy.blog.common.context.exception.BeanNotFoundException;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
@@ -89,6 +90,60 @@ public class ReflectionUtils {
         Collections.sort(classWrappers, (o1, o2)->o1.getOrder()-o2.getOrder());
 
         return classWrappers;
+    }
+
+    /**
+     * clazz에 해당되는 처음 발견되는 Constructor를 반환 합니다.
+     * @param clazz
+     * @return
+     */
+    public static Constructor findFirstConstructor(Class<?> clazz) {
+        Constructor[] constructors = clazz.getConstructors();
+
+        if(constructors.length > 0){
+            return constructors[0];
+        }
+        throw new RuntimeException("Constructor not found");
+    }
+
+    /**
+     * 생성자의 parameter에 해당되는 객체를 @Qulifier annotation에 정의된 beanName에 의해서 조회후 Object[] array행태로 반환
+     * @param context
+     * @param constructor
+     * @return Object[]
+     */
+    public static Object[] getParameterFromContext(Context context, Constructor constructor){
+        Object[] parameters = null;
+
+        if(constructor.getParameterTypes().length == 0 ){
+            return new Object[0];
+        }
+
+        parameters = new Object[constructor.getParameterTypes().length];
+
+        for (int i=0; i<constructor.getParameterCount(); i++) {
+            Parameter parameter = constructor.getParameters()[i];
+
+            //@qulifier annotation에 정의된 beanName을 구합니다.
+            Qualifier qualifier = parameter.getAnnotation(Qualifier.class);
+
+            if(Objects.isNull(qualifier)) {
+                throw new RuntimeException(String.format("%s, missing @Qualifier annotation in Constructor:{}, parameter:{}", constructor.getName(), parameter.getName()));
+            }
+
+            String beanName = qualifier.value();
+
+            //context에서 @Qulifier(value="{beanName}")에 해당된 객체를 얻습니다.
+            Object bean = context.getBean(beanName);
+
+            if(Objects.isNull(bean)) {
+                throw new BeanNotFoundException(String.format("%s, bean not found", beanName));
+            }
+
+            //해당 객체를 parameter로 할당 합니다.
+            parameters[i] = bean;
+        }
+        return parameters;
     }
 
 }

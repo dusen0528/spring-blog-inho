@@ -2,7 +2,6 @@ package com.nhnacademy.blog.common.db;
 
 import com.nhnacademy.blog.common.context.Context;
 import com.nhnacademy.blog.common.context.ContextHolder;
-import com.nhnacademy.blog.common.init.impl.InitDataSource;
 
 import javax.sql.DataSource;
 

@@ -15,8 +15,9 @@ public class DbProperties {
     private final int maxWait;
     private final String validationQuery;
     private final boolean testOnBorrow;
+    private final boolean spy;
 
-    public DbProperties(String url, String username, String password, int initialSize, int maxTotal, int maxIdle, int minIdle, int maxWait, String validationQuery, boolean testOnBorrow) {
+    public DbProperties(String url, String username, String password, int initialSize, int maxTotal, int maxIdle, int minIdle, int maxWait, String validationQuery, boolean testOnBorrow, boolean spy) {
         this.url = url;
         this.username = username;
         this.password = password;
@@ -27,6 +28,7 @@ public class DbProperties {
         this.maxWait = maxWait;
         this.validationQuery = validationQuery;
         this.testOnBorrow = testOnBorrow;
+        this.spy = spy;
     }
 
     public String getUrl() {
@@ -69,6 +71,10 @@ public class DbProperties {
         return testOnBorrow;
     }
 
+    public boolean isSpy() {
+        return spy;
+    }
+
     @Override
     public String toString() {
         return "DbProperties{" +
@@ -82,6 +88,7 @@ public class DbProperties {
                 ", maxWait=" + maxWait +
                 ", validationQuery='" + validationQuery + '\'' +
                 ", testOnBorrow=" + testOnBorrow +
+                ", spy=" + spy +
                 '}';
     }
 }

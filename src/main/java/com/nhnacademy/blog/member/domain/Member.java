@@ -1,6 +1,7 @@
 package com.nhnacademy.blog.member.domain;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Member {
 
@@ -70,6 +71,18 @@ public class Member {
 
     public LocalDateTime getWithdrawalAt() {
         return withdrawalAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Member member = (Member) o;
+        return Objects.equals(mbNo, member.mbNo) && Objects.equals(mbEmail, member.mbEmail) && Objects.equals(mbName, member.mbName) && Objects.equals(mbPassword, member.mbPassword) && Objects.equals(mbMobile, member.mbMobile) && Objects.equals(createdAt, member.createdAt) && Objects.equals(updatedAt, member.updatedAt) && Objects.equals(withdrawalAt, member.withdrawalAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mbNo, mbEmail, mbName, mbPassword, mbMobile, createdAt, updatedAt, withdrawalAt);
     }
 
     @Override

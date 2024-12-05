@@ -2,6 +2,7 @@ package com.nhnacademy.blog.common.db;
 
 import com.nhnacademy.blog.common.annotation.Qualifier;
 import com.nhnacademy.blog.common.annotation.stereotype.Component;
+import com.p6spy.engine.spy.P6DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import javax.sql.DataSource;
 import java.time.Duration;
@@ -15,7 +16,7 @@ public class BlogDataSource {
 
     public BlogDataSource(@Qualifier(DbProperties.BEAN_NAME) DbProperties dbProperties) {
         this.dbProperties = dbProperties;
-        this.dataSource = createDataSource(dbProperties);
+        this.dataSource = dbProperties.isSpy() ? createP6SpyDataSource(createDataSource(dbProperties)) : createDataSource(dbProperties);
     }
 
     private static DataSource createDataSource(DbProperties dbProperties){
@@ -34,6 +35,10 @@ public class BlogDataSource {
         basicDataSource.setValidationQuery(dbProperties.getValidationQuery());
         basicDataSource.setTestOnBorrow(dbProperties.isTestOnBorrow());
         return basicDataSource;
+    }
+
+    private static DataSource createP6SpyDataSource(DataSource dataSource){
+        return new P6DataSource(dataSource);
     }
 
     public DataSource getDataSource() {

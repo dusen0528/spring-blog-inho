@@ -69,7 +69,6 @@ public class JdbcMemberRepository implements MemberRepository {
                 update members set
                     mb_email=?,
                     mb_name=?,
-                    mb_password=?,
                     mb_mobile=?,
                     updated_at=?
                 where mb_no=?;
@@ -79,9 +78,9 @@ public class JdbcMemberRepository implements MemberRepository {
             int index=1;
             psmt.setString(index++, memberUpdateRequestDto.getMbEmail());
             psmt.setString(index++, memberUpdateRequestDto.getMbName());
-            psmt.setString(index++, memberUpdateRequestDto.getMbPassword());
             psmt.setString(index++, memberUpdateRequestDto.getMbMobile());
             psmt.setTimestamp(index++, Timestamp.valueOf(LocalDateTime.now()));
+            psmt.setLong(index++, memberUpdateRequestDto.getMbNo());
             return psmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -335,10 +334,10 @@ public class JdbcMemberRepository implements MemberRepository {
                         count(mb_no) as cnt
                     from 
                         members 
-                    where mb_email=?;
+                    where mb_mobile=?;
                 """;
         int cnt =0;
-
+        
         try ( PreparedStatement psmt = connection.prepareStatement(sql)){
 
             psmt.setString(1,mbMobile);
@@ -368,11 +367,11 @@ public class JdbcMemberRepository implements MemberRepository {
                 """;
 
         try ( PreparedStatement psmt = connection.prepareStatement(sql)){
-            psmt.setLong(1,mbNo);
+            psmt.setTimestamp(1, Timestamp.valueOf(updateWithdrawalAt));
+            psmt.setLong(2,mbNo);
             return  psmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-
 }
