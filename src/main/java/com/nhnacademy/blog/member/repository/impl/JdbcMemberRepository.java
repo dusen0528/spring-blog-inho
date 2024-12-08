@@ -276,24 +276,23 @@ public class JdbcMemberRepository implements MemberRepository {
 
         String sql = """
                     select
-                        count(mb_no) as cnt
+                        1
                     from 
                         members 
                     where mb_no=?;
                 """;
-        int cnt =0;
 
         try ( PreparedStatement psmt = connection.prepareStatement(sql)){
             psmt.setLong(1,mbNo);
             try(ResultSet rs = psmt.executeQuery()){
                 if(rs.next()) {
-                   cnt = rs.getInt(1);
+                   return true;
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return cnt>0;
+        return false;
     }
 
     @Override
@@ -302,19 +301,18 @@ public class JdbcMemberRepository implements MemberRepository {
 
         String sql = """
                     select
-                        count(mb_no) as cnt
+                        1
                     from 
                         members 
                     where mb_email=?;
                 """;
-        int cnt =0;
 
         try ( PreparedStatement psmt = connection.prepareStatement(sql)){
 
             psmt.setString(1,mbEmail);
             try(ResultSet rs = psmt.executeQuery()){
                 if(rs.next()) {
-                    cnt = rs.getInt(1);
+                    return true;
                 }
             }
 
@@ -322,7 +320,7 @@ public class JdbcMemberRepository implements MemberRepository {
             throw new RuntimeException(e);
         }
 
-        return cnt>0;
+        return false;
     }
 
     @Override
@@ -331,19 +329,18 @@ public class JdbcMemberRepository implements MemberRepository {
 
         String sql = """
                     select
-                        count(mb_no) as cnt
+                        1
                     from 
                         members 
                     where mb_mobile=?;
                 """;
-        int cnt =0;
-        
+
         try ( PreparedStatement psmt = connection.prepareStatement(sql)){
 
             psmt.setString(1,mbMobile);
             try(ResultSet rs = psmt.executeQuery()){
                 if(rs.next()) {
-                    cnt = rs.getInt(1);
+                    return true;
                 }
             }
 
@@ -351,7 +348,7 @@ public class JdbcMemberRepository implements MemberRepository {
             throw new RuntimeException(e);
         }
 
-        return cnt>0;
+        return false;
     }
 
     @Override

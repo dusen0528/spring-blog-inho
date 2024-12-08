@@ -6,27 +6,30 @@ public class Category {
 
     private final Integer categoryId;
     private final Integer categoryPid;
-    private final long blogId;
+    private final Long blogId;
+    private final Integer topicId;
     private final String categoryName;
-    private final int categorySec;
+    private final Integer categorySec;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    private Category(Integer categoryId, Integer categoryPid, long blogId, String categoryName, int categorySec, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    private Category(Integer categoryId, Integer categoryPid, Long blogId, Integer topicId, String categoryName, Integer categorySec, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.categoryId = categoryId;
         this.categoryPid = categoryPid;
         this.blogId = blogId;
+        this.topicId = topicId;
         this.categoryName = categoryName;
         this.categorySec = categorySec;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public static Category ofNewRootCategory(long blogId, String categoryName, int categorySec){
+    public static Category ofNewRootCategory(Long blogId,Integer topicId, String categoryName, Integer categorySec){
         return new Category(
                 null,
                 null,
                 blogId,
+                topicId,
                 categoryName,
                 categorySec,
                 LocalDateTime.now(),
@@ -34,11 +37,12 @@ public class Category {
         );
     }
 
-    public static Category ofNewSubCategory(Integer categoryPid,long blogId, String categoryName, int categorySec){
+    public static Category ofNewSubCategory(Integer categoryPid,Long blogId,Integer topicId, String categoryName, Integer categorySec){
         return new Category(
                 null,
                 categoryPid,
                 blogId,
+                topicId,
                 categoryName,
                 categorySec,
                 LocalDateTime.now(),
@@ -46,11 +50,12 @@ public class Category {
         );
     }
 
-    public static Category ofExistingCategory(int categoryId, int categoryPid, long blogId, String categoryName, int categorySec, LocalDateTime createdAt, LocalDateTime updatedAt){
+    public static Category ofExistingCategory(Integer categoryId, Integer categoryPid, Long blogId, Integer topicId, String categoryName, Integer categorySec, LocalDateTime createdAt, LocalDateTime updatedAt){
         return new Category(
                 categoryId,
                 categoryPid,
                 blogId,
+                topicId,
                 categoryName,
                 categorySec,
                 createdAt,
@@ -58,19 +63,27 @@ public class Category {
         );
     }
 
-    public int getCategoryId() {
+    public Integer getCategoryId() {
         return categoryId;
     }
 
-    public int getCategoryPid() {
+    public Integer getCategoryPid() {
         return categoryPid;
+    }
+
+    public Long getBlogId() {
+        return blogId;
+    }
+
+    public Integer getTopicId() {
+        return topicId;
     }
 
     public String getCategoryName() {
         return categoryName;
     }
 
-    public int getCategorySec() {
+    public Integer getCategorySec() {
         return categorySec;
     }
 

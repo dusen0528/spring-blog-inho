@@ -159,7 +159,7 @@ public class JdbcBlogRepository implements BlogRepository {
 
         String sql = """
                     select 
-                       count(blog_id)
+                       1
                     from 
                         blogs 
                     where 
@@ -171,8 +171,7 @@ public class JdbcBlogRepository implements BlogRepository {
 
             try(ResultSet rs = statement.executeQuery()){
                 if(rs.next()) {
-                    int count = rs.getInt(1);
-                    return count > 0;
+                    return true;
                 }//end if
             }//end try
         } catch (SQLException e) {

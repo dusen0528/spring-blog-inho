@@ -109,14 +109,13 @@ public class JdbcRoleRepository implements RoleRepository {
     public boolean existsByRoleId(String roleId) {
         Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = """
-                    select count(*) as cnt from roles where role_id=?
+                    select 1 from roles where role_id=?
                 """;
         try(PreparedStatement psmt = connection.prepareStatement(sql);) {
             psmt.setString(1, roleId);
             try(ResultSet rs = psmt.executeQuery()) {
                 if(rs.next()) {
-                    int count = rs.getInt(1);
-                    return count > 0;
+                    return true;
                 }
             }
         } catch (SQLException e) {

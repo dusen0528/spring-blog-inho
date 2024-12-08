@@ -18,7 +18,6 @@ public class ContextHolder {
     static {
         context = new ApplicationContext();
     }
-
     private ContextHolder(){
         throw new IllegalStateException("ContextHolder should not be instantiated");
     }
