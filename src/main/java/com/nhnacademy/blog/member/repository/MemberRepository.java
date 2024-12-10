@@ -9,13 +9,13 @@ import java.util.Optional;
 public interface MemberRepository {
 
     //등록
-    int save(Member member);
+    void save(Member member);
     //수정
-    int update(MemberUpdateRequestDto memberUpdateRequestDto);
+    void update(MemberUpdateRequestDto memberUpdateRequestDto);
     //삭제
-    int delete(long mbNo);
+    void deleteByMbNo(long mbNo);
     //회원 비밀번호 변경
-    int changePassword(long mbNo, String mbPassword);
+    void changePassword(long mbNo, String mbPassword);
 
     //아이디를 이용한 조회
     Optional<Member> findByMbNo(long mbNo);
@@ -31,6 +31,6 @@ public interface MemberRepository {
     //회원 모바일 연락처 존재여부
     boolean existsByMbMobile(String mbMobile);
     //회원 탈퇴시 탈퇴일자 변경
-    int updateWithdrawalAt(long mbNo, LocalDateTime updateWithdrawalAt);
+    void updateWithdrawalAt(long mbNo, LocalDateTime updateWithdrawalAt);
 
 }

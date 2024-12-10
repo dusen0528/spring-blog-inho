@@ -1,6 +1,7 @@
 package com.nhnacademy.blog.category.domain;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Category {
 
@@ -93,5 +94,17 @@ public class Category {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category = (Category) o;
+        return Objects.equals(categoryId, category.categoryId) && Objects.equals(categoryPid, category.categoryPid) && Objects.equals(blogId, category.blogId) && Objects.equals(topicId, category.topicId) && Objects.equals(categoryName, category.categoryName) && Objects.equals(categorySec, category.categorySec) && Objects.equals(createdAt, category.createdAt) && Objects.equals(updatedAt, category.updatedAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(categoryId, categoryPid, blogId, topicId, categoryName, categorySec, createdAt, updatedAt);
     }
 }

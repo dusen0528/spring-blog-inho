@@ -6,9 +6,9 @@ import com.nhnacademy.blog.bloginfo.dto.BlogUpdateRequestDto;
 import java.util.Optional;
 
 public interface BlogRepository {
-    int save(Blog blog);
-    int update(BlogUpdateRequestDto blogUpdateRequestDto);
-    int delete(long blogId);
+    void save(Blog blog);
+    void update(BlogUpdateRequestDto blogUpdateRequestDto);
+    void deleteByBlogId(long blogId);
     Optional<Blog> findByBlogId(long blogId);
     boolean existByBlogId(long blogId);
 }

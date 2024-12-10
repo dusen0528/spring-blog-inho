@@ -24,6 +24,7 @@ public class InitRepository implements Initializeable {
         for (ClassWrapper<Repository> classWrapper : classWrappers) {
             log.debug("Initializing Repository: {}", classWrapper.getClazz().getSimpleName());
             Object instance = null;
+
             try {
                 instance = classWrapper.getClazz().getDeclaredConstructor().newInstance();
             } catch (Exception e) {

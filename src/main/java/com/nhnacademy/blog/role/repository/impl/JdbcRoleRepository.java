@@ -1,13 +1,13 @@
 package com.nhnacademy.blog.role.repository.impl;
 
 import com.nhnacademy.blog.common.annotation.stereotype.Repository;
+import com.nhnacademy.blog.common.db.exception.DatabaseException;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 import com.nhnacademy.blog.role.doamin.Role;
 import com.nhnacademy.blog.role.dto.RoleUpdateRequestDto;
 import com.nhnacademy.blog.role.repository.RoleRepository;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository(name = JdbcRoleRepository.BEAN_NAME)
@@ -15,7 +15,7 @@ public class JdbcRoleRepository implements RoleRepository {
     public static final String BEAN_NAME = "jdbcRoleRepository";
 
     @Override
-    public int save(Role role) {
+    public void save(Role role) {
         Connection connection = DbConnectionThreadLocal.getConnection();
 
         String sql = """
@@ -32,14 +32,14 @@ public class JdbcRoleRepository implements RoleRepository {
             psmt.setString(index++, role.getRoleId());
             psmt.setString(index++, role.getRoleName());
             psmt.setString(index++, role.getRoleDescription());
-            return psmt.executeUpdate();
+            psmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
     @Override
-    public int update(RoleUpdateRequestDto roleUpdateRequestDto) {
+    public void update(RoleUpdateRequestDto roleUpdateRequestDto) {
 
         Connection connection = DbConnectionThreadLocal.getConnection();
 
@@ -56,15 +56,15 @@ public class JdbcRoleRepository implements RoleRepository {
             psmt.setString(index++, roleUpdateRequestDto.getRoleName());
             psmt.setString(index++, roleUpdateRequestDto.getRoleDescription());
             psmt.setString(index++, roleUpdateRequestDto.getRoleId());
-            return psmt.executeUpdate();
+            psmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
 
     }
 
     @Override
-    public int delete(String roleId) {
+    public void deleteByRoleId(String roleId) {
         Connection connection = DbConnectionThreadLocal.getConnection();
 
         String sql = """
@@ -74,9 +74,9 @@ public class JdbcRoleRepository implements RoleRepository {
         try ( PreparedStatement psmt = connection.prepareStatement(sql)){
             int index=1;
             psmt.setString(index++, roleId);
-            return psmt.executeUpdate();
+            psmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
@@ -100,7 +100,7 @@ public class JdbcRoleRepository implements RoleRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
         return Optional.empty();
     }
@@ -119,7 +119,7 @@ public class JdbcRoleRepository implements RoleRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
         return false;
     }

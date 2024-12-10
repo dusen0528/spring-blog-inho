@@ -30,9 +30,7 @@ public class ReflectionUtils {
             field = target.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
             field.set(target, value);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -128,7 +126,7 @@ public class ReflectionUtils {
             Qualifier qualifier = parameter.getAnnotation(Qualifier.class);
 
             if(Objects.isNull(qualifier)) {
-                throw new RuntimeException(String.format("%s, missing @Qualifier annotation in Constructor:{}, parameter:{}", constructor.getName(), parameter.getName()));
+                throw new RuntimeException(String.format("%s, missing @Qualifier annotation in Constructor:%s", constructor.getName(), parameter.getName()));
             }
 
             String beanName = qualifier.value();

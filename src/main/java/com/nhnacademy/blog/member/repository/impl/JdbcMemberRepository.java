@@ -1,6 +1,7 @@
 package com.nhnacademy.blog.member.repository.impl;
 
 import com.nhnacademy.blog.common.annotation.stereotype.Repository;
+import com.nhnacademy.blog.common.db.exception.DatabaseException;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 import com.nhnacademy.blog.member.domain.Member;
 import com.nhnacademy.blog.member.dto.MemberUpdateRequestDto;
@@ -19,7 +20,7 @@ public class JdbcMemberRepository implements MemberRepository {
     public static final String BEAN_NAME="memberRepository";
 
     @Override
-    public int save(Member member) {
+    public void save(Member member) {
 
         Connection connection = DbConnectionThreadLocal.getConnection();
 
@@ -55,14 +56,13 @@ public class JdbcMemberRepository implements MemberRepository {
                 }
             }
 
-            return rows;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
     @Override
-    public int update(MemberUpdateRequestDto memberUpdateRequestDto) {
+    public void update(MemberUpdateRequestDto memberUpdateRequestDto) {
         Connection connection = DbConnectionThreadLocal.getConnection();
 
         String sql = """
@@ -81,15 +81,15 @@ public class JdbcMemberRepository implements MemberRepository {
             psmt.setString(index++, memberUpdateRequestDto.getMbMobile());
             psmt.setTimestamp(index++, Timestamp.valueOf(LocalDateTime.now()));
             psmt.setLong(index++, memberUpdateRequestDto.getMbNo());
-            return psmt.executeUpdate();
+            psmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
 
     }
 
     @Override
-    public int delete(long mbNo) {
+    public void deleteByMbNo(long mbNo) {
         Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = """
                     delete from members where mb_no=?;
@@ -97,15 +97,15 @@ public class JdbcMemberRepository implements MemberRepository {
 
         try ( PreparedStatement psmt = connection.prepareStatement(sql) ){
             psmt.setLong(1,mbNo);
-            return psmt.executeUpdate();
+            psmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
 
     }
 
     @Override
-    public int changePassword(long mbNo, String mbPassword) {
+    public void changePassword(long mbNo, String mbPassword) {
         Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = """
                     update members 
@@ -118,9 +118,9 @@ public class JdbcMemberRepository implements MemberRepository {
             int index=1;
             psmt.setString(index++,mbPassword);
             psmt.setLong(index++,mbNo);
-            return psmt.executeUpdate();
+            psmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
@@ -167,7 +167,7 @@ public class JdbcMemberRepository implements MemberRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
 
         return Optional.empty();
@@ -215,7 +215,7 @@ public class JdbcMemberRepository implements MemberRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
 
         return Optional.empty();
@@ -263,7 +263,7 @@ public class JdbcMemberRepository implements MemberRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
 
         return Optional.empty();
@@ -290,7 +290,7 @@ public class JdbcMemberRepository implements MemberRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
         return false;
     }
@@ -317,7 +317,7 @@ public class JdbcMemberRepository implements MemberRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
 
         return false;
@@ -345,14 +345,14 @@ public class JdbcMemberRepository implements MemberRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
 
         return false;
     }
 
     @Override
-    public int updateWithdrawalAt(long mbNo, LocalDateTime updateWithdrawalAt) {
+    public void updateWithdrawalAt(long mbNo, LocalDateTime updateWithdrawalAt) {
 
         Connection connection = DbConnectionThreadLocal.getConnection();
 
@@ -366,9 +366,9 @@ public class JdbcMemberRepository implements MemberRepository {
         try ( PreparedStatement psmt = connection.prepareStatement(sql)){
             psmt.setTimestamp(1, Timestamp.valueOf(updateWithdrawalAt));
             psmt.setLong(2,mbNo);
-            return  psmt.executeUpdate();
+            psmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 }

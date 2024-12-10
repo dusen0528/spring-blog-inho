@@ -101,7 +101,7 @@ class JdbcMemberRepositoryTest {
         memberRepository.save(member1);
         log.debug("member1:{}",member1);
 
-        memberRepository.delete(member1.getMbNo());
+        memberRepository.deleteByMbNo(member1.getMbNo());
         boolean actual = memberRepository.existsByMbNo(member1.getMbNo());
         log.debug("member with id [{}] has bean deleted:{}",member1.getMbNo(),actual);
         Assertions.assertFalse(actual);

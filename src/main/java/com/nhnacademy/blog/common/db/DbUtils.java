@@ -6,7 +6,7 @@ import com.nhnacademy.blog.common.context.ContextHolder;
 import javax.sql.DataSource;
 
 public class DbUtils {
-    public DbUtils(){
+    private DbUtils(){
         throw new IllegalStateException("Utility class");
     }
 

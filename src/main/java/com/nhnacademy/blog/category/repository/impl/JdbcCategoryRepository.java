@@ -4,6 +4,7 @@ import com.nhnacademy.blog.category.domain.Category;
 import com.nhnacademy.blog.category.dto.CategoryUpdateRequestDto;
 import com.nhnacademy.blog.category.repository.CategoryRepository;
 import com.nhnacademy.blog.common.annotation.stereotype.Repository;
+import com.nhnacademy.blog.common.db.exception.DatabaseException;
 import com.nhnacademy.blog.common.reflection.ReflectionUtils;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 import com.nhnacademy.blog.common.websupport.PageRequest;
@@ -20,7 +21,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
     public static final String BEAN_NAME = "jdbcCategoryRepository";
 
     @Override
-    public int save(Category category) {
+    public void save(Category category) {
         Connection connection = DbConnectionThreadLocal.getConnection();
 
         String sql = """
@@ -54,7 +55,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
             psmt.setInt(index++,category.getCategorySec());
             psmt.setTimestamp(index++, Timestamp.valueOf(category.getCreatedAt()));
 
-            int rows = psmt.executeUpdate();
+            psmt.executeUpdate();
 
             try(ResultSet rs = psmt.getGeneratedKeys()){
                 if(rs.next()){
@@ -62,14 +63,13 @@ public class JdbcCategoryRepository implements CategoryRepository {
                 }
             }
 
-            return rows;
         }catch (SQLException e){
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
     @Override
-    public int update(CategoryUpdateRequestDto categoryUpdateRequestDto) {
+    public void update(CategoryUpdateRequestDto categoryUpdateRequestDto) {
         Connection connection = DbConnectionThreadLocal.getConnection();
 
         String sql = """
@@ -96,22 +96,22 @@ public class JdbcCategoryRepository implements CategoryRepository {
             psmt.setInt(index++,categoryUpdateRequestDto.getCategorySec());
             psmt.setLong(index++,categoryUpdateRequestDto.getCategoryId());
 
-            return psmt.executeUpdate();
+            psmt.executeUpdate();
 
         }catch (SQLException e){
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
     @Override
-    public int delete(int categoryId) {
+    public void deleteByCategoryId(int categoryId) {
         Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = "delete from categories where category_id=?";
         try(PreparedStatement psmt = connection.prepareStatement(sql)){
             psmt.setInt(1,categoryId);
-            return psmt.executeUpdate();
+            psmt.executeUpdate();
         }catch (SQLException e){
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
@@ -140,9 +140,9 @@ public class JdbcCategoryRepository implements CategoryRepository {
             try(ResultSet rs = psmt.executeQuery()){
                 if(rs.next()){
                     Integer dbCategoryId = rs.getInt("category_id");
-                    Integer categoryPid = Objects.nonNull("category_pid") ? rs.getInt("category_pid") : null;
+                    Integer categoryPid = Objects.nonNull(rs.getObject("category_pid")) ? rs.getInt("category_pid") : null;
                     Long blogId = rs.getLong("blog_id");
-                    Integer topicId = Objects.nonNull("topic_id") ? rs.getInt("topic_id") : null;
+                    Integer topicId = Objects.nonNull(rs.getObject("topic_id")) ? rs.getInt("topic_id") : null;
                     String categoryName = rs.getString("category_name");
                     Integer categorySec = rs.getInt("category_sec");
                     LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
@@ -152,14 +152,14 @@ public class JdbcCategoryRepository implements CategoryRepository {
                 }
             }
         }catch (SQLException e){
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
 
         return Optional.empty();
     }
 
     @Override
-    public List<Category> findAllByPageRequest(PageRequest pageRequest, Integer categoryPid) {
+    public List<Category> findAll(Long blogId, Integer categoryPid) {
 
         Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = """
@@ -175,7 +175,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
                 from 
                     categories
                 where 
-                    1
+                    blog_id=?
             """;
 
         StringBuilder sb = new StringBuilder();
@@ -184,59 +184,34 @@ public class JdbcCategoryRepository implements CategoryRepository {
             sb.append(" and category_pid=? ");
         }
         sb.append(" order by category_sec asc ");
-        sb.append(String.format(" limit %d, %d",pageRequest.getOffSet(), pageRequest.getSize()));
 
         List<Category> categories = new ArrayList<>();
-        try (PreparedStatement psmt = connection.prepareStatement(sql)){
+        try (PreparedStatement psmt = connection.prepareStatement(sb.toString())){
+            psmt.setLong(1,blogId);
+
             if(Objects.nonNull(categoryPid)){
-                psmt.setInt(1,categoryPid);
+                psmt.setInt(2,categoryPid);
             }
+
             try(ResultSet rs = psmt.executeQuery()){
-                if(rs.next()){
+                while(rs.next()){
                     Integer dbCategoryId = rs.getInt("category_id");
                     Integer dbCategoryPid = rs.getInt("category_pid");
-                    Long blogId = rs.getLong("blog_id");
+                    Long dbBlogId = rs.getLong("blog_id");
                     Integer topicId = rs.getInt("topic_id");
                     String categoryName = rs.getString("category_name");
                     Integer categorySec = rs.getInt("category_sec");
                     LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
-                    LocalDateTime updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
-                    Category category = Category.ofExistingCategory(dbCategoryId,dbCategoryPid,blogId,topicId,categoryName,categorySec,createdAt,updatedAt);
+                    LocalDateTime updatedAt = Objects.nonNull(rs.getTimestamp("updated_at")) ?  rs.getTimestamp("updated_at").toLocalDateTime() : null;
+                    Category category = Category.ofExistingCategory(dbCategoryId,dbCategoryPid,dbBlogId,topicId,categoryName,categorySec,createdAt,updatedAt);
                     categories.add(category);
                 }
-            }catch (SQLException e){
-                throw new RuntimeException(e);
             }
         }catch (SQLException e){
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
 
         return categories;
-    }
-
-    @Override
-    public long count(Integer categoryPid) {
-
-        Connection connection = DbConnectionThreadLocal.getConnection();
-        String sql = "select count(category_id) from categories where 1";
-        StringBuilder sb = new StringBuilder(sql);
-        if(Objects.nonNull(categoryPid)){
-            sb.append(" and category_pid=? ");
-        }
-
-        try(PreparedStatement psmt = connection.prepareStatement(sql)){
-            if(Objects.nonNull(categoryPid)){
-                psmt.setInt(1,categoryPid);
-            }
-            try(ResultSet rs = psmt.executeQuery()){
-                if(rs.next()){
-                    return rs.getLong(1);
-                }
-            }
-        }catch (SQLException e){
-            throw new RuntimeException(e);
-        }
-        return 0;
     }
 
     @Override
@@ -252,7 +227,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
                 }
             }
         }catch (SQLException e){
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
         return false;
     }

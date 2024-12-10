@@ -16,7 +16,7 @@ import java.util.Properties;
 public class InitDbPropertiesReader implements Initializeable {
     private Context context;
 
-    private final static String DEFAULT_DB_PROPERTIES_FILE="db.properties";
+    private static final String DEFAULT_DB_PROPERTIES_FILE="db.properties";
     private final String dbPropertiesFile;
 
     public InitDbPropertiesReader(){

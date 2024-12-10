@@ -12,6 +12,10 @@ public class DbConnectionThreadLocal {
     private static final ThreadLocal<Connection> connectionThreadLocal = new ThreadLocal<>();
     private static final ThreadLocal<Boolean> sqlErrorThreadLocal = ThreadLocal.withInitial(()->false);
 
+    private DbConnectionThreadLocal() {
+        throw new IllegalStateException();
+    }
+
     public static void initialize(){
 
         //connection pool에서 connectionThreadLocal에 connection을 할당합니다.
@@ -66,6 +70,7 @@ public class DbConnectionThreadLocal {
             log.error("connection close error");
         }finally {
             connectionThreadLocal.remove();
+            sqlErrorThreadLocal.remove();
         }
 
     }

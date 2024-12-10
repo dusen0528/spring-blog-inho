@@ -4,6 +4,7 @@ import com.nhnacademy.blog.bloginfo.domain.Blog;
 import com.nhnacademy.blog.bloginfo.dto.BlogUpdateRequestDto;
 import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
 import com.nhnacademy.blog.common.annotation.stereotype.Repository;
+import com.nhnacademy.blog.common.db.exception.DatabaseException;
 import com.nhnacademy.blog.common.reflection.ReflectionUtils;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 
@@ -17,7 +18,7 @@ public class JdbcBlogRepository implements BlogRepository {
     public static final String BEAN_NAME = "jdbcBlogRepository";
 
     @Override
-    public int save(Blog blog) {
+    public void save(Blog blog) {
         Connection connection = DbConnectionThreadLocal.getConnection();
 
         String sql = """
@@ -44,14 +45,13 @@ public class JdbcBlogRepository implements BlogRepository {
                     }
                 }
             }
-            return rows;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
     @Override
-    public int update(BlogUpdateRequestDto blogUpdateRequestDto) {
+    public void update(BlogUpdateRequestDto blogUpdateRequestDto) {
 
         Connection connection = DbConnectionThreadLocal.getConnection();
 
@@ -74,14 +74,14 @@ public class JdbcBlogRepository implements BlogRepository {
             statement.setString(index++, blogUpdateRequestDto.getBlogDescription());
             statement.setLong(index++, blogUpdateRequestDto.getBlogId());
 
-            return statement.executeUpdate();
+            statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
     @Override
-    public int delete(long blogId) {
+    public void deleteByBlogId(long blogId) {
 
         Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = """
@@ -90,9 +90,9 @@ public class JdbcBlogRepository implements BlogRepository {
 
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1,blogId);
-            return statement.executeUpdate();
+            statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
 
     }
@@ -146,7 +146,7 @@ public class JdbcBlogRepository implements BlogRepository {
 
             }//end try
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
 
         return Optional.empty();
@@ -175,7 +175,7 @@ public class JdbcBlogRepository implements BlogRepository {
                 }//end if
             }//end try
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
         return false;
     }

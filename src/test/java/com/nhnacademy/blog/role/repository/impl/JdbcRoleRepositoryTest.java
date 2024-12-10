@@ -36,8 +36,9 @@ class JdbcRoleRepositoryTest {
     @DisplayName("권한등록")
     void save() {
         Role role = new Role("ROLE_SYSADMIN","전체-시스템-관리자","전체-블로그-시스템-관리자");
-        int actual = roleRepository.save(role);
-        Assertions.assertEquals(1, actual);
+        roleRepository.save(role);
+
+        Assertions.assertNotNull(role.getRoleId());
     }
 
     @Test
@@ -73,7 +74,7 @@ class JdbcRoleRepositoryTest {
         Role dbRole = roleRepository.findByRoleId(role.getRoleId()).get();
         log.debug("dbRole: {}", dbRole);
 
-        roleRepository.delete(role.getRoleId());
+        roleRepository.deleteByRoleId(role.getRoleId());
 
         boolean actual = roleRepository.existsByRoleId(role.getRoleId());
         Assertions.assertFalse(actual);

@@ -76,11 +76,10 @@ class JdbcBlogRepositoryTest {
     void delete() {
         Blog blog = Blog.ofNewBlog("NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         jdbcBlogRepository.save(blog);
-        int actual = jdbcBlogRepository.delete(blog.getBlogId());
+        jdbcBlogRepository.deleteByBlogId(blog.getBlogId());
 
         Optional<Blog> dbBlog =  jdbcBlogRepository.findByBlogId(blog.getBlogId());
         Assertions.assertAll(
-                ()-> Assertions.assertEquals(1,actual),
                 ()-> Assertions.assertTrue(dbBlog.isEmpty())
         );
     }

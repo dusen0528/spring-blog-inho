@@ -16,10 +16,10 @@ public class BlogDataSource {
 
     public BlogDataSource(@Qualifier(DbProperties.BEAN_NAME) DbProperties dbProperties) {
         this.dbProperties = dbProperties;
-        this.dataSource = dbProperties.isSpy() ? createP6SpyDataSource(createDataSource(dbProperties)) : createDataSource(dbProperties);
+        this.dataSource = dbProperties.isSpy() ? createP6SpyDataSource(createDataSource()) : createDataSource();
     }
 
-    private static DataSource createDataSource(DbProperties dbProperties){
+    private DataSource createDataSource(){
         BasicDataSource basicDataSource = new BasicDataSource();
 
         basicDataSource.setUrl(dbProperties.getUrl());
@@ -37,7 +37,7 @@ public class BlogDataSource {
         return basicDataSource;
     }
 
-    private static DataSource createP6SpyDataSource(DataSource dataSource){
+    private DataSource createP6SpyDataSource(DataSource dataSource){
         return new P6DataSource(dataSource);
     }
 
