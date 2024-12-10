@@ -4,6 +4,7 @@ import com.nhnacademy.blog.common.context.exception.BeanNotFoundException;
 import com.nhnacademy.blog.common.init.Initializeable;
 import com.nhnacademy.blog.common.reflection.ClassWrapper;
 import com.nhnacademy.blog.common.reflection.ReflectionUtils;
+import com.nhnacademy.blog.common.reflection.exception.ReflectionException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -35,7 +36,7 @@ public class ApplicationContext  implements Context{
                 Initializeable initializeable = classWrapper.getClazz().getDeclaredConstructor().newInstance();
                 initializeable.initialize(this);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new ReflectionException(e);
             }
         }
 

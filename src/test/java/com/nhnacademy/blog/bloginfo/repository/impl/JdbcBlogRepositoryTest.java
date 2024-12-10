@@ -33,29 +33,31 @@ class JdbcBlogRepositoryTest {
     @Test
     @DisplayName("블로그정보 저장(생성)")
     void save() {
-        Blog blog = Blog.ofNewBlog("NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        Blog blog = Blog.ofNewBlog(true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         jdbcBlogRepository.save(blog);
-
         Optional<Blog> blogOptional = jdbcBlogRepository.findByBlogId(blog.getBlogId());
+
+        Assertions.assertTrue(blogOptional.isPresent());
 
         Assertions.assertAll(
                 ()-> Assertions.assertNotNull(blog.getBlogId()),
+                ()->Assertions.assertTrue(blogOptional.get().isBlogMain()),
                 ()->Assertions.assertEquals(blog.getBlogName(), blogOptional.get().getBlogName()),
                 ()->Assertions.assertEquals(blog.getBlogMbNickname(), blogOptional.get().getBlogMbNickname()),
                 ()->Assertions.assertEquals(blog.getBlogDescription(), blogOptional.get().getBlogDescription())
         );
-
     }
 
     @Test
     @DisplayName("블로그정보 수정")
     void update() {
 
-        Blog blog = Blog.ofNewBlog("NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        Blog blog = Blog.ofNewBlog(true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         jdbcBlogRepository.save(blog);
 
         BlogUpdateRequestDto blogUpdateRequestDto = new BlogUpdateRequestDto(
                 blog.getBlogId(),
+                 false,
                  "블로그네임-수정",
             "블로그별명-수정",
              "블로그설명-수정"
@@ -64,7 +66,9 @@ class JdbcBlogRepositoryTest {
         jdbcBlogRepository.update(blogUpdateRequestDto);
         Optional<Blog> blogOptional = jdbcBlogRepository.findByBlogId(blog.getBlogId());
 
+        Assertions.assertTrue(blogOptional.isPresent());
         Assertions.assertAll(
+            ()->Assertions.assertEquals(blogUpdateRequestDto.isBlogMain(), blogOptional.get().isBlogMain()),
             ()->Assertions.assertEquals(blogUpdateRequestDto.getBlogName(),blogOptional.get().getBlogName()),
             ()->Assertions.assertEquals(blogUpdateRequestDto.getBlogMbNickname(),blogOptional.get().getBlogMbNickname()),
             ()->Assertions.assertEquals(blogUpdateRequestDto.getBlogDescription(),blogOptional.get().getBlogDescription())
@@ -74,7 +78,7 @@ class JdbcBlogRepositoryTest {
     @Test
     @DisplayName("blog삭제")
     void delete() {
-        Blog blog = Blog.ofNewBlog("NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        Blog blog = Blog.ofNewBlog(true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         jdbcBlogRepository.save(blog);
         jdbcBlogRepository.deleteByBlogId(blog.getBlogId());
 
@@ -87,13 +91,15 @@ class JdbcBlogRepositoryTest {
     @Test
     void findByBlogInfoId() {
 
-        Blog blog = Blog.ofNewBlog("NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        Blog blog = Blog.ofNewBlog(true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         jdbcBlogRepository.save(blog);
 
         Optional<Blog> blogOptional = jdbcBlogRepository.findByBlogId(blog.getBlogId());
 
+        Assertions.assertTrue(blogOptional.isPresent());
         Assertions.assertAll(
                 ()-> Assertions.assertNotNull(blog.getBlogId()),
+                ()->Assertions.assertTrue(blogOptional.get().isBlogMain()),
                 ()->Assertions.assertEquals(blog.getBlogName(), blogOptional.get().getBlogName()),
                 ()->Assertions.assertEquals(blog.getBlogMbNickname(), blogOptional.get().getBlogMbNickname()),
                 ()->Assertions.assertEquals(blog.getBlogDescription(), blogOptional.get().getBlogDescription())
@@ -104,17 +110,17 @@ class JdbcBlogRepositoryTest {
     @Test
     @DisplayName("블로그존재여부:true")
     void existByBlogId() {
-        Blog blog = Blog.ofNewBlog("NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        Blog blog = Blog.ofNewBlog(true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         jdbcBlogRepository.save(blog);
 
         boolean actual = jdbcBlogRepository.existByBlogId(blog.getBlogId());
         Assertions.assertTrue(actual);
     }
-
+    
     @Test
     @DisplayName("블로그존재여부:false")
     void notExistByBlogId() {
-        boolean actual = jdbcBlogRepository.existByBlogId(1l);
+        boolean actual = jdbcBlogRepository.existByBlogId(1);
         Assertions.assertFalse(actual);
     }
 }

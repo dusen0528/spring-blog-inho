@@ -3,9 +3,9 @@ package com.nhnacademy.blog.role.doamin;
 import java.util.Objects;
 
 public class Role {
-    private String roleId;
-    private String roleName;
-    private String roleDescription;
+    private final String roleId;
+    private final String roleName;
+    private final String roleDescription;
 
     public Role(String roleId, String roleName, String roleDescription) {
         this.roleId = roleId;

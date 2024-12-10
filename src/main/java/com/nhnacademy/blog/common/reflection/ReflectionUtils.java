@@ -4,6 +4,7 @@ import com.nhnacademy.blog.common.annotation.InitOrder;
 import com.nhnacademy.blog.common.annotation.Qualifier;
 import com.nhnacademy.blog.common.context.Context;
 import com.nhnacademy.blog.common.context.exception.BeanNotFoundException;
+import com.nhnacademy.blog.common.reflection.exception.ReflectionException;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 
@@ -24,6 +25,7 @@ public class ReflectionUtils {
      * @param fieldName
      * @param value
      */
+    @SuppressWarnings("java:S3011")
     public static void setField(Object target, String fieldName, Object value) {
         Field field = null;
         try {
@@ -31,7 +33,7 @@ public class ReflectionUtils {
             field.setAccessible(true);
             field.set(target, value);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new ReflectionException(e);
         }
     }
 
@@ -42,6 +44,7 @@ public class ReflectionUtils {
      * @return
      * @param <T>
      */
+    @SuppressWarnings("java:S3740")
     public static <T>List<ClassWrapper<T>>  classScan(String packageName, Class<T> targetClass) {
         Reflections reflections = new Reflections(packageName);
         Set<Class<? extends T>> classes = reflections.getSubTypesOf(targetClass);
@@ -53,7 +56,7 @@ public class ReflectionUtils {
             try {
                 classWrappers.add(new ClassWrapper(order,clazz));
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new ReflectionException(e);
             }
         }
 
@@ -68,6 +71,7 @@ public class ReflectionUtils {
      * @param annotatedClass
      * @return
      */
+    @SuppressWarnings("java:S3740")
     public static List<ClassWrapper> classScanByAnnotated(String packageName, Class<? extends Annotation> annotatedClass) {
 
         Reflections reflections = new Reflections(packageName);
@@ -80,7 +84,7 @@ public class ReflectionUtils {
             try {
                 classWrappers.add(new ClassWrapper(order,clazz));
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new ReflectionException(e);
             }
         }
 
@@ -95,13 +99,13 @@ public class ReflectionUtils {
      * @param clazz
      * @return
      */
-    public static Constructor findFirstConstructor(Class<?> clazz) {
-        Constructor[] constructors = clazz.getConstructors();
+    public static <T>Constructor<T> findFirstConstructor(Class<?> clazz) {
+        Constructor<?>[] constructors = clazz.getConstructors();
 
         if(constructors.length > 0){
-            return constructors[0];
+            return (Constructor<T>) constructors[0];
         }
-        throw new RuntimeException("Constructor not found");
+        throw new ReflectionException("Constructor not found");
     }
 
     /**
@@ -110,6 +114,7 @@ public class ReflectionUtils {
      * @param constructor
      * @return Object[]
      */
+    @SuppressWarnings("java:S3740")
     public static Object[] getParameterFromContext(Context context, Constructor constructor){
         Object[] parameters = null;
 
@@ -126,7 +131,7 @@ public class ReflectionUtils {
             Qualifier qualifier = parameter.getAnnotation(Qualifier.class);
 
             if(Objects.isNull(qualifier)) {
-                throw new RuntimeException(String.format("%s, missing @Qualifier annotation in Constructor:%s", constructor.getName(), parameter.getName()));
+                throw new ReflectionException(String.format("%s, missing @Qualifier annotation in Constructor:%s", constructor.getName(), parameter.getName()));
             }
 
             String beanName = qualifier.value();

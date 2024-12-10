@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
+@SuppressWarnings("java:S1192")
 @Repository(name = JdbcTopicRepository.BEAN_NAME)
 public class JdbcTopicRepository implements TopicRepository {
 
@@ -31,7 +31,7 @@ public class JdbcTopicRepository implements TopicRepository {
                         created_at = ?
                 """;
 
-        try(PreparedStatement psmt = connection.prepareStatement(sql,PreparedStatement.RETURN_GENERATED_KEYS)){
+        try(PreparedStatement psmt = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS)){
             int index = 1;
             if(Objects.nonNull(topic.getTopicPid())){
                 psmt.setInt(index++,topic.getTopicPid());

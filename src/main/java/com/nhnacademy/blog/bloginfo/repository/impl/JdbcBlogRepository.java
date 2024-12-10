@@ -24,6 +24,7 @@ public class JdbcBlogRepository implements BlogRepository {
         String sql = """
                     insert into blogs 
                     set
+                        blog_main=?,
                         blog_name=?,
                         blog_mb_nickname=?,
                         blog_description=?,
@@ -32,6 +33,7 @@ public class JdbcBlogRepository implements BlogRepository {
 
         try(PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             int index=1;
+            statement.setBoolean(index++, blog.isBlogMain());
             statement.setString(index++, blog.getBlogName());
             statement.setString(index++, blog.getBlogMbNickname());
             statement.setString(index++, blog.getBlogDescription());
@@ -58,6 +60,7 @@ public class JdbcBlogRepository implements BlogRepository {
         String sql = """
                     update blogs 
                     set
+                        blog_main=?,
                         blog_name=?,
                         blog_mb_nickname=?,
                         blog_description=?,
@@ -68,7 +71,7 @@ public class JdbcBlogRepository implements BlogRepository {
 
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             int index=1;
-
+            statement.setBoolean(index++, blogUpdateRequestDto.isBlogMain());
             statement.setString(index++, blogUpdateRequestDto.getBlogName());
             statement.setString(index++, blogUpdateRequestDto.getBlogMbNickname());
             statement.setString(index++, blogUpdateRequestDto.getBlogDescription());
@@ -104,7 +107,8 @@ public class JdbcBlogRepository implements BlogRepository {
 
         String sql = """
                     select 
-                        blog_id, 
+                        blog_id,
+                        blog_main,
                         blog_name, 
                         blog_mb_nickname, 
                         blog_description, 
@@ -123,6 +127,7 @@ public class JdbcBlogRepository implements BlogRepository {
                 if(rs.next()) {
 
                     long id = rs.getLong("blog_id");
+                    Boolean blogMain = rs.getBoolean("blog_main");
                     String blogName = rs.getString("blog_name");
                     String blogMbNickname = rs.getString("blog_mb_nickname");
                     String blogDescription = rs.getString("blog_description");
@@ -134,6 +139,7 @@ public class JdbcBlogRepository implements BlogRepository {
 
                     Blog blog = Blog.ofExistingBlogInfo(
                             id,
+                            blogMain,
                             blogName,
                             blogMbNickname,
                             blogDescription,

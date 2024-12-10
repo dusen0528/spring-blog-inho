@@ -12,7 +12,7 @@ import java.time.Duration;
 @InitOrder(value = 2)
 public class InitDataSource implements Initializeable {
     public static final String BEAN_NAME = "dataSource";
-    private Context context;
+    
     @Override
     public void initialize(Context context) {
         DbProperties dbProperties = (DbProperties) context.getBean(DbProperties.BEAN_NAME);

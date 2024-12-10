@@ -7,7 +7,6 @@ import com.nhnacademy.blog.common.annotation.stereotype.Repository;
 import com.nhnacademy.blog.common.db.exception.DatabaseException;
 import com.nhnacademy.blog.common.reflection.ReflectionUtils;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
-import com.nhnacademy.blog.common.websupport.PageRequest;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@SuppressWarnings("java:S1192")
 @Repository(name = JdbcCategoryRepository.BEAN_NAME)
 public class JdbcCategoryRepository implements CategoryRepository {
     public static final String BEAN_NAME = "jdbcCategoryRepository";

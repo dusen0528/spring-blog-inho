@@ -1,6 +1,7 @@
 package com.nhnacademy.blog.common.transactional;
 
 import com.nhnacademy.blog.common.db.DbUtils;
+import com.nhnacademy.blog.common.db.exception.DatabaseException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -30,7 +31,7 @@ public class DbConnectionThreadLocal {
             connection.setAutoCommit(false);
             connectionThreadLocal.set(connection);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
@@ -68,6 +69,7 @@ public class DbConnectionThreadLocal {
             connection.close();
         } catch (SQLException e) {
             log.error("connection close error");
+            throw new DatabaseException(e);
         }finally {
             connectionThreadLocal.remove();
             sqlErrorThreadLocal.remove();

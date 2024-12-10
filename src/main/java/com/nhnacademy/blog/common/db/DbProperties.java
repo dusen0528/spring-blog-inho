@@ -1,5 +1,6 @@
 package com.nhnacademy.blog.common.db;
 
+@SuppressWarnings("java:S107")
 public class DbProperties {
     public static final String BEAN_NAME="dbProperties";
 

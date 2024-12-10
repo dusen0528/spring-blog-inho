@@ -2,7 +2,7 @@ package com.nhnacademy.blog.category.domain;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-
+@SuppressWarnings("java:S107")
 public class Category {
 
     private final Integer categoryId;

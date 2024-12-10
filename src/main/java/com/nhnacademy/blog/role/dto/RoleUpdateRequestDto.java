@@ -1,9 +1,9 @@
 package com.nhnacademy.blog.role.dto;
 
 public class RoleUpdateRequestDto {
-    private String roleId;
-    private String roleName;
-    private String roleDescription;
+    private final String roleId;
+    private final String roleName;
+    private final String roleDescription;
 
     public RoleUpdateRequestDto(String roleId, String roleName, String roleDescription) {
         this.roleId = roleId;
