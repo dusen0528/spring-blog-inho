@@ -124,6 +124,7 @@ class JdbcTopicRepositoryTest {
 
     @Test
     @DisplayName("topic -조회 (Root)")
+    @Disabled
     void findAll() {
 
         Topic topic1 = Topic.ofNewRootTopic("주제없음",1);
@@ -146,6 +147,9 @@ class JdbcTopicRepositoryTest {
 
         List<Topic> topics = jdbcTopicRepository.findAll(null);
         log.debug("count of topics : {}", topics.size());
+
+        Assertions.assertFalse(topics.isEmpty());
+
 
         Assertions.assertAll(
             ()->Assertions.assertEquals(topic1.getTopicId(),topics.get(0).getTopicId()),

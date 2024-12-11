@@ -15,7 +15,7 @@ public interface MemberRepository {
     //삭제
     void deleteByMbNo(long mbNo);
     //회원 비밀번호 변경
-    void changePassword(long mbNo, String mbPassword);
+    void updatePassword(long mbNo, String mbPassword);
 
     //아이디를 이용한 조회
     Optional<Member> findByMbNo(long mbNo);

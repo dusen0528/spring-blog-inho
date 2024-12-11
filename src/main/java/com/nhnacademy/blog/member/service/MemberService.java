@@ -1,5 +1,6 @@
 package com.nhnacademy.blog.member.service;
 
+import com.nhnacademy.blog.member.dto.MemberPasswordUpdateRequest;
 import com.nhnacademy.blog.member.dto.MemberRegisterRequest;
 import com.nhnacademy.blog.member.dto.MemberResponse;
 import com.nhnacademy.blog.member.dto.MemberUpdateRequest;
@@ -14,5 +15,6 @@ public interface MemberService {
     void withdrawalMember(long mbNo);
     //회원조회
     MemberResponse getMember(long mbNo);
-
+    //비밀번호 변경
+    void changePassword(MemberPasswordUpdateRequest memberPasswordUpdateRequest);
 }

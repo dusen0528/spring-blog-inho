@@ -109,12 +109,12 @@ class JdbcMemberRepositoryTest {
 
     @Test
     @DisplayName("비밀번호 변경")
-    void changePassword(){
+    void updatePassword(){
         Member member1 = Member.ofNewMember("marco@nhnacademy.com","마르코","12345","01012345678");
         memberRepository.save(member1);
         log.debug("member1:{}",member1);
         String mbPassword = "changePassword";
-        memberRepository.changePassword(member1.getMbNo(),mbPassword);
+        memberRepository.updatePassword(member1.getMbNo(),mbPassword);
 
         Optional<Member> dbMemberOptional = memberRepository.findByMbNo(member1.getMbNo());
         log.debug("changed mbPassword:{}",dbMemberOptional.get().getMbPassword());

@@ -95,6 +95,13 @@
             <version>0.10.2</version>
         </dependency>
 
+        <!-- password encoder, https://github.com/djmdjm/jBCrypt -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
 
     </dependencies>
 

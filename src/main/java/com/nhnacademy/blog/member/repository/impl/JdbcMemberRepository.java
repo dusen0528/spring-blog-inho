@@ -105,7 +105,7 @@ public class JdbcMemberRepository implements MemberRepository {
     }
 
     @Override
-    public void changePassword(long mbNo, String mbPassword) {
+    public void updatePassword(long mbNo, String mbPassword) {
         Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = """
                     update members 
