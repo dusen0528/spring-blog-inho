@@ -4,7 +4,7 @@ import com.nhnacademy.blog.common.annotation.stereotype.Repository;
 import com.nhnacademy.blog.common.db.exception.DatabaseException;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 import com.nhnacademy.blog.member.domain.Member;
-import com.nhnacademy.blog.member.dto.MemberUpdateRequestDto;
+import com.nhnacademy.blog.member.dto.MemberUpdateRequest;
 import com.nhnacademy.blog.member.repository.MemberRepository;
 import com.nhnacademy.blog.common.reflection.ReflectionUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import java.util.Optional;
 @Slf4j
 @Repository(name = JdbcMemberRepository.BEAN_NAME)
 public class JdbcMemberRepository implements MemberRepository {
-    public static final String BEAN_NAME="memberRepository";
+    public static final String BEAN_NAME="jdbcMemberRepository";
 
     @Override
     public void save(Member member) {
@@ -62,7 +62,7 @@ public class JdbcMemberRepository implements MemberRepository {
     }
 
     @Override
-    public void update(MemberUpdateRequestDto memberUpdateRequestDto) {
+    public void update(MemberUpdateRequest memberUpdateRequest) {
         Connection connection = DbConnectionThreadLocal.getConnection();
 
         String sql = """
@@ -76,11 +76,11 @@ public class JdbcMemberRepository implements MemberRepository {
 
         try(PreparedStatement psmt = connection.prepareStatement(sql)){
             int index=1;
-            psmt.setString(index++, memberUpdateRequestDto.getMbEmail());
-            psmt.setString(index++, memberUpdateRequestDto.getMbName());
-            psmt.setString(index++, memberUpdateRequestDto.getMbMobile());
+            psmt.setString(index++, memberUpdateRequest.getMbEmail());
+            psmt.setString(index++, memberUpdateRequest.getMbName());
+            psmt.setString(index++, memberUpdateRequest.getMbMobile());
             psmt.setTimestamp(index++, Timestamp.valueOf(LocalDateTime.now()));
-            psmt.setLong(index++, memberUpdateRequestDto.getMbNo());
+            psmt.setLong(index++, memberUpdateRequest.getMbNo());
             psmt.executeUpdate();
         } catch (SQLException e) {
             throw new DatabaseException(e);

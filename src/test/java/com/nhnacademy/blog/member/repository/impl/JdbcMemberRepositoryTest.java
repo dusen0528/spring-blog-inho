@@ -4,7 +4,7 @@ import com.nhnacademy.blog.common.context.Context;
 import com.nhnacademy.blog.common.context.ContextHolder;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 import com.nhnacademy.blog.member.domain.Member;
-import com.nhnacademy.blog.member.dto.MemberUpdateRequestDto;
+import com.nhnacademy.blog.member.dto.MemberUpdateRequest;
 import com.nhnacademy.blog.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
@@ -75,14 +75,14 @@ class JdbcMemberRepositoryTest {
         Member member3 = Member.ofNewMember("member3@nhnacademy.com","회원3","12345","01033333333");
         memberRepository.save(member3);
 
-        MemberUpdateRequestDto memberUpdateRequestDto = new MemberUpdateRequestDto(
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest(
                 member3.getMbNo(),
                 "member3@gmail.com",
                 "NHN아카데미3",
                 "01033334444"
         );
 
-        memberRepository.update(memberUpdateRequestDto);
+        memberRepository.update(memberUpdateRequest);
 
         Optional<Member> actualOptionalMember3 = memberRepository.findByMbNo(member3.getMbNo());
 

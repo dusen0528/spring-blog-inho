@@ -1,7 +1,7 @@
 package com.nhnacademy.blog.member.repository;
 
 import com.nhnacademy.blog.member.domain.Member;
-import com.nhnacademy.blog.member.dto.MemberUpdateRequestDto;
+import com.nhnacademy.blog.member.dto.MemberUpdateRequest;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -11,7 +11,7 @@ public interface MemberRepository {
     //등록
     void save(Member member);
     //수정
-    void update(MemberUpdateRequestDto memberUpdateRequestDto);
+    void update(MemberUpdateRequest memberUpdateRequest);
     //삭제
     void deleteByMbNo(long mbNo);
     //회원 비밀번호 변경

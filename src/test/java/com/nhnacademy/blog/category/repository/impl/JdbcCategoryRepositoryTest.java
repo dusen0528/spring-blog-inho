@@ -47,7 +47,7 @@ class JdbcCategoryRepositoryTest {
     void save() {
 
         //given
-        Blog blog = Blog.ofNewBlog(true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         jdbcBlogRepository.save(blog);
 
         Category category = Category.ofNewRootCategory(blog.getBlogId(),null,"스프링",1);
@@ -72,7 +72,7 @@ class JdbcCategoryRepositoryTest {
     void save_subCategory(){
 
         //given
-        Blog blog = Blog.ofNewBlog(true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         jdbcBlogRepository.save(blog);
 
         //when
@@ -100,7 +100,7 @@ class JdbcCategoryRepositoryTest {
     void update() {
 
         //given
-        Blog blog = Blog.ofNewBlog(true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         jdbcBlogRepository.save(blog);
 
         Category category1 = Category.ofNewRootCategory(blog.getBlogId(),null,"스프링",1);
@@ -128,7 +128,7 @@ class JdbcCategoryRepositoryTest {
     @DisplayName("카테고리-삭제")
     void delete() {
         //given
-        Blog blog = Blog.ofNewBlog(true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         jdbcBlogRepository.save(blog);
         //when
         jdbcBlogRepository.deleteByBlogId(blog.getBlogId());
@@ -142,7 +142,7 @@ class JdbcCategoryRepositoryTest {
     @DisplayName("category 조회")
     void findByCategoryId() {
         //given
-        Blog blog = Blog.ofNewBlog(true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         jdbcBlogRepository.save(blog);
 
         Category category = Category.ofNewRootCategory(blog.getBlogId(),null,"스프링",1);
@@ -167,7 +167,7 @@ class JdbcCategoryRepositoryTest {
     @DisplayName("category 전체조회")
     void findAll() {
         //given
-        Blog blog = Blog.ofNewBlog(true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         jdbcBlogRepository.save(blog);
 
         Category category1 = Category.ofNewRootCategory(blog.getBlogId(),null,"카테고리-1",1);
@@ -200,7 +200,7 @@ class JdbcCategoryRepositoryTest {
     @DisplayName("category 서브 카테고리 - 조회")
     void findAll_subCategory() {
         //given
-        Blog blog = Blog.ofNewBlog(true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         jdbcBlogRepository.save(blog);
 
         Category category1 = Category.ofNewRootCategory(blog.getBlogId(),null,"카테고리-1",1);
@@ -244,7 +244,7 @@ class JdbcCategoryRepositoryTest {
     @Test
     @DisplayName("categoryId 존재여부 체크")
     void existsByCategoryId() {
-        Blog blog = Blog.ofNewBlog(true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         jdbcBlogRepository.save(blog);
 
         Category category = Category.ofNewRootCategory(blog.getBlogId(),null,"스프링",1);

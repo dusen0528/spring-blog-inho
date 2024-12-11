@@ -8,7 +8,7 @@ public class ClassWrapper<T> {
     private final Class<T> clazz;
 
     public ClassWrapper(int order, Class<T> clazz) {
-        if(Objects.isNull(clazz)) {
+        if (Objects.isNull(clazz)) {
             throw new IllegalArgumentException("instance is null!");
         }
         this.order = order;

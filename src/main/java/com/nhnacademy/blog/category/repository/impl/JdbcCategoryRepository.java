@@ -39,9 +39,9 @@ public class JdbcCategoryRepository implements CategoryRepository {
             int index=1;
 
             if(Objects.nonNull(category.getCategoryPid())){
-                psmt.setInt(index++, category.getCategoryPid());
+                psmt.setLong(index++, category.getCategoryPid());
             }else {
-                psmt.setNull(index++, Types.INTEGER);
+                psmt.setNull(index++, Types.BIGINT);
             }
 
             psmt.setLong(index++,category.getBlogId());
@@ -59,7 +59,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
 
             try(ResultSet rs = psmt.getGeneratedKeys()){
                 if(rs.next()){
-                    ReflectionUtils.setField(category,"categoryId", rs.getInt(1));
+                    ReflectionUtils.setField(category,"categoryId", rs.getLong(1));
                 }
             }
 
@@ -86,7 +86,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
         try(PreparedStatement psmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
             int index=1;
 
-            psmt.setInt(index++, categoryUpdateRequestDto.getCategoryPid());
+            psmt.setLong(index++, categoryUpdateRequestDto.getCategoryPid());
             if(Objects.nonNull(categoryUpdateRequestDto.getTopicId())){
                 psmt.setInt(index++, categoryUpdateRequestDto.getTopicId());
             }else {
@@ -104,11 +104,11 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public void deleteByCategoryId(int categoryId) {
+    public void deleteByCategoryId(Long categoryId) {
         Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = "delete from categories where category_id=?";
         try(PreparedStatement psmt = connection.prepareStatement(sql)){
-            psmt.setInt(1,categoryId);
+            psmt.setLong(1,categoryId);
             psmt.executeUpdate();
         }catch (SQLException e){
             throw new DatabaseException(e);
@@ -116,7 +116,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public Optional<Category> findByCategoryId(int categoryId) {
+    public Optional<Category> findByCategoryId(Long categoryId) {
         Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = """
                 select 
@@ -135,12 +135,12 @@ public class JdbcCategoryRepository implements CategoryRepository {
                 """;
 
         try(PreparedStatement psmt = connection.prepareStatement(sql)){
-            psmt.setInt(1,categoryId);
+            psmt.setLong(1,categoryId);
 
             try(ResultSet rs = psmt.executeQuery()){
                 if(rs.next()){
-                    Integer dbCategoryId = rs.getInt("category_id");
-                    Integer categoryPid = Objects.nonNull(rs.getObject("category_pid")) ? rs.getInt("category_pid") : null;
+                    Long dbCategoryId = rs.getLong("category_id");
+                    Long categoryPid = Objects.nonNull(rs.getObject("category_pid")) ? rs.getLong("category_pid") : null;
                     Long blogId = rs.getLong("blog_id");
                     Integer topicId = Objects.nonNull(rs.getObject("topic_id")) ? rs.getInt("topic_id") : null;
                     String categoryName = rs.getString("category_name");
@@ -159,7 +159,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public List<Category> findAll(Long blogId, Integer categoryPid) {
+    public List<Category> findAll(Long blogId, Long categoryPid) {
 
         Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = """
@@ -190,13 +190,13 @@ public class JdbcCategoryRepository implements CategoryRepository {
             psmt.setLong(1,blogId);
 
             if(Objects.nonNull(categoryPid)){
-                psmt.setInt(2,categoryPid);
+                psmt.setLong(2,categoryPid);
             }
 
             try(ResultSet rs = psmt.executeQuery()){
                 while(rs.next()){
-                    Integer dbCategoryId = rs.getInt("category_id");
-                    Integer dbCategoryPid = rs.getInt("category_pid");
+                    Long dbCategoryId = rs.getLong("category_id");
+                    Long dbCategoryPid = rs.getLong("category_pid");
                     Long dbBlogId = rs.getLong("blog_id");
                     Integer topicId = rs.getInt("topic_id");
                     String categoryName = rs.getString("category_name");
@@ -215,12 +215,12 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public boolean existsByCategoryId(int categoryId) {
+    public boolean existsByCategoryId(Long categoryId) {
         Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = "select 1 from categories where category_id=?";
 
         try(PreparedStatement psmt = connection.prepareStatement(sql)){
-            psmt.setInt(1,categoryId);
+            psmt.setLong(1,categoryId);
             try(ResultSet rs = psmt.executeQuery()){
                 if(rs.next()){
                     return true;

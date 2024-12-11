@@ -1,7 +1,7 @@
 package com.nhnacademy.blog.bloginfo.repository.impl;
 
 import com.nhnacademy.blog.bloginfo.domain.Blog;
-import com.nhnacademy.blog.bloginfo.dto.BlogUpdateRequestDto;
+import com.nhnacademy.blog.bloginfo.dto.BlogUpdateRequest;
 import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
 import com.nhnacademy.blog.common.annotation.stereotype.Repository;
 import com.nhnacademy.blog.common.db.exception.DatabaseException;
@@ -24,6 +24,7 @@ public class JdbcBlogRepository implements BlogRepository {
         String sql = """
                     insert into blogs 
                     set
+                        blog_fid=?,
                         blog_main=?,
                         blog_name=?,
                         blog_mb_nickname=?,
@@ -33,6 +34,7 @@ public class JdbcBlogRepository implements BlogRepository {
 
         try(PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             int index=1;
+            statement.setString(index++,blog.getBlogFid());
             statement.setBoolean(index++, blog.isBlogMain());
             statement.setString(index++, blog.getBlogName());
             statement.setString(index++, blog.getBlogMbNickname());
@@ -53,7 +55,7 @@ public class JdbcBlogRepository implements BlogRepository {
     }
 
     @Override
-    public void update(BlogUpdateRequestDto blogUpdateRequestDto) {
+    public void update(BlogUpdateRequest blogUpdateRequest) {
 
         Connection connection = DbConnectionThreadLocal.getConnection();
 
@@ -71,11 +73,11 @@ public class JdbcBlogRepository implements BlogRepository {
 
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             int index=1;
-            statement.setBoolean(index++, blogUpdateRequestDto.isBlogMain());
-            statement.setString(index++, blogUpdateRequestDto.getBlogName());
-            statement.setString(index++, blogUpdateRequestDto.getBlogMbNickname());
-            statement.setString(index++, blogUpdateRequestDto.getBlogDescription());
-            statement.setLong(index++, blogUpdateRequestDto.getBlogId());
+            statement.setBoolean(index++, blogUpdateRequest.isBlogMain());
+            statement.setString(index++, blogUpdateRequest.getBlogName());
+            statement.setString(index++, blogUpdateRequest.getBlogMbNickname());
+            statement.setString(index++, blogUpdateRequest.getBlogDescription());
+            statement.setLong(index++, blogUpdateRequest.getBlogId());
 
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -108,6 +110,7 @@ public class JdbcBlogRepository implements BlogRepository {
         String sql = """
                     select 
                         blog_id,
+                        blog_fid,
                         blog_main,
                         blog_name, 
                         blog_mb_nickname, 
@@ -127,6 +130,7 @@ public class JdbcBlogRepository implements BlogRepository {
                 if(rs.next()) {
 
                     long id = rs.getLong("blog_id");
+                    String blogFid = rs.getString("blog_fid");
                     Boolean blogMain = rs.getBoolean("blog_main");
                     String blogName = rs.getString("blog_name");
                     String blogMbNickname = rs.getString("blog_mb_nickname");
@@ -139,6 +143,7 @@ public class JdbcBlogRepository implements BlogRepository {
 
                     Blog blog = Blog.ofExistingBlogInfo(
                             id,
+                            blogFid,
                             blogMain,
                             blogName,
                             blogMbNickname,
@@ -184,5 +189,34 @@ public class JdbcBlogRepository implements BlogRepository {
             throw new DatabaseException(e);
         }
         return false;
+    }
+
+    @Override
+    public boolean existByBlogFid(String blogFid) {
+
+        Connection connection = DbConnectionThreadLocal.getConnection();
+
+        String sql = """
+                    select 
+                       1
+                    from 
+                        blogs 
+                    where 
+                        blog_fid=?
+                """;
+
+        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1,blogFid);
+
+            try(ResultSet rs = statement.executeQuery()){
+                if(rs.next()) {
+                    return true;
+                }//end if
+            }//end try
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+        return false;
+
     }
 }

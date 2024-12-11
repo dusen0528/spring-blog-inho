@@ -1,6 +1,6 @@
 package com.nhnacademy.blog.bloginfo.dto;
 
-public class BlogUpdateRequestDto {
+public class BlogUpdateRequest {
 
     private final Long blogId;
     private final Boolean blogMain;
@@ -8,7 +8,7 @@ public class BlogUpdateRequestDto {
     private final String blogMbNickname;
     private final String blogDescription;
 
-    public BlogUpdateRequestDto(Long blogId, Boolean blogMain, String blogName, String blogMbNickname, String blogDescription) {
+    public BlogUpdateRequest(Long blogId, Boolean blogMain, String blogName, String blogMbNickname, String blogDescription) {
         this.blogId = blogId;
         this.blogMain = blogMain;
         this.blogName = blogName;

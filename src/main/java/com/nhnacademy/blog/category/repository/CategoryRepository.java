@@ -12,11 +12,11 @@ public interface CategoryRepository {
     //카테고리 수정
     void update(CategoryUpdateRequestDto categoryUpdateRequestDto);
     //카테고라 삭제
-    void deleteByCategoryId(int categoryId);
+    void deleteByCategoryId(Long categoryId);
     //카테고리 조회
-    Optional<Category> findByCategoryId(int categoryId);
+    Optional<Category> findByCategoryId(Long categoryId);
     //카테고리 리스트
-    List<Category> findAll(Long blogId,Integer categoryPid);
+    List<Category> findAll(Long blogId,Long categoryPid);
     //카타게로 존재여부 체크
-    boolean existsByCategoryId(int categoryId);
+    boolean existsByCategoryId(Long categoryId);
 }

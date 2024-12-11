@@ -1,12 +1,13 @@
 package com.nhnacademy.blog.category.domain;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Objects;
 @SuppressWarnings("java:S107")
 public class Category {
 
-    private final Integer categoryId;
-    private final Integer categoryPid;
+    private final Long categoryId;
+    private final Long categoryPid;
     private final Long blogId;
     private final Integer topicId;
     private final String categoryName;
@@ -14,7 +15,7 @@ public class Category {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    private Category(Integer categoryId, Integer categoryPid, Long blogId, Integer topicId, String categoryName, Integer categorySec, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    private Category(Long categoryId, Long categoryPid, Long blogId, Integer topicId, String categoryName, Integer categorySec, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.categoryId = categoryId;
         this.categoryPid = categoryPid;
         this.blogId = blogId;
@@ -38,7 +39,7 @@ public class Category {
         );
     }
 
-    public static Category ofNewSubCategory(Integer categoryPid,Long blogId,Integer topicId, String categoryName, Integer categorySec){
+    public static Category ofNewSubCategory(Long categoryPid,Long blogId,Integer topicId, String categoryName, Integer categorySec){
         return new Category(
                 null,
                 categoryPid,
@@ -51,7 +52,7 @@ public class Category {
         );
     }
 
-    public static Category ofExistingCategory(Integer categoryId, Integer categoryPid, Long blogId, Integer topicId, String categoryName, Integer categorySec, LocalDateTime createdAt, LocalDateTime updatedAt){
+    public static Category ofExistingCategory(Long categoryId, Long categoryPid, Long blogId, Integer topicId, String categoryName, Integer categorySec, LocalDateTime createdAt, LocalDateTime updatedAt){
         return new Category(
                 categoryId,
                 categoryPid,
@@ -64,11 +65,11 @@ public class Category {
         );
     }
 
-    public Integer getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
-    public Integer getCategoryPid() {
+    public Long getCategoryPid() {
         return categoryPid;
     }
 

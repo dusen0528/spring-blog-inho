@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public class Blog {
 
     private final Long blogId;
+    private final String blogFid;
     private final boolean blogMain;
     private final String blogName;
     private final String blogMbNickname;
@@ -12,8 +13,9 @@ public class Blog {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    private Blog(Long blogId, boolean blogMain, String blogName, String blogMbNickname, String blogDescription, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    private Blog(Long blogId, String blogFid, boolean blogMain, String blogName, String blogMbNickname, String blogDescription, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.blogId = blogId;
+        this.blogFid = blogFid;
         this.blogMain = blogMain;
         this.blogName = blogName;
         this.blogMbNickname = blogMbNickname;
@@ -22,33 +24,38 @@ public class Blog {
         this.updatedAt = updatedAt;
     }
 
-    public static Blog ofNewBlog(Boolean blogMain, String blogName, String blogMbNickname, String blogDescription){
+    public static Blog ofNewBlog(String blogFid, Boolean blogMain, String blogName, String blogMbNickname, String blogDescription){
         return new Blog(
             null,
+                blogFid,
                 blogMain,
                 blogName,
                 blogMbNickname,
                 blogDescription,
                 LocalDateTime.now(),
-                null
-        );
+                null);
     }
 
-    public static Blog ofExistingBlogInfo(Long blogId, Boolean blogMain, String blogName, String blogMbNickname, String blogDescription, LocalDateTime createdAt, LocalDateTime updatedAt){
+    public static Blog ofExistingBlogInfo(Long blogId, String blogFid, Boolean blogMain, String blogName, String blogMbNickname, String blogDescription, LocalDateTime createdAt, LocalDateTime updatedAt){
         return new Blog(
                 blogId,
+                blogFid,
                 blogMain,
                 blogName,
                 blogMbNickname,
                 blogDescription,
                 createdAt,
-                updatedAt
-        );
+                updatedAt);
     }
 
     public Long getBlogId() {
         return blogId;
     }
+
+    public String getBlogFid() {
+        return blogFid;
+    }
+
     public boolean isBlogMain() {
         return blogMain;
     }
@@ -71,7 +78,5 @@ public class Blog {
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
-
-
 
 }
