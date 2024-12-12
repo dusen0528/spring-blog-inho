@@ -18,17 +18,17 @@ public class MemberResponse {
     //수정일자
     private final LocalDateTime updatedAt;
     ///탈퇴일자
-    private final LocalDateTime withdrawal_at;
+    private final LocalDateTime withdrawalAt;
 
 
-    public MemberResponse(Long mbNo, String mbEmail, String mbName, String mbMobile, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime withdrawal_at) {
+    public MemberResponse(Long mbNo, String mbEmail, String mbName, String mbMobile, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime withdrawalAt) {
         this.mbNo = mbNo;
         this.mbEmail = mbEmail;
         this.mbName = mbName;
         this.mbMobile = mbMobile;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.withdrawal_at = withdrawal_at;
+        this.withdrawalAt = withdrawalAt;
     }
 
     public Long getMbNo() {
@@ -55,7 +55,7 @@ public class MemberResponse {
         return updatedAt;
     }
 
-    public LocalDateTime getWithdrawal_at() {
-        return withdrawal_at;
+    public LocalDateTime getWithdrawalAt() {
+        return withdrawalAt;
     }
 }

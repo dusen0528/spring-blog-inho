@@ -1,8 +1,8 @@
-package com.nhnacademy.blog.bloginfo.domain;
+package com.nhnacademy.blog.bloginfo.dto;
 
 import java.time.LocalDateTime;
 
-public class Blog {
+public class BlogResponse {
 
     private final Long blogId;
     private final String blogFid;
@@ -14,7 +14,7 @@ public class Blog {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    private Blog(Long blogId, String blogFid, boolean blogMain, String blogName, String blogMbNickname, String blogDescription, Boolean blogIsPublic, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public BlogResponse(Long blogId, String blogFid, boolean blogMain, String blogName, String blogMbNickname, String blogDescription, Boolean blogIsPublic, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.blogId = blogId;
         this.blogFid = blogFid;
         this.blogMain = blogMain;
@@ -26,54 +26,38 @@ public class Blog {
         this.updatedAt = updatedAt;
     }
 
-    public static Blog ofNewBlog(String blogFid, Boolean blogMain, String blogName, String blogMbNickname, String blogDescription){
-        return new Blog(
-            null,
-                blogFid,
-                blogMain,
-                blogName,
-                blogMbNickname,
-                blogDescription,
-                true,
-                LocalDateTime.now(), null);
-    }
-
-    public static Blog ofExistingBlogInfo(Long blogId, String blogFid, Boolean blogMain, String blogName, String blogMbNickname, String blogDescription, Boolean blogIsPublic, LocalDateTime createdAt, LocalDateTime updatedAt){
-        return new Blog(
-                blogId,
-                blogFid,
-                blogMain,
-                blogName,
-                blogMbNickname,
-                blogDescription,
-                blogIsPublic,
-                createdAt, updatedAt);
-    }
-
     public Long getBlogId() {
         return blogId;
     }
+
     public String getBlogFid() {
         return blogFid;
     }
+
     public boolean isBlogMain() {
         return blogMain;
     }
+
     public String getBlogName() {
         return blogName;
     }
+
     public String getBlogMbNickname() {
         return blogMbNickname;
     }
+
     public String getBlogDescription() {
         return blogDescription;
     }
+
     public Boolean getBlogIsPublic() {
         return blogIsPublic;
     }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }

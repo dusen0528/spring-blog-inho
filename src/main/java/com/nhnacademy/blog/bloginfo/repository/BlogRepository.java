@@ -12,4 +12,5 @@ public interface BlogRepository {
     Optional<Blog> findByBlogId(long blogId);
     boolean existByBlogId(long blogId);
     boolean existByBlogFid(String blogFid);
+    boolean existMainBlogByMbNo(long mbNo);
 }

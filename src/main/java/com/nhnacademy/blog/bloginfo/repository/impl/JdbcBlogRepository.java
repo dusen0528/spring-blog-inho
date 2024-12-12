@@ -29,6 +29,7 @@ public class JdbcBlogRepository implements BlogRepository {
                         blog_name=?,
                         blog_mb_nickname=?,
                         blog_description=?,
+                        blog_is_public=?,
                         created_at=?
                 """;
 
@@ -39,6 +40,7 @@ public class JdbcBlogRepository implements BlogRepository {
             statement.setString(index++, blog.getBlogName());
             statement.setString(index++, blog.getBlogMbNickname());
             statement.setString(index++, blog.getBlogDescription());
+            statement.setBoolean(index++, blog.getBlogIsPublic());
             statement.setTimestamp(index++, Timestamp.valueOf(blog.getCreatedAt()));
             int rows = statement.executeUpdate();
             if(rows > 0) {
@@ -114,7 +116,8 @@ public class JdbcBlogRepository implements BlogRepository {
                         blog_main,
                         blog_name, 
                         blog_mb_nickname, 
-                        blog_description, 
+                        blog_description,
+                        blog_is_public,
                         created_at, 
                         updated_at 
                     from 
@@ -135,6 +138,7 @@ public class JdbcBlogRepository implements BlogRepository {
                     String blogName = rs.getString("blog_name");
                     String blogMbNickname = rs.getString("blog_mb_nickname");
                     String blogDescription = rs.getString("blog_description");
+                    Boolean blogIsPublic = rs.getBoolean("blog_is_public");
                     LocalDateTime createdAt =  rs.getTimestamp("created_at").toLocalDateTime();
                     LocalDateTime updatedAt = null;
                     if(Objects.nonNull(rs.getTimestamp("updated_at"))){
@@ -148,6 +152,7 @@ public class JdbcBlogRepository implements BlogRepository {
                             blogName,
                             blogMbNickname,
                             blogDescription,
+                            blogIsPublic,
                             createdAt,
                             updatedAt
                     );
@@ -217,6 +222,31 @@ public class JdbcBlogRepository implements BlogRepository {
             throw new DatabaseException(e);
         }
         return false;
+    }
 
+    @Override
+    public boolean existMainBlogByMbNo(long mbNo) {
+
+        Connection connection = DbConnectionThreadLocal.getConnection();
+        String sql = """
+                    SELECT 
+                        count(*)
+                    FROM members a
+                        INNER JOIN blog_members_mapping b ON a.mb_no = b.mb_no
+                        INNER JOIN blogs c ON b.blog_id = c.blog_id
+                    WHERE 
+                        a.mb_no=? and a.blog_is_main=1;
+                """;
+        try(PreparedStatement psmt = connection.prepareStatement(sql)){
+            psmt.setLong(1,mbNo);
+            try(ResultSet rs = psmt.executeQuery()){
+                if(rs.next()) {
+                    return true;
+                }
+            }
+        }catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+        return false;
     }
 }

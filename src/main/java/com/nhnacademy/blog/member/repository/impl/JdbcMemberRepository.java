@@ -352,6 +352,33 @@ public class JdbcMemberRepository implements MemberRepository {
     }
 
     @Override
+    public boolean isMemberWithdrawn(Long mbNo) {
+        Connection connection = DbConnectionThreadLocal.getConnection();
+
+        String sql = """
+                    select
+                        1
+                    from 
+                        members 
+                    where mb_no=? and withdrawal_at is not null;
+                """;
+
+        try ( PreparedStatement psmt = connection.prepareStatement(sql)){
+
+            psmt.setLong(1,mbNo);
+            try(ResultSet rs = psmt.executeQuery()){
+                if(rs.next()) {
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+
+        return false;
+    }
+
+    @Override
     public void updateWithdrawalAt(long mbNo, LocalDateTime updateWithdrawalAt) {
 
         Connection connection = DbConnectionThreadLocal.getConnection();

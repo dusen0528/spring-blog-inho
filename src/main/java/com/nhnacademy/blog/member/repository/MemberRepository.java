@@ -30,7 +30,9 @@ public interface MemberRepository {
     boolean existsByMbEmail(String mbEmail);
     //회원 모바일 연락처 존재여부
     boolean existsByMbMobile(String mbMobile);
+    //회원 탈퇴여부 체크
+    boolean isMemberWithdrawn(Long mbNo);
+
     //회원 탈퇴시 탈퇴일자 변경
     void updateWithdrawalAt(long mbNo, LocalDateTime updateWithdrawalAt);
-
 }

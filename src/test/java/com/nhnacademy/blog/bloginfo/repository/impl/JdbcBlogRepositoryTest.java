@@ -102,9 +102,9 @@ class JdbcBlogRepositoryTest {
                 ()->Assertions.assertTrue(blogOptional.get().isBlogMain()),
                 ()->Assertions.assertEquals(blog.getBlogName(), blogOptional.get().getBlogName()),
                 ()->Assertions.assertEquals(blog.getBlogMbNickname(), blogOptional.get().getBlogMbNickname()),
-                ()->Assertions.assertEquals(blog.getBlogDescription(), blogOptional.get().getBlogDescription())
+                ()->Assertions.assertEquals(blog.getBlogDescription(), blogOptional.get().getBlogDescription()),
+                ()->Assertions.assertTrue(blogOptional.get().getBlogIsPublic())
         );
-
     }
 
     @Test

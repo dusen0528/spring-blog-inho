@@ -17,4 +17,5 @@ public interface MemberService {
     MemberResponse getMember(long mbNo);
     //비밀번호 변경
     void changePassword(MemberPasswordUpdateRequest memberPasswordUpdateRequest);
+
 }

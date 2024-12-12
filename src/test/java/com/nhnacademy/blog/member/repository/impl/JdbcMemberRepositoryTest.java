@@ -215,16 +215,37 @@ class JdbcMemberRepositoryTest {
     @Test
     @DisplayName("회원존재여부-by-mobile : true")
     void existsByMbMobile() {
-        Member member1 = Member.ofNewMember("marco@nhnacademy.com","마르코","12345","01012345678");
-        memberRepository.save(member1);
-        log.debug("member1: {}", member1);
-        boolean actual = memberRepository.existsByMbMobile(member1.getMbMobile());
+        Member member = Member.ofNewMember("marco@nhnacademy.com","마르코","12345","01012345678");
+        memberRepository.save(member);
+        log.debug("member1: {}", member);
+        boolean actual = memberRepository.existsByMbMobile(member.getMbMobile());
         assertTrue(actual);
     }
     @Test
     @DisplayName("회원존재여부-by-mobile : false")
     void notExistsByMbMobile() {
         boolean actual = memberRepository.existsByMbMobile("01012345678");
+        assertFalse(actual);
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴여부: true")
+    void isMemberWithdrawn_true(){
+        Member member = Member.ofNewMember("marco@nhnacademy.com","마르코","12345","01012345678");
+        memberRepository.save(member);
+        memberRepository.updateWithdrawalAt(member.getMbNo(),LocalDateTime.now());
+
+        boolean actual = memberRepository.isMemberWithdrawn(member.getMbNo());
+        assertTrue(actual);
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴여부: false")
+    void isMemberWithdrawn_false(){
+        Member member = Member.ofNewMember("marco@nhnacademy.com","마르코","12345","01012345678");
+        memberRepository.save(member);
+
+        boolean actual = memberRepository.isMemberWithdrawn(member.getMbNo());
         assertFalse(actual);
     }
 
