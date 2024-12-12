@@ -1,6 +1,6 @@
 package com.nhnacademy.blog.category.domain;
 
-import java.math.BigInteger;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 @SuppressWarnings("java:S107")

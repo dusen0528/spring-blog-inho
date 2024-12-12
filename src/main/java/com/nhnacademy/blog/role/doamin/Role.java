@@ -31,7 +31,7 @@ public class Role {
         Role role = (Role) o;
         return Objects.equals(roleId, role.roleId) && Objects.equals(roleName, role.roleName) && Objects.equals(roleDescription, role.roleDescription);
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(roleId, roleName, roleDescription);

@@ -249,4 +249,23 @@ public class JdbcBlogRepository implements BlogRepository {
         }
         return false;
     }
+
+    @Override
+    public void updateByBlogIsPublic(long blogId, boolean blogIsPublic) {
+        Connection connection = DbConnectionThreadLocal.getConnection();
+        String sql = """
+                update blogs 
+                set 
+                    blog_is_public=? 
+                where blog_id=?
+                """;
+        try(PreparedStatement psmt = connection.prepareStatement(sql)){
+            int index=1;
+            psmt.setBoolean(index++,blogIsPublic);
+            psmt.setLong(index++,blogId);
+            psmt.executeUpdate();
+        }catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
 }

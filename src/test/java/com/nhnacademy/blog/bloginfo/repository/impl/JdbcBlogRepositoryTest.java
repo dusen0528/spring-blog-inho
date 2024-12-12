@@ -141,4 +141,35 @@ class JdbcBlogRepositoryTest {
         Assertions.assertFalse(actual);
     }
 
+    @Test
+    @DisplayName("블로그 공개여부 설정 : 공개")
+    void updateByBlogIsPublic_true(){
+        //given
+        Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        jdbcBlogRepository.save(blog);
+
+        //when
+        jdbcBlogRepository.updateByBlogIsPublic(blog.getBlogId(),true);
+        Optional<Blog> actual = jdbcBlogRepository.findByBlogId(blog.getBlogId());
+
+        //then
+        Assertions.assertTrue(actual.get().getBlogIsPublic());
+
+    }
+
+    @Test
+    @DisplayName("블로그 공개여부 설정 : 비공개")
+    void updateByBlogIsPublic_false(){
+        //given
+        Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        jdbcBlogRepository.save(blog);
+
+        //when
+        jdbcBlogRepository.updateByBlogIsPublic(blog.getBlogId(),false);
+        Optional<Blog> actual = jdbcBlogRepository.findByBlogId(blog.getBlogId());
+
+        //then
+        Assertions.assertFalse(actual.get().getBlogIsPublic());
+    }
+
 }

@@ -1,7 +1,7 @@
 package com.nhnacademy.blog.bloginfo.domain;
 
 import java.time.LocalDateTime;
-
+@SuppressWarnings("java:S107")
 public class Blog {
 
     private final Long blogId;
@@ -78,4 +78,19 @@ public class Blog {
         return updatedAt;
     }
 
+
+    @Override
+    public String toString() {
+        return "Blog{" +
+                "blogId=" + blogId +
+                ", blogFid='" + blogFid + '\'' +
+                ", blogMain=" + blogMain +
+                ", blogName='" + blogName + '\'' +
+                ", blogMbNickname='" + blogMbNickname + '\'' +
+                ", blogDescription='" + blogDescription + '\'' +
+                ", blogIsPublic=" + blogIsPublic +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

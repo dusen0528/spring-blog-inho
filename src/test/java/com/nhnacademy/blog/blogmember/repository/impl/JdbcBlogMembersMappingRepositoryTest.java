@@ -72,7 +72,7 @@ class JdbcBlogMembersMappingRepositoryTest {
             jdbcRoleRepository.save(role);
 
             //5.블로그 사용자 연결
-            BlogMembersMapping blogMembersMapping = BlogMembersMapping.ofNewBlogMemberMapping(member.getMbNo(), blog.getBlogId(), role.getRoleId());
+            BlogMembersMapping blogMembersMapping = BlogMembersMapping.ofNewBlogMemberMapping(member.getMbNo(), blog.getBlogId(),  role.getRoleId());
             jdbcBlogMembersMappingRepository.save(blogMembersMapping);
 
             Optional<BlogMembersMapping> blogMembersMappingOptional = jdbcBlogMembersMappingRepository.findByBlogMembersId(blogMembersMapping.getBlogMembersId());

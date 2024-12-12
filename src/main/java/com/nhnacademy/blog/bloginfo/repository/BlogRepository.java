@@ -13,4 +13,5 @@ public interface BlogRepository {
     boolean existByBlogId(long blogId);
     boolean existByBlogFid(String blogFid);
     boolean existMainBlogByMbNo(long mbNo);
+    void updateByBlogIsPublic(long blogId, boolean blogIsPublic);
 }
