@@ -90,4 +90,42 @@ public class JdbcBlogMembersMappingRepository implements BlogMembersMappingRepos
 
         return Optional.empty();
     }
+
+    @Override
+    public Optional<BlogMembersMapping> findByMbNoAndBlogId(Long mbNo, Long blogId) {
+        Connection connection = DbConnectionThreadLocal.getConnection();
+
+        String sql = """
+                select 
+                    blog_members_id, 
+                    mb_no, 
+                    blog_id, 
+                    role_id 
+                from 
+                    blog_members_mapping
+                where 
+                    mb_no=? and blog_id=?
+                """;
+
+        try(PreparedStatement psmt = connection.prepareStatement(sql)){
+            int index=1;
+            psmt.setLong(index++,mbNo);
+            psmt.setLong(index++,blogId);
+
+            try(ResultSet rs = psmt.executeQuery()){
+                if(rs.next()){
+                    long dbBlogMembersId = rs.getLong("blog_members_id");
+                    long dbMbNo = rs.getLong("mb_no");
+                    long dbBlogId = rs.getLong("blog_id");
+                    String dbRoleId = rs.getString("role_id");
+                    BlogMembersMapping blogMembersMapping = BlogMembersMapping.ofExistingBlogMemberMapping(dbBlogMembersId,dbMbNo,dbBlogId,dbRoleId);
+                    return Optional.of(blogMembersMapping);
+                }
+            }
+        }catch (SQLException e){
+            throw new DatabaseException(e);
+        }
+
+        return Optional.empty();
+    }
 }

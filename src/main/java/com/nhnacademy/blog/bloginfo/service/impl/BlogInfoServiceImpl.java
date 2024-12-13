@@ -18,6 +18,7 @@ import com.nhnacademy.blog.common.exception.ConflictException;
 import com.nhnacademy.blog.common.exception.ForbiddenException;
 import com.nhnacademy.blog.common.exception.NotFoundException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service(name = BlogInfoServiceImpl.BEAN_NAME)
@@ -65,11 +66,28 @@ public class BlogInfoServiceImpl implements BlogInfoService {
 
     @Override
     public void updateBlog(BlogUpdateRequest blogUpdateRequest) {
+
         //blog 존재여부 체크
         checkExistBlog(blogUpdateRequest.getBlogId());
 
         //blog 소유자 체크
         checkOwner(blogUpdateRequest.getBlogId(),MemberThreadLocal.getMemberNo());
+
+        if(blogUpdateRequest.isBlogMain()==true){
+            long mbNo = MemberThreadLocal.getMemberNo();
+
+            //모든 blog 리스트 조회
+            List<BlogResponse> blogResponseList = blogRepository.findAllBlogs(mbNo,"ROLE_OWNER");
+
+            for(BlogResponse blogResponse : blogResponseList){
+                //대상 블로그를 제외한 나머지 블로그들의 blog_ㅡmain 값을 false로 변경
+                if(!blogResponse.getBlogId().equals(blogUpdateRequest.getBlogId())){
+                    blogRepository.updateBlogMain(blogResponse.getBlogId(),false);
+                }
+            }
+
+            blogRepository.updateBlogMain(blogUpdateRequest.getBlogId(),true);
+        }
 
         blogRepository.update(blogUpdateRequest);
     }
@@ -111,26 +129,17 @@ public class BlogInfoServiceImpl implements BlogInfoService {
 
     private void checkExistBlog(long blogId) {
         boolean flag = blogRepository.existByBlogId(blogId);
-        if(flag) {
-            throw new ConflictException("exist blog id : %s".formatted(blogId));
+        if(!flag) {
+            throw new NotFoundException("Blog not found:%S".formatted(blogId));
         }
     }
 
     private void checkOwner(long blogId, long mbNo) {
+        Optional<BlogMembersMapping> blogMembersMappingOptional =  blogMembersMappingRepository.findByMbNoAndBlogId(mbNo, blogId);
 
-        Optional<BlogMembersMapping> blogMembersMappingOptional =  blogMembersMappingRepository.findByBlogMembersId(mbNo);
-
-        if(blogMembersMappingOptional.isEmpty()) {
-            throw new ForbiddenException();
-        }
-
-        if(!blogMembersMappingOptional.get().getBlogId().equals(blogId)){
-            throw new ForbiddenException();
-        }
-
-        if(!blogMembersMappingOptional.get().getRoleId().equals("ROLE_OWNER")){
+        //블로그의 맴버가 아니라면. ForbiddenException() 발생
+        if(blogMembersMappingOptional.isEmpty() || !blogMembersMappingOptional.get().getRoleId().equals("ROLE_OWNER") ) {
             throw new ForbiddenException();
         }
     }
-
 }

@@ -9,4 +9,5 @@ public interface BlogMembersMappingRepository {
     void save(BlogMembersMapping blogMembersMapping);
     void deleteByBlogMemberMappingId(Long blogMembersId);
     Optional<BlogMembersMapping> findByBlogMembersId(Long blogMemberId);
+    Optional<BlogMembersMapping> findByMbNoAndBlogId(Long mbNo, Long blogId);
 }

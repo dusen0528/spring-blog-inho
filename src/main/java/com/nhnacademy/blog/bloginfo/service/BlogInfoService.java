@@ -20,4 +20,5 @@ public interface BlogInfoService {
     BlogResponse getBlog(long blogId);
 
     //블로그 삭제는 당작 고려하지 않음.
+
 }

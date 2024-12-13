@@ -102,6 +102,13 @@
             <version>0.4</version>
         </dependency>
 
+        <!-- embeaded MYSQL database -->
+        <dependency>
+            <groupId>com.wix</groupId>
+            <artifactId>wix-embedded-mysql</artifactId>
+            <version>4.6.2</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
