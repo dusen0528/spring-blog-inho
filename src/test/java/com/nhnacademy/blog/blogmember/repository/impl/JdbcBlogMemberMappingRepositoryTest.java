@@ -23,21 +23,21 @@ import java.util.Optional;
 
 class JdbcBlogMemberMappingRepositoryTest {
 
-    static BlogRepository jdbcBlogRepository;
-    static BlogMemberMappingRepository jdbcBlogMemberMappingRepository;
-    static CategoryRepository jdbcCategoryRepository;
-    static MemberRepository jdbcMemberRepository;
-    static RoleRepository jdbcRoleRepository;
+    static BlogRepository blogRepository;
+    static BlogMemberMappingRepository blogMemberMappingRepository;
+    static CategoryRepository categoryRepository;
+    static MemberRepository memberRepository;
+    static RoleRepository roleRepository;
 
     @BeforeAll
     static void beforeAll() {
 
         Context context = ContextHolder.getApplicationContext();
-        jdbcBlogMemberMappingRepository = (BlogMemberMappingRepository) context.getBean(JdbcBlogMemberMappingRepository.BEAN_NAME);
-        jdbcBlogRepository = (BlogRepository) context.getBean(JdbcBlogRepository.BEAN_NAME);
-        jdbcCategoryRepository = (CategoryRepository) context.getBean(JdbcCategoryRepository.BEAN_NAME);
-        jdbcMemberRepository = (MemberRepository) context.getBean(JdbcMemberRepository.BEAN_NAME);
-        jdbcRoleRepository = (RoleRepository) context.getBean(JdbcRoleRepository.BEAN_NAME);
+        blogMemberMappingRepository = (BlogMemberMappingRepository) context.getBean(JdbcBlogMemberMappingRepository.BEAN_NAME);
+        blogRepository = (BlogRepository) context.getBean(JdbcBlogRepository.BEAN_NAME);
+        categoryRepository = (CategoryRepository) context.getBean(JdbcCategoryRepository.BEAN_NAME);
+        memberRepository = (MemberRepository) context.getBean(JdbcMemberRepository.BEAN_NAME);
+        roleRepository = (RoleRepository) context.getBean(JdbcRoleRepository.BEAN_NAME);
     }
 
     @BeforeEach
@@ -57,25 +57,25 @@ class JdbcBlogMemberMappingRepositoryTest {
 
             //1.블로그사용자 생성
             Member member = Member.ofNewMember("marco@nhnacademy.com","마르코","12345","01012345678");
-            jdbcMemberRepository.save(member);
+            memberRepository.save(member);
 
             //2.블로그 생성
             Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
-            jdbcBlogRepository.save(blog);
+            blogRepository.save(blog);
 
             //3.카테고리 생성
             Category category = Category.ofNewRootCategory(blog.getBlogId(),null,"스프링",1);
-            jdbcCategoryRepository.save(category);
+            categoryRepository.save(category);
 
             //4.권한 생성
             Role role = new Role("ROLE_SYSADMIN","전체-시스템-관리자","전체-블로그-시스템-관리자");
-            jdbcRoleRepository.save(role);
+            roleRepository.save(role);
 
             //5.블로그 사용자 연결
             BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofNewBlogMemberMapping(member.getMbNo(), blog.getBlogId(),  role.getRoleId());
-            jdbcBlogMemberMappingRepository.save(blogMemberMapping);
+            blogMemberMappingRepository.save(blogMemberMapping);
 
-            Optional<BlogMemberMapping> blogMemberMappingOptional = jdbcBlogMemberMappingRepository.findByBlogMemberId(blogMemberMapping.getBlogMemberId());
+            Optional<BlogMemberMapping> blogMemberMappingOptional = blogMemberMappingRepository.findByBlogMemberId(blogMemberMapping.getBlogMemberId());
             Assertions.assertTrue(blogMemberMappingOptional.isPresent());
             Assertions.assertAll(
                     ()->Assertions.assertEquals(member.getMbNo(),blogMemberMappingOptional.get().getMbNo()),
@@ -92,29 +92,29 @@ class JdbcBlogMemberMappingRepositoryTest {
 
         //1.블로그사용자 생성
         Member member = Member.ofNewMember("marco@nhnacademy.com","마르코","12345","01012345678");
-        jdbcMemberRepository.save(member);
+        memberRepository.save(member);
 
         //2.블로그 생성
         Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
-        jdbcBlogRepository.save(blog);
+        blogRepository.save(blog);
 
         //3.카테고리 생성
         Category category = Category.ofNewRootCategory(blog.getBlogId(),null,"스프링",1);
-        jdbcCategoryRepository.save(category);
+        categoryRepository.save(category);
 
         //4.권한 생성
         Role role = new Role("ROLE_SYSADMIN","전체-시스템-관리자","전체-블로그-시스템-관리자");
-        jdbcRoleRepository.save(role);
+        roleRepository.save(role);
 
         //5.블로그 사용자 연결
         BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofNewBlogMemberMapping(member.getMbNo(), blog.getBlogId(), role.getRoleId());
-        jdbcBlogMemberMappingRepository.save(blogMemberMapping);
+        blogMemberMappingRepository.save(blogMemberMapping);
 
         //when
-        jdbcBlogMemberMappingRepository.deleteByBlogMemberMappingId(blogMemberMapping.getBlogMemberId());
+        blogMemberMappingRepository.deleteByBlogMemberMappingId(blogMemberMapping.getBlogMemberId());
 
         //then
-        boolean actual = jdbcBlogMemberMappingRepository.findByBlogMemberId(blogMemberMapping.getBlogMemberId()).isEmpty();
+        boolean actual = blogMemberMappingRepository.findByBlogMemberId(blogMemberMapping.getBlogMemberId()).isEmpty();
         Assertions.assertTrue(actual);
     }
 
@@ -124,25 +124,25 @@ class JdbcBlogMemberMappingRepositoryTest {
 
         //1.블로그사용자 생성
         Member member = Member.ofNewMember("marco@nhnacademy.com","마르코","12345","01012345678");
-        jdbcMemberRepository.save(member);
+        memberRepository.save(member);
 
         //2.블로그 생성
         Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
-        jdbcBlogRepository.save(blog);
+        blogRepository.save(blog);
 
         //3.카테고리 생성
         Category category = Category.ofNewRootCategory(blog.getBlogId(),null,"스프링",1);
-        jdbcCategoryRepository.save(category);
+        categoryRepository.save(category);
 
         //4.권한 생성
         Role role = new Role("ROLE_SYSADMIN","전체-시스템-관리자","전체-블로그-시스템-관리자");
-        jdbcRoleRepository.save(role);
+        roleRepository.save(role);
 
         //5.블로그 사용자 연결
         BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofNewBlogMemberMapping(member.getMbNo(), blog.getBlogId(),  role.getRoleId());
-        jdbcBlogMemberMappingRepository.save(blogMemberMapping);
+        blogMemberMappingRepository.save(blogMemberMapping);
 
-        Optional<BlogMemberMapping> blogMemberMappingOptional = jdbcBlogMemberMappingRepository.findByMbNoAndBlogId(member.getMbNo(), blog.getBlogId());
+        Optional<BlogMemberMapping> blogMemberMappingOptional = blogMemberMappingRepository.findByMbNoAndBlogId(member.getMbNo(), blog.getBlogId());
 
         Assertions.assertTrue(blogMemberMappingOptional.isPresent());
         Assertions.assertAll(

@@ -27,7 +27,6 @@ class BlogInfoServiceImplTest {
 
     BlogRepository blogRepository;
     BlogMemberMappingRepository blogMemberMappingRepository;
-
     BlogInfoService blogInfoService;
 
     @BeforeEach

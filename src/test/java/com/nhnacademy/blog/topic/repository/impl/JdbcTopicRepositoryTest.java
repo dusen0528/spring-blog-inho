@@ -13,12 +13,12 @@ import java.util.Optional;
 @Slf4j
 class JdbcTopicRepositoryTest {
 
-    static JdbcTopicRepository jdbcTopicRepository;
+    static JdbcTopicRepository topicRepository;
 
     @BeforeAll
     static void beforeAll() {
         Context context = ContextHolder.getApplicationContext();
-        jdbcTopicRepository = (JdbcTopicRepository) context.getBean(JdbcTopicRepository.BEAN_NAME);
+        topicRepository = (JdbcTopicRepository) context.getBean(JdbcTopicRepository.BEAN_NAME);
     }
 
     @BeforeEach
@@ -39,10 +39,10 @@ class JdbcTopicRepositoryTest {
         Topic topic = Topic.ofNewRootTopic("IT",1);
 
         //when
-        jdbcTopicRepository.save(topic);
+        topicRepository.save(topic);
 
         //then
-        Optional<Topic> topicOptional = jdbcTopicRepository.findByTopicId(topic.getTopicId());
+        Optional<Topic> topicOptional = topicRepository.findByTopicId(topic.getTopicId());
         Assertions.assertAll(
                 ()->Assertions.assertEquals(topic.getTopicId(),topicOptional.get().getTopicId()),
                 ()->Assertions.assertNull(topicOptional.get().getTopicPid()),
@@ -57,12 +57,12 @@ class JdbcTopicRepositoryTest {
     void save_subTopic() {
         //given
         Topic topic = Topic.ofNewRootTopic("IT",1);
-        jdbcTopicRepository.save(topic);
+        topicRepository.save(topic);
         Topic subTopic = Topic.ofNewSubTopic(topic.getTopicId(),"IT/인터넷",1);
-        jdbcTopicRepository.save(subTopic);
+        topicRepository.save(subTopic);
 
         //when
-        Optional<Topic> subTopicOptional = jdbcTopicRepository.findByTopicId(subTopic.getTopicId());
+        Optional<Topic> subTopicOptional = topicRepository.findByTopicId(subTopic.getTopicId());
 
         //then
         Assertions.assertAll(
@@ -80,14 +80,14 @@ class JdbcTopicRepositoryTest {
 
         //given
         Topic topic = Topic.ofNewRootTopic("IT",1);
-        jdbcTopicRepository.save(topic);
+        topicRepository.save(topic);
 
         //when
         TopicUpdateRequestDto topicUpdateRequestDto = new TopicUpdateRequestDto(topic.getTopicId(),null,"IT/프로그래밍",10);
-        jdbcTopicRepository.update(topicUpdateRequestDto);
+        topicRepository.update(topicUpdateRequestDto);
 
         //then
-        Optional<Topic> actual = jdbcTopicRepository.findByTopicId(topic.getTopicId());
+        Optional<Topic> actual = topicRepository.findByTopicId(topic.getTopicId());
         Assertions.assertAll(
                 ()->Assertions.assertEquals(topicUpdateRequestDto.getTopicName(),actual.get().getTopicName()),
                 ()->Assertions.assertEquals(topicUpdateRequestDto.getTopicSec(),actual.get().getTopicSec()),
@@ -99,10 +99,10 @@ class JdbcTopicRepositoryTest {
     @DisplayName("topic-삭제")
     void deleteByTopicId() {
         Topic topic = Topic.ofNewRootTopic("IT",1);
-        jdbcTopicRepository.save(topic);
-        jdbcTopicRepository.deleteByTopicId(topic.getTopicId());
+        topicRepository.save(topic);
+        topicRepository.deleteByTopicId(topic.getTopicId());
 
-        boolean actual = jdbcTopicRepository.existByTopicId(topic.getTopicId());
+        boolean actual = topicRepository.existByTopicId(topic.getTopicId());
         Assertions.assertFalse(actual);
     }
 
@@ -110,8 +110,8 @@ class JdbcTopicRepositoryTest {
     @DisplayName("topic-조회-byTopicId")
     void findByTopicId() {
         Topic topic = Topic.ofNewRootTopic("IT",1);
-        jdbcTopicRepository.save(topic);
-        Optional<Topic> actual = jdbcTopicRepository.findByTopicId(topic.getTopicId());
+        topicRepository.save(topic);
+        Optional<Topic> actual = topicRepository.findByTopicId(topic.getTopicId());
 
         Assertions.assertAll(
                 ()->Assertions.assertEquals(topic.getTopicId(),actual.get().getTopicId()),
@@ -136,16 +136,16 @@ class JdbcTopicRepositoryTest {
         Topic topic7 = Topic.ofNewRootTopic("시사",7);
         Topic topic8 = Topic.ofNewRootTopic("이벤트",8);
 
-        jdbcTopicRepository.save(topic1);
-        jdbcTopicRepository.save(topic2);
-        jdbcTopicRepository.save(topic3);
-        jdbcTopicRepository.save(topic4);
-        jdbcTopicRepository.save(topic5);
-        jdbcTopicRepository.save(topic6);
-        jdbcTopicRepository.save(topic7);
-        jdbcTopicRepository.save(topic8);
+        topicRepository.save(topic1);
+        topicRepository.save(topic2);
+        topicRepository.save(topic3);
+        topicRepository.save(topic4);
+        topicRepository.save(topic5);
+        topicRepository.save(topic6);
+        topicRepository.save(topic7);
+        topicRepository.save(topic8);
 
-        List<Topic> topics = jdbcTopicRepository.findAll(null);
+        List<Topic> topics = topicRepository.findAll(null);
         log.debug("count of topics : {}", topics.size());
 
         Assertions.assertFalse(topics.isEmpty());
@@ -177,14 +177,14 @@ class JdbcTopicRepositoryTest {
         Topic topic7 = Topic.ofNewRootTopic("시사",7);
         Topic topic8 = Topic.ofNewRootTopic("이벤트",8);
 
-        jdbcTopicRepository.save(topic1);
-        jdbcTopicRepository.save(topic2);
-        jdbcTopicRepository.save(topic3);
-        jdbcTopicRepository.save(topic4);
-        jdbcTopicRepository.save(topic5);
-        jdbcTopicRepository.save(topic6);
-        jdbcTopicRepository.save(topic7);
-        jdbcTopicRepository.save(topic8);
+        topicRepository.save(topic1);
+        topicRepository.save(topic2);
+        topicRepository.save(topic3);
+        topicRepository.save(topic4);
+        topicRepository.save(topic5);
+        topicRepository.save(topic6);
+        topicRepository.save(topic7);
+        topicRepository.save(topic8);
 
         Topic subTopic1 = Topic.ofNewSubTopic(topic5.getTopicId(),"IT 인터넷",1);
         Topic subTopic2 = Topic.ofNewSubTopic(topic5.getTopicId(),"모바일",2);
@@ -192,13 +192,13 @@ class JdbcTopicRepositoryTest {
         Topic subTopic4 = Topic.ofNewSubTopic(topic5.getTopicId(),"과학",4);
         Topic subTopic5 = Topic.ofNewSubTopic(topic5.getTopicId(),"IT 제품리뷰",5);
 
-        jdbcTopicRepository.save(subTopic1);
-        jdbcTopicRepository.save(subTopic2);
-        jdbcTopicRepository.save(subTopic3);
-        jdbcTopicRepository.save(subTopic4);
-        jdbcTopicRepository.save(subTopic5);
+        topicRepository.save(subTopic1);
+        topicRepository.save(subTopic2);
+        topicRepository.save(subTopic3);
+        topicRepository.save(subTopic4);
+        topicRepository.save(subTopic5);
 
-        List<Topic>subTopics = jdbcTopicRepository.findAll(topic5.getTopicId());
+        List<Topic>subTopics = topicRepository.findAll(topic5.getTopicId());
         log.debug("count of subTopics : {}", subTopics.size());
 
         Assertions.assertAll(
@@ -215,15 +215,15 @@ class JdbcTopicRepositoryTest {
     @DisplayName("topic-존재여부체크 : true")
     void existByTopicId() {
         Topic topic = Topic.ofNewRootTopic("IT",1);
-        jdbcTopicRepository.save(topic);
-        boolean actual = jdbcTopicRepository.existByTopicId(topic.getTopicId());
+        topicRepository.save(topic);
+        boolean actual = topicRepository.existByTopicId(topic.getTopicId());
         Assertions.assertTrue(actual);
     }
 
     @Test
     @DisplayName("topic-존재여부체크 : false")
     void notExistByTopicId() {
-        boolean actual = jdbcTopicRepository.existByTopicId(-1);
+        boolean actual = topicRepository.existByTopicId(-1);
         Assertions.assertFalse(actual);
     }
 }
