@@ -8,8 +8,8 @@ import com.nhnacademy.blog.bloginfo.dto.BlogUpdateRequest;
 import com.nhnacademy.blog.bloginfo.dto.BlogVisibilityUpdateRequest;
 import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
 import com.nhnacademy.blog.bloginfo.service.BlogInfoService;
-import com.nhnacademy.blog.blogmember.domain.BlogMembersMapping;
-import com.nhnacademy.blog.blogmember.repository.BlogMembersMappingRepository;
+import com.nhnacademy.blog.blogmember.domain.BlogMemberMapping;
+import com.nhnacademy.blog.blogmember.repository.BlogMemberMappingRepository;
 import com.nhnacademy.blog.common.exception.ConflictException;
 import com.nhnacademy.blog.common.exception.ForbiddenException;
 import com.nhnacademy.blog.common.exception.NotFoundException;
@@ -26,15 +26,15 @@ import java.util.Optional;
 class BlogInfoServiceImplTest {
 
     BlogRepository blogRepository;
-    BlogMembersMappingRepository blogMembersMappingRepository;
+    BlogMemberMappingRepository blogMemberMappingRepository;
 
     BlogInfoService blogInfoService;
 
     @BeforeEach
     void setUp() {
         blogRepository = Mockito.mock(BlogRepository.class);
-        blogMembersMappingRepository = Mockito.mock(BlogMembersMappingRepository.class);
-        blogInfoService = new BlogInfoServiceImpl(blogRepository, blogMembersMappingRepository);
+        blogMemberMappingRepository = Mockito.mock(BlogMemberMappingRepository.class);
+        blogInfoService = new BlogInfoServiceImpl(blogRepository, blogMemberMappingRepository);
 
         MemberThreadLocal.setMemberNo(1L);
     }
@@ -145,7 +145,7 @@ class BlogInfoServiceImplTest {
                 "welcome to my blog!!"
         );
 
-        BlogMembersMapping blogMembersMapping = BlogMembersMapping.ofExistingBlogMemberMapping(
+        BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(
                 1L,
                 1L,
                 1L,
@@ -154,7 +154,7 @@ class BlogInfoServiceImplTest {
 
         //블로그 존재여부 체크
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
-        Mockito.when(blogMembersMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMembersMapping));
+        Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
 
         blogInfoService.updateBlog(blogUpdateRequest);
 
@@ -175,7 +175,7 @@ class BlogInfoServiceImplTest {
                 "welcome to my blog!!"
         );
 
-        BlogMembersMapping blogMembersMapping = BlogMembersMapping.ofExistingBlogMemberMapping(
+        BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(
                 1L,
                 1L,
                 1L,
@@ -184,7 +184,7 @@ class BlogInfoServiceImplTest {
 
         //블로그 존재여부 체크
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
-        Mockito.when(blogMembersMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMembersMapping));
+        Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
 
         Assertions.assertThrows(ForbiddenException.class,()->{
             blogInfoService.updateBlog(blogUpdateRequest);
@@ -207,7 +207,7 @@ class BlogInfoServiceImplTest {
                 "welcome to my blog!!"
         );
 
-        BlogMembersMapping blogMembersMapping = BlogMembersMapping.ofExistingBlogMemberMapping(
+        BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(
                 1L,
                 1L,
                 1L,
@@ -253,7 +253,7 @@ class BlogInfoServiceImplTest {
         //블로그 존재여부 체크
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
         //MbNo blogId로 blogMember 조회
-        Mockito.when(blogMembersMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMembersMapping));
+        Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
         Mockito.when(blogRepository.findAllBlogs(Mockito.anyLong(),Mockito.anyString())).thenReturn(blogResponseList);
 
         blogInfoService.updateBlog(blogUpdateRequest);
@@ -270,7 +270,7 @@ class BlogInfoServiceImplTest {
     @DisplayName("블로그 공개 : true")
     void updateBlogVisibility() {
 
-        BlogMembersMapping blogMembersMapping = BlogMembersMapping.ofExistingBlogMemberMapping(
+        BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(
                 1L,
                 1L,
                 1L,
@@ -280,7 +280,7 @@ class BlogInfoServiceImplTest {
         BlogVisibilityUpdateRequest blogVisibilityUpdateRequest = new BlogVisibilityUpdateRequest(1L,true);
 
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
-        Mockito.when(blogMembersMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMembersMapping));
+        Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
 
         blogInfoService.updateBlogVisibility(blogVisibilityUpdateRequest);
 
@@ -293,7 +293,7 @@ class BlogInfoServiceImplTest {
     @DisplayName("블로그 공개 : 권한없음")
     void updateBlogVisibility_exception_case1() {
 
-        BlogMembersMapping blogMembersMapping = BlogMembersMapping.ofExistingBlogMemberMapping(
+        BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(
                 1L,
                 1L,
                 1L,
@@ -303,7 +303,7 @@ class BlogInfoServiceImplTest {
         BlogVisibilityUpdateRequest blogVisibilityUpdateRequest = new BlogVisibilityUpdateRequest(1L,true);
 
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
-        Mockito.when(blogMembersMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMembersMapping));
+        Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
 
         Assertions.assertThrows(ForbiddenException.class,()->{
             blogInfoService.updateBlogVisibility(blogVisibilityUpdateRequest);

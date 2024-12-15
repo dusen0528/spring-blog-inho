@@ -6,7 +6,7 @@ public abstract class AbstractBlogRegisterManager {
         registerMember();
         registerBlog();
         registerDefaultCategory();
-        registerBlogMembersMapping();
+        registerBlogMemberMapping();
     }
 
     //1. 블로그 사용자 등록(members)
@@ -19,6 +19,6 @@ public abstract class AbstractBlogRegisterManager {
     abstract void registerDefaultCategory();
 
     //4. 블로그 권한 설정
-    abstract void registerBlogMembersMapping();
+    abstract void registerBlogMemberMapping();
 
 }

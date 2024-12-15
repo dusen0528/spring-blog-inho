@@ -1,8 +1,8 @@
 package com.nhnacademy.blog.blogmember.domain;
 
-public class BlogMembersMapping {
+public class BlogMemberMapping {
 
-    private final Long blogMembersId;
+    private final Long blogMemberId;
     private final Long mbNo;
     private final Long blogId;
     private final String roleId;
@@ -21,23 +21,24 @@ public class BlogMembersMapping {
             return roleName;
         }
     }
-    private BlogMembersMapping(Long blogMembersId, Long mbNo, Long blogId, String roleId) {
-        this.blogMembersId = blogMembersId;
+
+    private BlogMemberMapping(Long blogMemberId, Long mbNo, Long blogId, String roleId) {
+        this.blogMemberId = blogMemberId;
         this.mbNo = mbNo;
         this.blogId = blogId;
         this.roleId = roleId;
     }
 
-    public static BlogMembersMapping ofNewBlogMemberMapping(Long mbNo, Long blogId, String roleId) {
-        return new BlogMembersMapping(null, mbNo, blogId, roleId);
+    public static BlogMemberMapping ofNewBlogMemberMapping(Long mbNo, Long blogId, String roleId) {
+        return new BlogMemberMapping(null, mbNo, blogId, roleId);
     }
 
-    public static BlogMembersMapping ofExistingBlogMemberMapping(Long blogMembersId,Long mbNo, Long blogId, String roleId) {
-        return new BlogMembersMapping(blogMembersId, mbNo, blogId, roleId);
+    public static BlogMemberMapping ofExistingBlogMemberMapping(Long blogMemberId,Long mbNo, Long blogId, String roleId) {
+        return new BlogMemberMapping(blogMemberId, mbNo, blogId, roleId);
     }
 
-    public Long getBlogMembersId() {
-        return blogMembersId;
+    public Long getBlogMemberId() {
+        return blogMemberId;
     }
 
     public Long getMbNo() {

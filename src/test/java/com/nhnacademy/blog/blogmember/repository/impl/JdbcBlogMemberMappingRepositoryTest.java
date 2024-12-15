@@ -3,8 +3,8 @@ package com.nhnacademy.blog.blogmember.repository.impl;
 import com.nhnacademy.blog.bloginfo.domain.Blog;
 import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
 import com.nhnacademy.blog.bloginfo.repository.impl.JdbcBlogRepository;
-import com.nhnacademy.blog.blogmember.domain.BlogMembersMapping;
-import com.nhnacademy.blog.blogmember.repository.BlogMembersMappingRepository;
+import com.nhnacademy.blog.blogmember.domain.BlogMemberMapping;
+import com.nhnacademy.blog.blogmember.repository.BlogMemberMappingRepository;
 import com.nhnacademy.blog.category.domain.Category;
 import com.nhnacademy.blog.category.repository.CategoryRepository;
 import com.nhnacademy.blog.category.repository.impl.JdbcCategoryRepository;
@@ -21,10 +21,10 @@ import org.junit.jupiter.api.*;
 
 import java.util.Optional;
 
-class JdbcBlogMembersMappingRepositoryTest {
+class JdbcBlogMemberMappingRepositoryTest {
 
     static BlogRepository jdbcBlogRepository;
-    static BlogMembersMappingRepository jdbcBlogMembersMappingRepository;
+    static BlogMemberMappingRepository jdbcBlogMemberMappingRepository;
     static CategoryRepository jdbcCategoryRepository;
     static MemberRepository jdbcMemberRepository;
     static RoleRepository jdbcRoleRepository;
@@ -33,7 +33,7 @@ class JdbcBlogMembersMappingRepositoryTest {
     static void beforeAll() {
 
         Context context = ContextHolder.getApplicationContext();
-        jdbcBlogMembersMappingRepository = (BlogMembersMappingRepository) context.getBean(JdbcBlogMembersMappingRepository.BEAN_NAME);
+        jdbcBlogMemberMappingRepository = (BlogMemberMappingRepository) context.getBean(JdbcBlogMemberMappingRepository.BEAN_NAME);
         jdbcBlogRepository = (BlogRepository) context.getBean(JdbcBlogRepository.BEAN_NAME);
         jdbcCategoryRepository = (CategoryRepository) context.getBean(JdbcCategoryRepository.BEAN_NAME);
         jdbcMemberRepository = (MemberRepository) context.getBean(JdbcMemberRepository.BEAN_NAME);
@@ -72,15 +72,15 @@ class JdbcBlogMembersMappingRepositoryTest {
             jdbcRoleRepository.save(role);
 
             //5.블로그 사용자 연결
-            BlogMembersMapping blogMembersMapping = BlogMembersMapping.ofNewBlogMemberMapping(member.getMbNo(), blog.getBlogId(),  role.getRoleId());
-            jdbcBlogMembersMappingRepository.save(blogMembersMapping);
+            BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofNewBlogMemberMapping(member.getMbNo(), blog.getBlogId(),  role.getRoleId());
+            jdbcBlogMemberMappingRepository.save(blogMemberMapping);
 
-            Optional<BlogMembersMapping> blogMembersMappingOptional = jdbcBlogMembersMappingRepository.findByBlogMembersId(blogMembersMapping.getBlogMembersId());
-            Assertions.assertTrue(blogMembersMappingOptional.isPresent());
+            Optional<BlogMemberMapping> blogMemberMappingOptional = jdbcBlogMemberMappingRepository.findByBlogMemberId(blogMemberMapping.getBlogMemberId());
+            Assertions.assertTrue(blogMemberMappingOptional.isPresent());
             Assertions.assertAll(
-                    ()->Assertions.assertEquals(member.getMbNo(),blogMembersMappingOptional.get().getMbNo()),
-                    ()->Assertions.assertEquals(blog.getBlogId(),blogMembersMappingOptional.get().getBlogId()),
-                    ()->Assertions.assertEquals(role.getRoleId(),blogMembersMappingOptional.get().getRoleId())
+                    ()->Assertions.assertEquals(member.getMbNo(),blogMemberMappingOptional.get().getMbNo()),
+                    ()->Assertions.assertEquals(blog.getBlogId(),blogMemberMappingOptional.get().getBlogId()),
+                    ()->Assertions.assertEquals(role.getRoleId(),blogMemberMappingOptional.get().getRoleId())
             );
 
     }
@@ -107,14 +107,14 @@ class JdbcBlogMembersMappingRepositoryTest {
         jdbcRoleRepository.save(role);
 
         //5.블로그 사용자 연결
-        BlogMembersMapping blogMembersMapping = BlogMembersMapping.ofNewBlogMemberMapping(member.getMbNo(), blog.getBlogId(), role.getRoleId());
-        jdbcBlogMembersMappingRepository.save(blogMembersMapping);
+        BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofNewBlogMemberMapping(member.getMbNo(), blog.getBlogId(), role.getRoleId());
+        jdbcBlogMemberMappingRepository.save(blogMemberMapping);
 
         //when
-        jdbcBlogMembersMappingRepository.deleteByBlogMemberMappingId(blogMembersMapping.getBlogMembersId());
+        jdbcBlogMemberMappingRepository.deleteByBlogMemberMappingId(blogMemberMapping.getBlogMemberId());
 
         //then
-        boolean actual = jdbcBlogMembersMappingRepository.findByBlogMembersId(blogMembersMapping.getBlogMembersId()).isEmpty();
+        boolean actual = jdbcBlogMemberMappingRepository.findByBlogMemberId(blogMemberMapping.getBlogMemberId()).isEmpty();
         Assertions.assertTrue(actual);
     }
 
@@ -139,16 +139,16 @@ class JdbcBlogMembersMappingRepositoryTest {
         jdbcRoleRepository.save(role);
 
         //5.블로그 사용자 연결
-        BlogMembersMapping blogMembersMapping = BlogMembersMapping.ofNewBlogMemberMapping(member.getMbNo(), blog.getBlogId(),  role.getRoleId());
-        jdbcBlogMembersMappingRepository.save(blogMembersMapping);
+        BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofNewBlogMemberMapping(member.getMbNo(), blog.getBlogId(),  role.getRoleId());
+        jdbcBlogMemberMappingRepository.save(blogMemberMapping);
 
-        Optional<BlogMembersMapping> blogMembersMappingOptional = jdbcBlogMembersMappingRepository.findByMbNoAndBlogId(member.getMbNo(), blog.getBlogId());
+        Optional<BlogMemberMapping> blogMemberMappingOptional = jdbcBlogMemberMappingRepository.findByMbNoAndBlogId(member.getMbNo(), blog.getBlogId());
 
-        Assertions.assertTrue(blogMembersMappingOptional.isPresent());
+        Assertions.assertTrue(blogMemberMappingOptional.isPresent());
         Assertions.assertAll(
-                ()->Assertions.assertEquals(member.getMbNo(),blogMembersMappingOptional.get().getMbNo()),
-                ()->Assertions.assertEquals(blog.getBlogId(),blogMembersMappingOptional.get().getBlogId()),
-                ()->Assertions.assertEquals(role.getRoleId(),blogMembersMappingOptional.get().getRoleId())
+                ()->Assertions.assertEquals(member.getMbNo(),blogMemberMappingOptional.get().getMbNo()),
+                ()->Assertions.assertEquals(blog.getBlogId(),blogMemberMappingOptional.get().getBlogId()),
+                ()->Assertions.assertEquals(role.getRoleId(),blogMemberMappingOptional.get().getRoleId())
         );
 
     }

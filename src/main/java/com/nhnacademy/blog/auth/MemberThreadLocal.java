@@ -10,9 +10,6 @@ public final class MemberThreadLocal {
     }
 
     public static Long getMemberNo() {
-        if (Objects.isNull(memberNoLocal.get())){
-            return Long.MAX_VALUE;
-        }
         return memberNoLocal.get();
     }
 

@@ -36,7 +36,7 @@ CREATE TABLE `blogs` (
 
 DROP TABLE IF EXISTS `blog_members_mapping`;
 CREATE TABLE `blog_members_mapping` (
-                                        `blog_members_id` bigint NOT NULL COMMENT 'Auto Increaments',
+                                        `blog_member_id` bigint NOT NULL COMMENT 'Auto Increaments',
                                         `mb_no` bigint NOT NULL COMMENT '회원번호 ,  mb_no + blog_id uniquekey 설정',
                                         `blog_id` bigint NOT NULL COMMENT '블로그 아이디 , mb_no + blog_id uniquekey 설정',
                                         `role_id` varchar(50) NOT NULL COMMENT '권한_아이디'
@@ -188,7 +188,7 @@ ALTER TABLE `blogs`
 -- 테이블의 인덱스 `blog_members_mapping`
 --
 ALTER TABLE `blog_members_mapping`
-    ADD PRIMARY KEY (`blog_members_id`),
+    ADD PRIMARY KEY (`blog_member_id`),
   ADD UNIQUE KEY `uk_mb_no_blog_id` (`mb_no`,`blog_id`),
   ADD KEY `fk_mapping_blog_id` (`blog_id`),
   ADD KEY `fk_mapping_role_id` (`role_id`);
@@ -237,7 +237,7 @@ ALTER TABLE `blogs`
 -- 테이블의 AUTO_INCREMENT `blog_members_mapping`
 --
 ALTER TABLE `blog_members_mapping`
-    MODIFY `blog_members_id` bigint NOT NULL AUTO_INCREMENT COMMENT 'Auto Increaments', AUTO_INCREMENT=24;
+    MODIFY `blog_member_id` bigint NOT NULL AUTO_INCREMENT COMMENT 'Auto Increaments', AUTO_INCREMENT=24;
 
 --
 -- 테이블의 AUTO_INCREMENT `categories`

@@ -9,9 +9,9 @@ import com.nhnacademy.blog.bloginfo.dto.BlogVisibilityUpdateRequest;
 import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
 import com.nhnacademy.blog.bloginfo.repository.impl.JdbcBlogRepository;
 import com.nhnacademy.blog.bloginfo.service.BlogInfoService;
-import com.nhnacademy.blog.blogmember.domain.BlogMembersMapping;
-import com.nhnacademy.blog.blogmember.repository.BlogMembersMappingRepository;
-import com.nhnacademy.blog.blogmember.repository.impl.JdbcBlogMembersMappingRepository;
+import com.nhnacademy.blog.blogmember.domain.BlogMemberMapping;
+import com.nhnacademy.blog.blogmember.repository.BlogMemberMappingRepository;
+import com.nhnacademy.blog.blogmember.repository.impl.JdbcBlogMemberMappingRepository;
 import com.nhnacademy.blog.common.annotation.Qualifier;
 import com.nhnacademy.blog.common.annotation.stereotype.Service;
 import com.nhnacademy.blog.common.exception.ConflictException;
@@ -26,14 +26,14 @@ public class BlogInfoServiceImpl implements BlogInfoService {
     public static final String BEAN_NAME = "blogInfoService";
 
     private final BlogRepository blogRepository;
-    private final BlogMembersMappingRepository blogMembersMappingRepository;
+    private final BlogMemberMappingRepository blogMemberMappingRepository;
 
     public BlogInfoServiceImpl(
             @Qualifier(JdbcBlogRepository.BEAN_NAME) BlogRepository blogRepository,
-            @Qualifier(JdbcBlogMembersMappingRepository.BEAN_NAME) BlogMembersMappingRepository blogMembersMappingRepository
+            @Qualifier(JdbcBlogMemberMappingRepository.BEAN_NAME) BlogMemberMappingRepository blogMemberMappingRepository
     ) {
         this.blogRepository = blogRepository;
-        this.blogMembersMappingRepository = blogMembersMappingRepository;
+        this.blogMemberMappingRepository = blogMemberMappingRepository;
     }
 
     @Override
@@ -135,10 +135,10 @@ public class BlogInfoServiceImpl implements BlogInfoService {
     }
 
     private void checkOwner(long blogId, long mbNo) {
-        Optional<BlogMembersMapping> blogMembersMappingOptional =  blogMembersMappingRepository.findByMbNoAndBlogId(mbNo, blogId);
+        Optional<BlogMemberMapping> blogMemberMappingOptional =  blogMemberMappingRepository.findByMbNoAndBlogId(mbNo, blogId);
 
         //블로그의 맴버가 아니라면. ForbiddenException() 발생
-        if(blogMembersMappingOptional.isEmpty() || !blogMembersMappingOptional.get().getRoleId().equals("ROLE_OWNER") ) {
+        if(blogMemberMappingOptional.isEmpty() || !blogMemberMappingOptional.get().getRoleId().equals("ROLE_OWNER") ) {
             throw new ForbiddenException();
         }
     }
