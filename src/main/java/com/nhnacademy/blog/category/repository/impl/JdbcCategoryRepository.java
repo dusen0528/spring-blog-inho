@@ -1,7 +1,9 @@
 package com.nhnacademy.blog.category.repository.impl;
 
 import com.nhnacademy.blog.category.domain.Category;
-import com.nhnacademy.blog.category.dto.CategoryUpdateRequestDto;
+import com.nhnacademy.blog.category.dto.CategoryResponse;
+import com.nhnacademy.blog.category.dto.CategoryUpdateRequest;
+import com.nhnacademy.blog.category.dto.RootCategoryUpdateRequest;
 import com.nhnacademy.blog.category.repository.CategoryRepository;
 import com.nhnacademy.blog.common.annotation.stereotype.Repository;
 import com.nhnacademy.blog.common.db.exception.DatabaseException;
@@ -66,10 +68,11 @@ public class JdbcCategoryRepository implements CategoryRepository {
         }catch (SQLException e){
             throw new DatabaseException(e);
         }
+
     }
 
     @Override
-    public void update(CategoryUpdateRequestDto categoryUpdateRequestDto) {
+    public void update(CategoryUpdateRequest categoryUpdateRequest) {
         Connection connection = DbConnectionThreadLocal.getConnection();
 
         String sql = """
@@ -86,21 +89,28 @@ public class JdbcCategoryRepository implements CategoryRepository {
         try(PreparedStatement psmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
             int index=1;
 
-            psmt.setLong(index++, categoryUpdateRequestDto.getCategoryPid());
-            if(Objects.nonNull(categoryUpdateRequestDto.getTopicId())){
-                psmt.setInt(index++, categoryUpdateRequestDto.getTopicId());
+            if(Objects.nonNull(categoryUpdateRequest.getCategoryPid())){
+                psmt.setLong(index++, categoryUpdateRequest.getCategoryPid());
+            }else{
+                psmt.setNull(index++, Types.BIGINT);
+            }
+
+            if(Objects.nonNull(categoryUpdateRequest.getTopicId())){
+                psmt.setInt(index++, categoryUpdateRequest.getTopicId());
             }else {
                 psmt.setNull(index++, Types.INTEGER);
             }
-            psmt.setString(index++,categoryUpdateRequestDto.getCategoryName());
-            psmt.setInt(index++,categoryUpdateRequestDto.getCategorySec());
-            psmt.setLong(index++,categoryUpdateRequestDto.getCategoryId());
+
+            psmt.setString(index++, categoryUpdateRequest.getCategoryName());
+            psmt.setInt(index++, categoryUpdateRequest.getCategorySec());
+            psmt.setLong(index++, categoryUpdateRequest.getCategoryId());
 
             psmt.executeUpdate();
 
         }catch (SQLException e){
             throw new DatabaseException(e);
         }
+
     }
 
     @Override
@@ -215,10 +225,68 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
+    public List<CategoryResponse> findAllByBlogId(Long blogId) {
+        Connection connection = DbConnectionThreadLocal.getConnection();
+        String sql = """
+                select 
+                    category_id,
+                    category_pid,
+                    blog_id,
+                    topic_id,
+                    category_name,
+                    category_sec
+                from 
+                    categories
+                where 
+                    blog_id=?
+                order by category_sec asc
+            """;
+
+        List<CategoryResponse> categoryResponseList = new ArrayList<>();
+        try (PreparedStatement psmt = connection.prepareStatement(sql)){
+            psmt.setLong(1,blogId);
+
+            try(ResultSet rs = psmt.executeQuery()){
+                while(rs.next()){
+                    Long dbCategoryId = rs.getLong("category_id");
+                    Long dbCategoryPid = rs.getLong("category_pid");
+                    Long dbBlogId = rs.getLong("blog_id");
+                    Integer topicId = rs.getInt("topic_id");
+                    String categoryName = rs.getString("category_name");
+                    Integer categorySec = rs.getInt("category_sec");
+                    CategoryResponse categoryResponse = new CategoryResponse(dbCategoryId,dbCategoryPid,dbBlogId,topicId,categoryName,categorySec);
+                    categoryResponseList.add(categoryResponse);
+                }
+            }
+        }catch (SQLException e){
+            throw new DatabaseException(e);
+        }
+
+        return categoryResponseList;
+    }
+
+    @Override
     public boolean existsByCategoryId(Long categoryId) {
         Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = "select 1 from categories where category_id=?";
 
+        try(PreparedStatement psmt = connection.prepareStatement(sql)){
+            psmt.setLong(1,categoryId);
+            try(ResultSet rs = psmt.executeQuery()){
+                if(rs.next()){
+                    return true;
+                }
+            }
+        }catch (SQLException e){
+            throw new DatabaseException(e);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean existsSubCategoryByCategoryId(Long categoryId) {
+        Connection connection = DbConnectionThreadLocal.getConnection();
+        String sql = "select 1 from categories where category_pid = ? ";
         try(PreparedStatement psmt = connection.prepareStatement(sql)){
             psmt.setLong(1,categoryId);
             try(ResultSet rs = psmt.executeQuery()){

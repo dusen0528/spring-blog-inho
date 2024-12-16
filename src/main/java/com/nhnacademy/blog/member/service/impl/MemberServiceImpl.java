@@ -130,7 +130,7 @@ public class MemberServiceImpl implements MemberService {
             //3.oldPassword가 일치하지 않다면 예외처리
             throw new BadRequestException("password dose not match");
         }
-
+        
         //newPassword Bcrypt 암호화
         String newPassword = BCrypt.hashpw(memberPasswordUpdateRequest.getNewPassword(), BCrypt.gensalt());
 

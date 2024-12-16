@@ -19,6 +19,6 @@ public interface BlogInfoService {
     //블로그 정보조회
     BlogResponse getBlog(long blogId);
 
-    //블로그 삭제는 당작 고려하지 않음.
+    //블로그 삭제는 당장 고려하지 않음.
 
 }

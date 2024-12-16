@@ -88,7 +88,6 @@ public class BlogInfoServiceImpl implements BlogInfoService {
 
             blogRepository.updateBlogMain(blogUpdateRequest.getBlogId(),true);
         }
-
         blogRepository.update(blogUpdateRequest);
     }
 

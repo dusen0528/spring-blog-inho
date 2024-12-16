@@ -4,20 +4,17 @@ import com.nhnacademy.blog.bloginfo.domain.Blog;
 import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
 import com.nhnacademy.blog.bloginfo.repository.impl.JdbcBlogRepository;
 import com.nhnacademy.blog.category.domain.Category;
-import com.nhnacademy.blog.category.dto.CategoryUpdateRequestDto;
+import com.nhnacademy.blog.category.dto.CategoryUpdateRequest;
+import com.nhnacademy.blog.category.dto.RootCategoryUpdateRequest;
 import com.nhnacademy.blog.category.repository.CategoryRepository;
 import com.nhnacademy.blog.common.context.Context;
 import com.nhnacademy.blog.common.context.ContextHolder;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
-import com.nhnacademy.blog.role.repository.RoleRepository;
-import com.nhnacademy.blog.role.repository.impl.JdbcRoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 class JdbcCategoryRepositoryTest {
@@ -109,17 +106,15 @@ class JdbcCategoryRepositoryTest {
         Category category2 = Category.ofNewSubCategory(category1.getCategoryId(), blog.getBlogId(),null,"스프링-코어",1);
         categoryRepository.save(category2);
 
-        //when
-        CategoryUpdateRequestDto categoryUpdateRequestDto = new CategoryUpdateRequestDto(category2.getCategoryId(),category2.getCategoryPid(),null,"Spring-core",10);
-        categoryRepository.update(categoryUpdateRequestDto);
+        CategoryUpdateRequest categoryUpdateRequest = new CategoryUpdateRequest(category2.getCategoryId(),null,1l,null, "Spring-core",10);
+        categoryRepository.update(categoryUpdateRequest);
 
         //then
         Optional<Category> categoryOptional = categoryRepository.findByCategoryId(category2.getCategoryId());
         Assertions.assertAll(
                 ()->Assertions.assertEquals(category2.getCategoryId(),categoryOptional.get().getCategoryId()),
-                ()->Assertions.assertEquals(categoryUpdateRequestDto.getCategoryPid(),categoryOptional.get().getCategoryPid()),
-                ()->Assertions.assertEquals(categoryUpdateRequestDto.getCategoryName(),categoryOptional.get().getCategoryName()),
-                ()->Assertions.assertEquals(categoryUpdateRequestDto.getCategorySec(),categoryOptional.get().getCategorySec()),
+                ()->Assertions.assertEquals(categoryUpdateRequest.getCategoryName(),categoryOptional.get().getCategoryName()),
+                ()->Assertions.assertEquals(categoryUpdateRequest.getCategorySec(),categoryOptional.get().getCategorySec()),
                 ()->Assertions.assertNotNull(categoryOptional.get().getUpdatedAt())
         );
     }
@@ -255,4 +250,73 @@ class JdbcCategoryRepositoryTest {
         Assertions.assertTrue(categoryRepository.existsByCategoryId(category.getCategoryId()));
     }
 
+    @Test
+    @DisplayName("서브카테고리 존재유무 : true")
+    void existsSubCategoryByCategoryId(){
+
+        Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        blogRepository.save(blog);
+
+        Category category1 = Category.ofNewRootCategory(blog.getBlogId(),null,"카테고리-1",1);
+        Category category2 = Category.ofNewRootCategory(blog.getBlogId(),null,"카테고리-2",2);
+        Category category3 = Category.ofNewRootCategory(blog.getBlogId(),null,"카테고리-3",3);
+        Category category4 = Category.ofNewRootCategory(blog.getBlogId(),null,"카테고리-4",4);
+        Category category5 = Category.ofNewRootCategory(blog.getBlogId(),null,"카테고리-5",5);
+
+        categoryRepository.save(category1);
+        categoryRepository.save(category2);
+        categoryRepository.save(category3);
+        categoryRepository.save(category4);
+        categoryRepository.save(category5);
+
+        Category subCategory1 = Category.ofNewSubCategory(category1.getCategoryId(), blog.getBlogId(),null,"카테고리-1-1",1);
+        Category subCategory2 = Category.ofNewSubCategory(category1.getCategoryId(), blog.getBlogId(),null,"카테고리-1-2",1);
+        Category subCategory3 = Category.ofNewSubCategory(category1.getCategoryId(), blog.getBlogId(),null,"카테고리-1-3",1);
+        Category subCategory4 = Category.ofNewSubCategory(category1.getCategoryId(), blog.getBlogId(),null,"카테고리-1-4",1);
+        Category subCategory5 = Category.ofNewSubCategory(category1.getCategoryId(), blog.getBlogId(),null,"카테고리-1-5",1);
+
+        categoryRepository.save(subCategory1);
+        categoryRepository.save(subCategory2);
+        categoryRepository.save(subCategory3);
+        categoryRepository.save(subCategory4);
+        categoryRepository.save(subCategory5);
+
+        boolean actual = categoryRepository.existsSubCategoryByCategoryId(category1.getCategoryId());
+        Assertions.assertTrue(actual);
+
+    }
+
+    @Test
+    @DisplayName("서브카테고리 존재유무 : false")
+    void notExistsSubCategoryByCategoryId(){
+        Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
+        blogRepository.save(blog);
+
+        Category category1 = Category.ofNewRootCategory(blog.getBlogId(),null,"카테고리-1",1);
+        Category category2 = Category.ofNewRootCategory(blog.getBlogId(),null,"카테고리-2",2);
+        Category category3 = Category.ofNewRootCategory(blog.getBlogId(),null,"카테고리-3",3);
+        Category category4 = Category.ofNewRootCategory(blog.getBlogId(),null,"카테고리-4",4);
+        Category category5 = Category.ofNewRootCategory(blog.getBlogId(),null,"카테고리-5",5);
+
+        categoryRepository.save(category1);
+        categoryRepository.save(category2);
+        categoryRepository.save(category3);
+        categoryRepository.save(category4);
+        categoryRepository.save(category5);
+
+        Category subCategory1 = Category.ofNewSubCategory(category1.getCategoryId(), blog.getBlogId(),null,"카테고리-1-1",1);
+        Category subCategory2 = Category.ofNewSubCategory(category1.getCategoryId(), blog.getBlogId(),null,"카테고리-1-2",1);
+        Category subCategory3 = Category.ofNewSubCategory(category1.getCategoryId(), blog.getBlogId(),null,"카테고리-1-3",1);
+        Category subCategory4 = Category.ofNewSubCategory(category1.getCategoryId(), blog.getBlogId(),null,"카테고리-1-4",1);
+        Category subCategory5 = Category.ofNewSubCategory(category1.getCategoryId(), blog.getBlogId(),null,"카테고리-1-5",1);
+
+        categoryRepository.save(subCategory1);
+        categoryRepository.save(subCategory2);
+        categoryRepository.save(subCategory3);
+        categoryRepository.save(subCategory4);
+        categoryRepository.save(subCategory5);
+
+        boolean actual = categoryRepository.existsSubCategoryByCategoryId(category2.getCategoryId());
+        Assertions.assertFalse(actual);
+    }
 }
