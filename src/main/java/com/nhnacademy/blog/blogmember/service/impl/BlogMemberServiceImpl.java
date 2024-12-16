@@ -42,7 +42,6 @@ public class BlogMemberServiceImpl implements BlogMemberService {
         this.memberRepository = memberRepository;
     }
 
-
     @Override
     public void registerBlogMember(BlogMemberRegisterRequest blogMemberRegisterRequest) {
 

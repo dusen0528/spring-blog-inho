@@ -19,11 +19,13 @@ import com.nhnacademy.blog.common.exception.ForbiddenException;
 import com.nhnacademy.blog.common.exception.NotFoundException;
 import com.nhnacademy.blog.topic.repository.TopicRepository;
 import com.nhnacademy.blog.topic.repository.impl.JdbcTopicRepository;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 //api/blogs/{blog-id}/categories/{category-id}
 @Service(name = CategoryServiceImpl.BEAN_NAME)
 public class CategoryServiceImpl implements CategoryService {
@@ -70,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.save(category);
 
         Optional<Category> categoryOptional = categoryRepository.findByCategoryId(category.getCategoryId());
-
+        log.debug("categoryOptional:{}", categoryOptional.isPresent());
         return new CategoryResponse(
                 categoryOptional.get().getCategoryId(),
                 categoryOptional.get().getCategoryPid(),

@@ -69,12 +69,13 @@ class BlogInfoServiceImplTest {
 
         //blog 생성
         Mockito.doAnswer(invocationOnMock -> {
-            Blog dbBlog = invocationOnMock.getArgument(0);
+
+            Blog paramBlog = invocationOnMock.getArgument(0);
             //save() 호출시 1L로 변경
-            Field field = dbBlog.getClass().getDeclaredField("blogId");
+            Field field = paramBlog.getClass().getDeclaredField("blogId");
             field.setAccessible(true);
-            field.set(dbBlog,1L);
-            log.debug("dbBlog: {}", dbBlog);
+            field.set(paramBlog,1L);
+            log.debug("paramBlog: {}", paramBlog);
            return null;
         }).when(blogRepository).save(Mockito.any(Blog.class));
 
@@ -115,12 +116,12 @@ class BlogInfoServiceImplTest {
 
         //blog 생성
         Mockito.doAnswer(invocationOnMock -> {
-            Blog dbBlog = invocationOnMock.getArgument(0);
+            Blog paramBlog = invocationOnMock.getArgument(0);
             //save() 호출시 1L로 변경
-            Field field = dbBlog.getClass().getDeclaredField("blogId");
+            Field field = paramBlog.getClass().getDeclaredField("blogId");
             field.setAccessible(true);
-            field.set(dbBlog,1L);
-            log.debug("dbBlog: {}", dbBlog);
+            field.set(paramBlog,1L);
+            log.debug("paramBlog: {}", paramBlog);
             return null;
         }).when(blogRepository).save(Mockito.any(Blog.class));
 

@@ -108,4 +108,19 @@ public class Category {
     public int hashCode() {
         return Objects.hash(categoryId, categoryPid, blogId, topicId, categoryName, categorySec, createdAt, updatedAt);
     }
+
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "categoryId=" + categoryId +
+                ", categoryPid=" + categoryPid +
+                ", blogId=" + blogId +
+                ", topicId=" + topicId +
+                ", categoryName='" + categoryName + '\'' +
+                ", categorySec=" + categorySec +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

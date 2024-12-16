@@ -78,7 +78,6 @@ public class Blog {
         return updatedAt;
     }
 
-
     @Override
     public String toString() {
         return "Blog{" +

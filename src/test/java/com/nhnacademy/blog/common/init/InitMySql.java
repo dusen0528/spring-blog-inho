@@ -14,12 +14,12 @@ import static com.wix.mysql.config.Charset.UTF8;
 import static com.wix.mysql.config.MysqldConfig.aMysqldConfig;
 
 @InitOrder(value = 0)
-public class InitMySql implements Initializeable {
+public class InitMySql {
     /**
      * 참고 : https://github.com/wix-incubator/wix-embedded-mysql
      * @param context
      */
-    @Override
+
     public void initialize(Context context) {
         MysqldConfig config = aMysqldConfig(Version.v8_latest)
                 .withCharset(UTF8)
