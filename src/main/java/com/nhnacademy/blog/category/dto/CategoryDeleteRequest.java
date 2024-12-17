@@ -1,19 +1,19 @@
 package com.nhnacademy.blog.category.dto;
 
 public class CategoryDeleteRequest {
-    private final long categoryId;
-    private final long blogId;
+    private final Long categoryId;
+    private final Long blogId;
 
-    public CategoryDeleteRequest(long categoryId, long blogId) {
+    public CategoryDeleteRequest(Long categoryId, Long blogId) {
         this.categoryId = categoryId;
         this.blogId = blogId;
     }
 
-    public long getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
-    public long getBlogId() {
+    public Long getBlogId() {
         return blogId;
     }
 }

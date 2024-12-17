@@ -3,6 +3,7 @@ package com.nhnacademy.blog.member.service.impl;
 import com.nhnacademy.blog.common.exception.BadRequestException;
 import com.nhnacademy.blog.common.exception.ConflictException;
 import com.nhnacademy.blog.common.exception.NotFoundException;
+import com.nhnacademy.blog.common.reflection.ReflectionUtils;
 import com.nhnacademy.blog.member.domain.Member;
 import com.nhnacademy.blog.member.dto.MemberPasswordUpdateRequest;
 import com.nhnacademy.blog.member.dto.MemberRegisterRequest;
@@ -11,13 +12,16 @@ import com.nhnacademy.blog.member.dto.MemberUpdateRequest;
 import com.nhnacademy.blog.member.repository.MemberRepository;
 import com.nhnacademy.blog.member.service.MemberService;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.Mockito;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Slf4j
 class MemberServiceImplTest {
 
     MemberRepository memberRepository;
@@ -44,11 +48,52 @@ class MemberServiceImplTest {
         Mockito.when(memberRepository.existsByMbEmail(Mockito.anyString())).thenReturn(false);
         Mockito.when(memberRepository.existsByMbMobile(Mockito.anyString())).thenReturn(false);
 
-        memberService.registerMember(memberRegisterRequest);
+        Mockito.doAnswer(invocation -> {
+            Member paramMember = invocation.getArgument(0);
+            Field field = Member.class.getDeclaredField("mbNo");
+            field.setAccessible(true);
+            field.set(paramMember, 1L);
+            log.debug("paramMember: {}", paramMember);
+            return null;
+        }).when(memberRepository).save(Mockito.any(Member.class));
+
+        Optional<Member> memberOptional = Optional.of(
+                Member.ofExistingMember(1L,
+                        "marco@nhnacademy.com",
+                        "마르코",
+                        "password",
+                        "01012345678",
+                        LocalDateTime.now(),
+                        null,
+                        null
+                )
+        );
+
+        Mockito.when(memberRepository.findByMbNo(Mockito.anyLong())).thenReturn(memberOptional);
+
+        MemberResponse memberResponse = memberService.registerMember(memberRegisterRequest);
 
         Mockito.verify(memberRepository, Mockito.times(1)).existsByMbMobile(Mockito.anyString());
         Mockito.verify(memberRepository, Mockito.times(1)).existsByMbEmail(Mockito.anyString());
         Mockito.verify(memberRepository, Mockito.times(1)).save(Mockito.any(Member.class));
+
+        Assertions.assertAll(
+                ()->{
+                    Assertions.assertEquals(1L,memberResponse.getMbNo());
+                },
+                ()->{
+                    Assertions.assertEquals("marco@nhnacademy.com",memberResponse.getMbEmail());
+                },
+                ()->{
+                    Assertions.assertEquals("마르코",memberResponse.getMbName());
+                },
+                ()->{
+                    Assertions.assertEquals("01012345678",memberResponse.getMbMobile());
+                },
+                ()->{
+                    Assertions.assertNotNull(memberResponse.getCreatedAt());
+                }
+        );
     }
 
     @Test
@@ -107,8 +152,8 @@ class MemberServiceImplTest {
                         "마르코",
                         "password",
                         "01012345678",
+                        LocalDateTime.now().minusDays(10),
                         LocalDateTime.now(),
-                        null,
                         null
                 )
         );
@@ -124,12 +169,35 @@ class MemberServiceImplTest {
         //회원모바일연락처 중복체크
         Mockito.when(memberRepository.existsByMbMobile(Mockito.anyString())).thenReturn(false);
 
-        memberService.updateMember(memberUpdateRequest);
+        MemberResponse memberResponse = memberService.updateMember(memberUpdateRequest);
+        log.debug("memberResponse: {}", memberResponse);
 
         Mockito.verify(memberRepository, Mockito.times(1)).existsByMbNo(Mockito.anyLong());
         Mockito.verify(memberRepository, Mockito.times(1)).isMemberWithdrawn(Mockito.anyLong());
-        Mockito.verify(memberRepository, Mockito.times(1)).findByMbNo(Mockito.anyLong());
+        Mockito.verify(memberRepository, Mockito.atLeast(1)).findByMbNo(Mockito.anyLong());
         Mockito.verify(memberRepository, Mockito.times(1)).update(Mockito.any(MemberUpdateRequest.class));
+
+
+        Assertions.assertAll(
+                ()->{
+                    Assertions.assertEquals(1L,memberResponse.getMbNo());
+                },
+                ()->{
+                    Assertions.assertEquals("marco@nhnacademy.com",memberResponse.getMbEmail());
+                },
+                ()->{
+                    Assertions.assertEquals("마르코",memberResponse.getMbName());
+                },
+                ()->{
+                    Assertions.assertEquals("01012345678",memberResponse.getMbMobile());
+                },
+                ()->{
+                    Assertions.assertNotNull(memberResponse.getCreatedAt());
+                },
+                ()->{
+                    Assertions.assertNotNull(memberResponse.getUpdatedAt());
+                }
+        );
 
     }
 
@@ -311,8 +379,8 @@ class MemberServiceImplTest {
         MemberResponse memberResponse = memberService.getMember(1L);
 
         //then
-        Mockito.verify(memberRepository, Mockito.times(1)).existsByMbNo(Mockito.anyLong());
-        Mockito.verify(memberRepository, Mockito.times(1)).findByMbNo(Mockito.anyLong());
+        Mockito.verify(memberRepository, Mockito.atLeast(0)).existsByMbNo(Mockito.anyLong());
+        Mockito.verify(memberRepository, Mockito.atLeast(1)).findByMbNo(Mockito.anyLong());
 
         Assertions.assertAll(
                 ()->Assertions.assertEquals(memberOptional.get().getMbNo(), memberResponse.getMbNo()),
@@ -329,18 +397,15 @@ class MemberServiceImplTest {
     @DisplayName("회원조회:존재하지 않는 회원 : 404")
     void getMember_exception_case1() {
         //given
-
-        Mockito.when(memberRepository.existsByMbNo(Mockito.anyLong())).thenReturn(false);
+        Mockito.when(memberRepository.findByMbNo(Mockito.anyLong())).thenReturn(Optional.empty());
 
         //when
         Assertions.assertThrows(NotFoundException.class,()->{
             MemberResponse memberResponse = memberService.getMember(1L);
         });
 
-
         //then
-        Mockito.verify(memberRepository, Mockito.times(1)).existsByMbNo(Mockito.anyLong());
-        Mockito.verify(memberRepository, Mockito.never()).findByMbNo(Mockito.anyLong());
+        Mockito.verify(memberRepository, Mockito.times(1)).findByMbNo(Mockito.anyLong());
     }
 
     @Test

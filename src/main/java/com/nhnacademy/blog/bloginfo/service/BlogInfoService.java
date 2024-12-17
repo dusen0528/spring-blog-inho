@@ -9,7 +9,7 @@ public interface BlogInfoService {
 
     //블로그 생성
     BlogResponse createBlog(BlogCreateRequest blogCreateRequest);
-
+    
     //블로그 수정
     void updateBlog(BlogUpdateRequest blogUpdateRequest);
 

@@ -58,4 +58,17 @@ public class MemberResponse {
     public LocalDateTime getWithdrawalAt() {
         return withdrawalAt;
     }
+
+    @Override
+    public String toString() {
+        return "MemberResponse{" +
+                "mbNo=" + mbNo +
+                ", mbEmail='" + mbEmail + '\'' +
+                ", mbName='" + mbName + '\'' +
+                ", mbMobile='" + mbMobile + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", withdrawalAt=" + withdrawalAt +
+                '}';
+    }
 }

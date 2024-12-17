@@ -11,6 +11,7 @@ import com.nhnacademy.blog.category.dto.*;
 import com.nhnacademy.blog.category.repository.CategoryRepository;
 import com.nhnacademy.blog.category.repository.impl.JdbcCategoryRepository;
 import com.nhnacademy.blog.category.service.CategoryService;
+import com.nhnacademy.blog.category.util.CategoryUtils;
 import com.nhnacademy.blog.common.annotation.Qualifier;
 import com.nhnacademy.blog.common.annotation.stereotype.Service;
 import com.nhnacademy.blog.common.exception.BadRequestException;
@@ -72,7 +73,7 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.save(category);
 
         Optional<Category> categoryOptional = categoryRepository.findByCategoryId(category.getCategoryId());
-        log.debug("categoryOptional:{}", categoryOptional.isPresent());
+        log.debug("categoryOptional:{}", categoryOptional.get());
         return new CategoryResponse(
                 categoryOptional.get().getCategoryId(),
                 categoryOptional.get().getCategoryPid(),
@@ -108,6 +109,7 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.save(category);
 
         Optional<Category> categoryOptional = categoryRepository.findByCategoryId(category.getCategoryId());
+        log.debug("categoryOptional:{}", categoryOptional.get());
         return new CategoryResponse(
                 categoryOptional.get().getCategoryId(),
                 categoryOptional.get().getCategoryPid(),
@@ -126,10 +128,13 @@ public class CategoryServiceImpl implements CategoryService {
         long memberNo = MemberThreadLocal.getMemberNo();
         checkOwner(rootCategoryUpdateRequest.getBlogId(), memberNo);
 
-        //1.category 체크
+        //1.블로그 존재여부 체크
+        checkExistBlog(rootCategoryUpdateRequest.getBlogId());
+
+        //2.category 체크
         checkExistCategory(rootCategoryUpdateRequest.getCategoryId());
 
-        //2.topic 체크
+        //3.topic 체크
         checkExistTopic(rootCategoryUpdateRequest.getTopicId());
 
         CategoryUpdateRequest categoryUpdateRequest = new CategoryUpdateRequest(
@@ -141,7 +146,7 @@ public class CategoryServiceImpl implements CategoryService {
                 rootCategoryUpdateRequest.getCategorySec()
         );
 
-        //3.rootCategory 수정
+        //4.rootCategory 수정
         categoryRepository.update(categoryUpdateRequest);
 
         //4. 수정된 결과 반환
@@ -164,16 +169,19 @@ public class CategoryServiceImpl implements CategoryService {
         long memberNo = MemberThreadLocal.getMemberNo();
         checkOwner(subCategoryUpdateRequest.getBlogId(), memberNo);
 
-        //1.category 체크
+        //1.블로그 존재여부 체크
+        checkExistBlog(subCategoryUpdateRequest.getBlogId());
+
+        //2.category 체크
         checkExistCategory(subCategoryUpdateRequest.getCategoryId());
 
-        //2.부모카테고리 체크
+        //3.부모카테고리 체크
         checkExistCategory(subCategoryUpdateRequest.getCategoryPid());
 
-        //2.topic 체크
+        //4.topic 체크
         checkExistTopic(subCategoryUpdateRequest.getTopicId());
 
-        //3.rootCategory 수정
+        //5.rootCategory 수정
         CategoryUpdateRequest categoryUpdateRequest = new CategoryUpdateRequest(
                 subCategoryUpdateRequest.getCategoryId(),
                 subCategoryUpdateRequest.getCategoryPid(),
@@ -199,23 +207,33 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteCategory(CategoryDeleteRequest categoryDeleteRequest) {
         //0.blog의 카테고리를 수정할 수 있는지 권한체크
         long memberNo = MemberThreadLocal.getMemberNo();
-
         checkOwner(categoryDeleteRequest.getCategoryId(), memberNo);
-        //1. subcategory가 존재하는지 체크
+
+        //1. category 체크
+        checkExistCategory(categoryDeleteRequest.getCategoryId());
+
+        //2. subcategory가 존재하는지 체크, 서브카테고리가 존재 한다면 삭제불가
         checkExistSubCategory(categoryDeleteRequest.getCategoryId());
 
-        //2. 추후 카테고리 생성시 post쪽 처리를 어떻게 할지 고민하기.
+        //3. blog 존재여부 체크
+        checkExistBlog(categoryDeleteRequest.getBlogId());
 
-        //3. 카테고리 삭제
+        //4. 추후 카테고리 생성시 post쪽 처리를 어떻게 할지 고민하기.
+
+        //5. 카테고리 삭제
         categoryRepository.deleteByCategoryId(categoryDeleteRequest.getCategoryId());
     }
 
     @Override
+    /**
+     *카테고리를 계층적으로 정렬 후 반환 합니다.
+     */
     public List<CategoryResponse> getAllCategories(long blogId) {
+        //1.블로그 존재유무 체크
+        checkExistBlog(blogId);
 
-        categoryRepository.findAll(blogId,null);
-
-        return List.of();
+        List<CategoryResponse>  categoryList = categoryRepository.findAllByBlogId(blogId);
+        return CategoryUtils.generateCategoryHierarchy(categoryList);
     }
 
     //blog 소유자체크
@@ -247,7 +265,7 @@ public class CategoryServiceImpl implements CategoryService {
     private void checkExistCategory(long categoryId){
         boolean existCategory = categoryRepository.existsByCategoryId(categoryId);
         if(!existCategory) {
-            throw new BadRequestException("category [%d] does not exist".formatted(categoryId));
+            throw new NotFoundException("category [%d] does not exist".formatted(categoryId));
         }
     }
 

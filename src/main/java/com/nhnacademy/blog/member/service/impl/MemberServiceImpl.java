@@ -31,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void registerMember(MemberRegisterRequest memberRegisterRequest) {
+    public MemberResponse registerMember(MemberRegisterRequest memberRegisterRequest) {
 
         //1.이메일 중복체크
         checkEmailDuplicate(memberRegisterRequest.getMbEmail());
@@ -48,12 +48,13 @@ public class MemberServiceImpl implements MemberService {
                 mbPassword,
                 memberRegisterRequest.getMbMobile()
         );
-
         memberRepository.save(member);
+
+        return getMember(member.getMbNo());
     }
 
     @Override
-    public void updateMember(MemberUpdateRequest memberUpdateRequest) {
+    public MemberResponse updateMember(MemberUpdateRequest memberUpdateRequest) {
 
         //1.회원 탈퇴여부 체크
         checkWithdrawal(memberUpdateRequest.getMbNo());
@@ -78,6 +79,8 @@ public class MemberServiceImpl implements MemberService {
 
         //회원정보(수정)
         memberRepository.update(memberUpdateRequest);
+
+        return getMember(member.getMbNo());
     }
 
     @Override
@@ -96,12 +99,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberResponse getMember(long mbNo) {
 
-        //회원 존재여부 체크
-        checkMemberExists(mbNo);
-
         Optional<Member> memberOptional = memberRepository.findByMbNo(mbNo);
-        Member member = memberOptional.get();
 
+        if(memberOptional.isEmpty()){
+            throw new NotFoundException("Member with Mb No : " + mbNo + " not found");
+        }
+
+        Member member = memberOptional.get();
         return new MemberResponse(
                 member.getMbNo(),
                 member.getMbEmail(),

@@ -1,7 +1,5 @@
 package com.nhnacademy.blog.auth;
 
-import java.util.Objects;
-
 public final class MemberThreadLocal {
     private static final ThreadLocal<Long> memberNoLocal = new ThreadLocal<>();
 

@@ -1,6 +1,8 @@
 package com.nhnacademy.blog.category.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CategoryResponse {
 
@@ -10,6 +12,8 @@ public class CategoryResponse {
     private final Integer topicId;
     private final String categoryName;
     private final Integer categorySec;
+
+    List<CategoryResponse> subCategories = new ArrayList<>();
 
     public CategoryResponse(Long categoryId, Long categoryPid, Long blogId, Integer topicId, String categoryName, Integer categorySec) {
         this.categoryId = categoryId;
@@ -42,5 +46,26 @@ public class CategoryResponse {
 
     public Integer getCategorySec() {
         return categorySec;
+    }
+
+    public List<CategoryResponse> getSubCategories() {
+        return this.subCategories;
+    }
+
+    public void addSubCategory(CategoryResponse categoryResponse) {
+        this.subCategories.add(categoryResponse);
+    }
+
+    @Override
+    public String toString() {
+        return "CategoryResponse{" +
+                "categoryId=" + categoryId +
+                ", categoryPid=" + categoryPid +
+                ", blogId=" + blogId +
+                ", topicId=" + topicId +
+                ", categoryName='" + categoryName + '\'' +
+                ", categorySec=" + categorySec +
+                ", subCategories=" + subCategories +
+                '}';
     }
 }

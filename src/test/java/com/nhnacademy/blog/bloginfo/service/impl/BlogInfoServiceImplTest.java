@@ -69,7 +69,6 @@ class BlogInfoServiceImplTest {
 
         //blog 생성
         Mockito.doAnswer(invocationOnMock -> {
-
             Blog paramBlog = invocationOnMock.getArgument(0);
             //save() 호출시 1L로 변경
             Field field = paramBlog.getClass().getDeclaredField("blogId");

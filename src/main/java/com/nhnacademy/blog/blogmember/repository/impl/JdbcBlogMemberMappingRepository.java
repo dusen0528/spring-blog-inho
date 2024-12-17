@@ -100,7 +100,7 @@ public class JdbcBlogMemberMappingRepository implements BlogMemberMappingReposit
                     blog_member_id, 
                     mb_no, 
                     blog_id, 
-                    role_id 
+                    role_id
                 from 
                     blog_members_mapping
                 where 
