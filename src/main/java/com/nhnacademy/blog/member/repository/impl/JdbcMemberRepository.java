@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
-@Repository(name = JdbcMemberRepository.BEAN_NAME)
+@Repository(JdbcMemberRepository.BEAN_NAME)
 public class JdbcMemberRepository implements MemberRepository {
     public static final String BEAN_NAME="jdbcMemberRepository";
 

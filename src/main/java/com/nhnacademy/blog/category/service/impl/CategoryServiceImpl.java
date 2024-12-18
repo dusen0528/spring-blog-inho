@@ -28,7 +28,7 @@ import java.util.Optional;
 
 @Slf4j
 //api/blogs/{blog-id}/categories/{category-id}
-@Service(name = CategoryServiceImpl.BEAN_NAME)
+@Service(CategoryServiceImpl.BEAN_NAME)
 public class CategoryServiceImpl implements CategoryService {
 
     public static final String BEAN_NAME="categoryService";
@@ -56,6 +56,17 @@ public class CategoryServiceImpl implements CategoryService {
         //0.blog의 카테고리를 생성할 수 있는지 권한체크
         long memberNo = MemberThreadLocal.getMemberNo();
         checkOwner(rootCategoryCreateRequest.getBlogId(), memberNo);
+
+        return commonCreateRootCategory(rootCategoryCreateRequest);
+    }
+
+    @Override
+    public CategoryResponse initializeCreateRootCategory(RootCategoryCreateRequest rootCategoryCreateRequest) {
+        //권한체크 없이 블로그 계정 생성시 기본카테고리 생성을 위한 method
+        return commonCreateRootCategory(rootCategoryCreateRequest);
+    }
+
+    private CategoryResponse commonCreateRootCategory(RootCategoryCreateRequest rootCategoryCreateRequest){
 
         //1.블로그 존재여부 체크
         checkExistBlog(rootCategoryCreateRequest.getBlogId());
@@ -253,7 +264,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    private void checkExistTopic(int topicId) {
+    private void checkExistTopic(Integer topicId) {
         if(Objects.nonNull(topicId)) {
             boolean existTopic = topicRepository.existByTopicId(topicId);
             if(!existTopic) {

@@ -3,12 +3,12 @@ package com.nhnacademy.blog.member.service.impl;
 import com.nhnacademy.blog.common.exception.BadRequestException;
 import com.nhnacademy.blog.common.exception.ConflictException;
 import com.nhnacademy.blog.common.exception.NotFoundException;
+import com.nhnacademy.blog.common.exception.UnauthorizedException;
 import com.nhnacademy.blog.common.reflection.ReflectionUtils;
+import com.nhnacademy.blog.common.security.PasswordEncoder;
+import com.nhnacademy.blog.common.security.impl.BCryptPasswordEncoder;
 import com.nhnacademy.blog.member.domain.Member;
-import com.nhnacademy.blog.member.dto.MemberPasswordUpdateRequest;
-import com.nhnacademy.blog.member.dto.MemberRegisterRequest;
-import com.nhnacademy.blog.member.dto.MemberResponse;
-import com.nhnacademy.blog.member.dto.MemberUpdateRequest;
+import com.nhnacademy.blog.member.dto.*;
 import com.nhnacademy.blog.member.repository.MemberRepository;
 import com.nhnacademy.blog.member.service.MemberService;
 
@@ -26,11 +26,13 @@ class MemberServiceImplTest {
 
     MemberRepository memberRepository;
     MemberService memberService;
-
+    PasswordEncoder passwordEncoder;
     @BeforeEach
     void setUp() {
         memberRepository = Mockito.mock(MemberRepository.class);
-        memberService = new MemberServiceImpl(memberRepository);
+        passwordEncoder = new BCryptPasswordEncoder();
+        memberService = new MemberServiceImpl(memberRepository , passwordEncoder);
+
     }
 
     @Test
@@ -38,7 +40,6 @@ class MemberServiceImplTest {
     void registerMember() {
 
         MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest(
-                1L,
                 "marco@nhnacademy.com",
                 "마르코",
                 "a123456789!",
@@ -101,7 +102,6 @@ class MemberServiceImplTest {
     void registerMember_exception_case1() {
 
         MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest(
-                1L,
                 "marco@nhnacademy.com",
                 "마르코",
                 "a123456789!",
@@ -124,7 +124,6 @@ class MemberServiceImplTest {
     void registerMember_exception_case2() {
 
         MemberRegisterRequest memberRegisterRequest = new MemberRegisterRequest(
-                1L,
                 "marco@nhnacademy.com",
                 "마르코",
                 "a123456789!",
@@ -492,15 +491,78 @@ class MemberServiceImplTest {
         Mockito.verify(memberRepository, Mockito.never()).updatePassword(Mockito.anyLong(),Mockito.anyString());
     }
 
+    @Test
+    @DisplayName("로그인")
+    void doLogin(){
+        LoginRequest loginRequest = new LoginRequest("marco@nhnacademy.com","1234567890a!");
+
+        Member member = Member.ofExistingMember(1L,
+                "marco@nhnacademy.com",
+                "마르코",
+                passwordEncoder.encode(loginRequest.getPassword()),
+                "01012345678",
+                LocalDateTime.now().minusDays(-30),
+                LocalDateTime.now().plusDays(5),
+                LocalDateTime.now().plusDays(30)
+        );
+
+        Mockito.when(memberRepository.findByMbEmail(Mockito.anyString())).thenReturn(Optional.of(member));
+
+        LoginMember loginMember = memberService.doLogin(loginRequest);
+
+        Assertions.assertAll(
+                ()->{
+                    Assertions.assertNotNull(loginMember);
+                },
+                ()->{
+                    Assertions.assertEquals(1l, loginMember.getMbNo());
+                },
+                ()->{
+                    Assertions.assertEquals("marco@nhnacademy.com", loginMember.getMbEmail());
+                },
+                ()->{
+                    Assertions.assertEquals("마르코",loginMember.getMbName());
+                }
+        );
+        Mockito.verify(memberRepository, Mockito.times(1)).findByMbEmail(Mockito.anyString());
+    }
 
     @Test
-    @DisplayName("passwordEncoder - test")
-    void passwordEncoder_validate() {
-        String rawPassword = "oldPassword";
-        String hashedPassword = BCrypt.hashpw(rawPassword, BCrypt.gensalt());
+    @DisplayName("로그인-실폐-회원이 존재하지 않음 : 401")
+    void doLogin_exception_case1() {
+        LoginRequest loginRequest = new LoginRequest("marco@nhnacademy.com","1234567890a!");
 
-        // 비밀번호 검증
-        boolean actual = BCrypt.checkpw(rawPassword, hashedPassword);
+        Mockito.when(memberRepository.findByMbEmail(Mockito.anyString())).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(UnauthorizedException.class,()->{
+            memberService.doLogin(loginRequest);
+        });
+
+    }
+
+    @Test
+    @DisplayName("로그인-실폐-회원은 존재하지만 비밀번호 불일치 : 401")
+    void doLogin_exception_case2() {
+        LoginRequest loginRequest = new LoginRequest("marco@nhnacademy.com","1234567890a!");
+
+        Mockito.when(memberRepository.findByMbEmail(Mockito.anyString())).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(UnauthorizedException.class,()->{
+            memberService.doLogin(loginRequest);
+        });
+
+        Mockito.verify(memberRepository, Mockito.times(1)).findByMbEmail(Mockito.anyString());
+    }
+
+    @Test
+    @DisplayName("passwordEncoder - matches")
+    void passwordEncoder_validate() {
+        String rawPassword = "a1234567890!";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        log.debug("rawPassword: {}", rawPassword);
+        log.debug("encodedPassword: {}", encodedPassword);
+        boolean actual = passwordEncoder.matches(rawPassword, encodedPassword);
         Assertions.assertTrue(actual);
     }
+
 }

@@ -5,6 +5,7 @@ import com.nhnacademy.blog.common.annotation.Qualifier;
 import com.nhnacademy.blog.common.context.Context;
 import com.nhnacademy.blog.common.context.exception.BeanNotFoundException;
 import com.nhnacademy.blog.common.reflection.exception.ReflectionException;
+import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 
@@ -13,7 +14,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
 import java.util.*;
-
+@Slf4j
 public class ReflectionUtils {
     private ReflectionUtils() {
         throw new IllegalStateException("Utility class");
@@ -49,7 +50,6 @@ public class ReflectionUtils {
         Reflections reflections = new Reflections(packageName);
         Set<Class<? extends T>> classes = reflections.getSubTypesOf(targetClass);
         List<ClassWrapper<T>> classWrappers = new ArrayList<>();
-
         for(Class<? extends T> clazz : classes){
             InitOrder initOrder = clazz.getAnnotation(InitOrder.class);
             int order = Objects.nonNull(initOrder) ? initOrder.value() : 1;
@@ -59,7 +59,7 @@ public class ReflectionUtils {
                 throw new ReflectionException(e);
             }
         }
-
+        
         //@InitOrder value 기준으로 내림차순 정렬
         Collections.sort(classWrappers, (o1, o2)->o1.getOrder()-o2.getOrder());
         return classWrappers;
@@ -71,6 +71,7 @@ public class ReflectionUtils {
      * @param annotatedClass
      * @return
      */
+
     @SuppressWarnings("java:S3740")
     public static List<ClassWrapper> classScanByAnnotated(String packageName, Class<? extends Annotation> annotatedClass) {
 
@@ -101,7 +102,6 @@ public class ReflectionUtils {
      */
     public static <T>Constructor<T> findFirstConstructor(Class<?> clazz) {
         Constructor<?>[] constructors = clazz.getConstructors();
-
         if(constructors.length > 0){
             return (Constructor<T>) constructors[0];
         }

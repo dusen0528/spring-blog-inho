@@ -21,7 +21,7 @@ import com.nhnacademy.blog.role.repository.impl.JdbcRoleRepository;
 import java.util.Objects;
 import java.util.Optional;
 
-@Service(name = BlogMemberServiceImpl.BEAN_NAME)
+@Service(BlogMemberServiceImpl.BEAN_NAME)
 public class BlogMemberServiceImpl implements BlogMemberService {
 
     public static final String BEAN_NAME="blogMemberService";

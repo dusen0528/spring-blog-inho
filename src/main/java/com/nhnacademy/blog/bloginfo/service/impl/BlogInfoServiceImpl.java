@@ -21,7 +21,7 @@ import com.nhnacademy.blog.common.exception.NotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-@Service(name = BlogInfoServiceImpl.BEAN_NAME)
+@Service(BlogInfoServiceImpl.BEAN_NAME)
 public class BlogInfoServiceImpl implements BlogInfoService {
     public static final String BEAN_NAME = "blogInfoService";
 
@@ -38,8 +38,10 @@ public class BlogInfoServiceImpl implements BlogInfoService {
 
     @Override
     public BlogResponse createBlog(BlogCreateRequest blogCreateRequest) {
+
         //1.처음 생성된 블로그라면(메인블로그기 존재하지 않다면) isblogMain = true로 설정한다.
         boolean existMainBlog = blogRepository.existMainBlogByMbNo(blogCreateRequest.getMbNo());
+
         //블로그가 존재하지 않다면 isBlogMain=true 설정
         boolean isBlogMain = !existMainBlog;
 
@@ -65,7 +67,7 @@ public class BlogInfoServiceImpl implements BlogInfoService {
     }
 
     @Override
-    public void updateBlog(BlogUpdateRequest blogUpdateRequest) {
+    public BlogResponse updateBlog(BlogUpdateRequest blogUpdateRequest) {
 
         //blog 존재여부 체크
         checkExistBlog(blogUpdateRequest.getBlogId());
@@ -89,6 +91,8 @@ public class BlogInfoServiceImpl implements BlogInfoService {
             blogRepository.updateBlogMain(blogUpdateRequest.getBlogId(),true);
         }
         blogRepository.update(blogUpdateRequest);
+
+        return getBlog(blogUpdateRequest.getBlogId());
     }
 
     @Override
@@ -141,4 +145,5 @@ public class BlogInfoServiceImpl implements BlogInfoService {
             throw new ForbiddenException();
         }
     }
+
 }

@@ -5,29 +5,33 @@ import com.nhnacademy.blog.common.annotation.stereotype.Service;
 import com.nhnacademy.blog.common.exception.BadRequestException;
 import com.nhnacademy.blog.common.exception.ConflictException;
 import com.nhnacademy.blog.common.exception.NotFoundException;
+import com.nhnacademy.blog.common.exception.UnauthorizedException;
+import com.nhnacademy.blog.common.security.PasswordEncoder;
+import com.nhnacademy.blog.common.security.impl.BCryptPasswordEncoder;
 import com.nhnacademy.blog.member.domain.Member;
-import com.nhnacademy.blog.member.dto.MemberPasswordUpdateRequest;
-import com.nhnacademy.blog.member.dto.MemberRegisterRequest;
-import com.nhnacademy.blog.member.dto.MemberResponse;
-import com.nhnacademy.blog.member.dto.MemberUpdateRequest;
+import com.nhnacademy.blog.member.dto.*;
 import com.nhnacademy.blog.member.repository.MemberRepository;
 import com.nhnacademy.blog.member.repository.impl.JdbcMemberRepository;
 import com.nhnacademy.blog.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
-import org.mindrot.jbcrypt.BCrypt;
+
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
-@Service(name = MemberServiceImpl.BEAN_NAME )
+@Service(MemberServiceImpl.BEAN_NAME )
 public class MemberServiceImpl implements MemberService {
     public static final String BEAN_NAME="memberService";
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public MemberServiceImpl(@Qualifier(JdbcMemberRepository.BEAN_NAME) MemberRepository memberRepository) {
+    public MemberServiceImpl(@Qualifier(JdbcMemberRepository.BEAN_NAME) MemberRepository memberRepository,
+                             @Qualifier(BCryptPasswordEncoder.BEAN_NAME) PasswordEncoder passwordEncoder
+    ) {
         this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class MemberServiceImpl implements MemberService {
         checkMobileDuplicate(memberRegisterRequest.getMbMobile());
 
         //3. password를 Bcrypt 암호화, https://github.com/djmdjm/jBCrypt
-        String mbPassword = BCrypt.hashpw(memberRegisterRequest.getMbPassword(), BCrypt.gensalt());
+        String mbPassword = passwordEncoder.encode(memberRegisterRequest.getMbPassword());
 
         Member member = Member.ofNewMember(
                 memberRegisterRequest.getMbEmail(),
@@ -130,15 +134,37 @@ public class MemberServiceImpl implements MemberService {
         log.debug("oldPassword:{}", memberPasswordUpdateRequest.getOldPassword());
         log.debug("mbPassword:{}", member.getMbPassword());
 
-        if(!BCrypt.checkpw(memberPasswordUpdateRequest.getOldPassword(), member.getMbPassword())) {
+        if(!passwordEncoder.matches(memberPasswordUpdateRequest.getOldPassword(), member.getMbPassword())) {
             //3.oldPassword가 일치하지 않다면 예외처리
             throw new BadRequestException("password dose not match");
         }
         
         //newPassword Bcrypt 암호화
-        String newPassword = BCrypt.hashpw(memberPasswordUpdateRequest.getNewPassword(), BCrypt.gensalt());
+        String newPassword = passwordEncoder.encode(memberPasswordUpdateRequest.getNewPassword());
 
         memberRepository.updatePassword(memberPasswordUpdateRequest.getMbNo(), newPassword);
+    }
+
+    @Override
+    public LoginMember doLogin(LoginRequest loginRequest) {
+
+        Optional<Member> memberOptional = memberRepository.findByMbEmail(loginRequest.getEmail());
+        //1.회원이 존재하지 않을 때
+        if(memberOptional.isEmpty()){
+            throw new UnauthorizedException("login failed");
+        }
+
+        //2.회원은 존재하지만 password가 일치하지 않을 때
+        boolean isPasswordMatch = passwordEncoder.matches(loginRequest.getPassword(), memberOptional.get().getMbPassword());
+        if(!isPasswordMatch){
+            throw new UnauthorizedException("login failed");
+        }
+
+        return new LoginMember(
+                memberOptional.get().getMbNo(),
+                memberOptional.get().getMbEmail(),
+                memberOptional.get().getMbName()
+        );
     }
 
     private void checkMemberExists(long mbNo) {

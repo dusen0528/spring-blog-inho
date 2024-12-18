@@ -3,7 +3,6 @@ package com.nhnacademy.blog.category.repository.impl;
 import com.nhnacademy.blog.category.domain.Category;
 import com.nhnacademy.blog.category.dto.CategoryResponse;
 import com.nhnacademy.blog.category.dto.CategoryUpdateRequest;
-import com.nhnacademy.blog.category.dto.RootCategoryUpdateRequest;
 import com.nhnacademy.blog.category.repository.CategoryRepository;
 import com.nhnacademy.blog.common.annotation.stereotype.Repository;
 import com.nhnacademy.blog.common.db.exception.DatabaseException;
@@ -18,7 +17,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @SuppressWarnings("java:S1192")
-@Repository(name = JdbcCategoryRepository.BEAN_NAME)
+@Repository(JdbcCategoryRepository.BEAN_NAME)
 public class JdbcCategoryRepository implements CategoryRepository {
     public static final String BEAN_NAME = "jdbcCategoryRepository";
 

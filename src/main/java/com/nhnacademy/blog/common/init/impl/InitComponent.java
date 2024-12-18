@@ -9,6 +9,7 @@ import com.nhnacademy.blog.common.init.Initializeable;
 import com.nhnacademy.blog.common.reflection.ClassWrapper;
 import com.nhnacademy.blog.common.reflection.ReflectionUtils;
 import com.nhnacademy.blog.common.reflection.exception.ReflectionException;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Constructor;
@@ -25,11 +26,11 @@ public class InitComponent implements Initializeable {
         List<ClassWrapper> classWrappers =  ReflectionUtils.classScanByAnnotated("com.nhnacademy.blog", Component.class);
 
         //1순위
-        Set<Class<?>> componentList = new HashSet<>();
+        List<Class<?>> componentList = new ArrayList<>();
         //2순위
-        Set<Class<?>> serviceList = new HashSet<>();
+        List<Class<?>> serviceList = new ArrayList<>();
         //3순위
-        Set<Class<?>> repositoryList = new HashSet<>();
+        List<Class<?>> repositoryList = new ArrayList<>();
 
         for (ClassWrapper<Component> classWrapper : classWrappers) {
             log.debug("find stereotype class: {}", classWrapper.getClazz().getSimpleName());
@@ -53,28 +54,40 @@ public class InitComponent implements Initializeable {
 
         for (Class<?> aClass : componentList) {
             Component component = aClass.getDeclaredAnnotation(Component.class);
-            String beanName = component.name();
+            String beanName = component.value().isBlank() ? classNameToBeanName(aClass) : component.value();
             createInstance(context,aClass,beanName);
         }
 
         for(Class<?> aClass : repositoryList) {
             Repository repository = aClass.getDeclaredAnnotation(Repository.class);
-            String beanName = repository.name();
+            String beanName = repository.value().isBlank() ? classNameToBeanName(aClass) : repository.value();
             createInstance(context,aClass,beanName);
         }
 
         for (Class<?> aClass : serviceList) {
             Service service = aClass.getDeclaredAnnotation(Service.class);
-            String beanName = service.name();
+            String beanName = service.value().isBlank() ? classNameToBeanName(aClass) : service.value();
             createInstance(context,aClass,beanName);
         }
     }//end method
+
+    /**
+     * className -> beanName으로 변경
+     * ex)PasswordEncoder -> passwordEncoder
+     * @param clazz
+     * @return beanName
+     */
+    public static String classNameToBeanName(Class<?> clazz) {
+        String className = clazz.getSimpleName();
+        return Character.toLowerCase(className.charAt(0)) + className.substring(1);
+    }
+
 
     private void createInstance(Context context, Class targetClass, String beanName) {
 
         //해당 targetClass 생성자 목록 구하기.
         Constructor[] constructors = targetClass.getConstructors();
-        log.debug("constructors-length:{}",constructors.length);
+        log.debug("{} - constructors-length:{}", targetClass.getSimpleName() ,constructors.length);
 
         //객체 생성에 사용할 Constructor를 구합니다.
         Constructor constructor = ReflectionUtils.findFirstConstructor(targetClass);

@@ -10,7 +10,7 @@ import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 import java.sql.*;
 import java.util.Optional;
 
-@Repository(name = JdbcBlogMemberMappingRepository.BEAN_NAME)
+@Repository(JdbcBlogMemberMappingRepository.BEAN_NAME)
 public class JdbcBlogMemberMappingRepository implements BlogMemberMappingRepository {
     public static final String BEAN_NAME = "jdbcBlogMemberMappingRepository";
 

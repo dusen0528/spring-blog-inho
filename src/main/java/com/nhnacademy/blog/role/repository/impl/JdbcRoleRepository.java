@@ -10,7 +10,7 @@ import com.nhnacademy.blog.role.repository.RoleRepository;
 import java.sql.*;
 import java.util.Optional;
 
-@Repository(name = JdbcRoleRepository.BEAN_NAME)
+@Repository(JdbcRoleRepository.BEAN_NAME)
 public class JdbcRoleRepository implements RoleRepository {
     public static final String BEAN_NAME = "jdbcRoleRepository";
 

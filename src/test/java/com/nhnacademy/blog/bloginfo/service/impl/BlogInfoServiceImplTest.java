@@ -155,11 +155,46 @@ class BlogInfoServiceImplTest {
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
         Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
 
-        blogInfoService.updateBlog(blogUpdateRequest);
+        Blog blog = Blog.ofExistingBlogInfo(
+                1L,
+                "marco",
+                false,
+                "marco's blog",
+                "nhn-academy-marco",
+                "welcome to my blog!!",
+                true,
+                LocalDateTime.now().minusDays(30),
+                LocalDateTime.now()
+        );
 
-        Mockito.verify(blogRepository, Mockito.times(1)).existByBlogId(Mockito.anyLong());
+        Mockito.when(blogRepository.findByBlogId(Mockito.anyLong())).thenReturn(Optional.of(blog));
+        BlogResponse blogResponse = blogInfoService.updateBlog(blogUpdateRequest);
+
+        Assertions.assertAll(
+                ()->{
+                    Assertions.assertEquals(1l,blogResponse.getBlogId());
+                },
+                ()->{
+                    Assertions.assertEquals("marco",blogResponse.getBlogFid());
+                },
+                ()->{
+                    Assertions.assertEquals(false,blogResponse.isBlogMain());
+                },
+                ()->{
+                    Assertions.assertEquals(true,blogResponse.getBlogIsPublic());
+                },
+                ()->{
+                    Assertions.assertEquals("marco's blog",blogResponse.getBlogName());
+                },
+                ()->{
+                    Assertions.assertEquals("nhn-academy-marco",blogResponse.getBlogMbNickname());
+                },
+                ()->{
+                    Assertions.assertEquals("welcome to my blog!!",blogResponse.getBlogDescription());
+                }
+        );
+
         Mockito.verify(blogRepository, Mockito.times(1)).update(Mockito.any(BlogUpdateRequest.class));
-
     }
 
     @Test
@@ -251,14 +286,55 @@ class BlogInfoServiceImplTest {
 
         //블로그 존재여부 체크
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
+
         //MbNo blogId로 blogMember 조회
         Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
         Mockito.when(blogRepository.findAllBlogs(Mockito.anyLong(),Mockito.anyString())).thenReturn(blogResponseList);
 
-        blogInfoService.updateBlog(blogUpdateRequest);
+        Blog blog = Blog.ofExistingBlogInfo(
+                1L,
+                "marco",
+                true,
+                "marco's blog",
+                "nhn-academy-marco",
+                "welcome to my blog!!",
+                true,
+                LocalDateTime.now().minusDays(30),
+                LocalDateTime.now()
+        );
+
+        Mockito.when(blogRepository.findByBlogId(Mockito.anyLong())).thenReturn(Optional.of(blog));
+
+
+        BlogResponse blogResponse = blogInfoService.updateBlog(blogUpdateRequest);
+
+        Assertions.assertAll(
+                ()->{
+                    Assertions.assertEquals(1l,blogResponse.getBlogId());
+                },
+                ()->{
+                    Assertions.assertEquals("marco",blogResponse.getBlogFid());
+                },
+                ()->{
+                    Assertions.assertEquals(true,blogResponse.isBlogMain());
+                },
+                ()->{
+                    Assertions.assertEquals(true,blogResponse.getBlogIsPublic());
+                },
+                ()->{
+                    Assertions.assertEquals("marco's blog",blogResponse.getBlogName());
+                },
+                ()->{
+                    Assertions.assertEquals("nhn-academy-marco",blogResponse.getBlogMbNickname());
+                },
+                ()->{
+                    Assertions.assertEquals("welcome to my blog!!",blogResponse.getBlogDescription());
+                }
+        );
 
         Mockito.verify(blogRepository, Mockito.times(1)).existByBlogId(Mockito.anyLong());
         Mockito.verify(blogRepository, Mockito.times(1)).findAllBlogs(Mockito.anyLong(), Mockito.anyString());
+
         //최소 1회이상 호출
         Mockito.verify(blogRepository, Mockito.atLeast(1)).updateBlogMain(Mockito.anyLong(),Mockito.anyBoolean());
         Mockito.verify(blogRepository, Mockito.times(1)).update(Mockito.any(BlogUpdateRequest.class));
@@ -285,7 +361,6 @@ class BlogInfoServiceImplTest {
 
         Mockito.verify(blogRepository, Mockito.times(1)).existByBlogId(Mockito.anyLong());
         Mockito.verify(blogRepository, Mockito.times(1)).updateByBlogIsPublic(Mockito.anyLong(),Mockito.anyBoolean());
-
     }
 
     @Test

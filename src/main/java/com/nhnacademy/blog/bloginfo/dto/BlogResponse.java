@@ -62,4 +62,18 @@ public class BlogResponse {
         return updatedAt;
     }
 
+    @Override
+    public String toString() {
+        return "BlogResponse{" +
+                "blogId=" + blogId +
+                ", blogFid='" + blogFid + '\'' +
+                ", blogMain=" + blogMain +
+                ", blogName='" + blogName + '\'' +
+                ", blogMbNickname='" + blogMbNickname + '\'' +
+                ", blogDescription='" + blogDescription + '\'' +
+                ", blogIsPublic=" + blogIsPublic +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

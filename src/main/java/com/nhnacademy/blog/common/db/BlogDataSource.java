@@ -7,7 +7,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import javax.sql.DataSource;
 import java.time.Duration;
 
-@Component(name = BlogDataSource.BEAN_NAME )
+@Component(BlogDataSource.BEAN_NAME )
 public class BlogDataSource {
     public static final String BEAN_NAME="dataSource";
 

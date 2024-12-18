@@ -7,6 +7,7 @@ import java.util.List;
 public interface CategoryService {
     //root category 생성
     CategoryResponse createRootCategory(RootCategoryCreateRequest rootCategoryCreateRequest);
+    CategoryResponse initializeCreateRootCategory(RootCategoryCreateRequest rootCategoryCreateRequest);
     //sub category 생성
     CategoryResponse createSubCategory(SubCategoryCreateRequest subCategoryCreateRequest);
     //카테고리 수정

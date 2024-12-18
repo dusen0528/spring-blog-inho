@@ -2,8 +2,6 @@ package com.nhnacademy.blog.member.dto;
 
 public class MemberRegisterRequest {
 
-    //회원_번호
-    private final Long mbNo;
     //회원_이메일
     private final String mbEmail;
     //회원_이름
@@ -13,16 +11,11 @@ public class MemberRegisterRequest {
     //모바일 연락처
     private final String mbMobile;
 
-    public MemberRegisterRequest(Long mbNo, String mbEmail, String mbName, String mbPassword, String mbMobile) {
-        this.mbNo = mbNo;
+    public MemberRegisterRequest(String mbEmail, String mbName, String mbPassword, String mbMobile) {
         this.mbEmail = mbEmail;
         this.mbName = mbName;
         this.mbPassword = mbPassword;
         this.mbMobile = mbMobile;
-    }
-
-    public Long getMbNo() {
-        return mbNo;
     }
 
     public String getMbEmail() {

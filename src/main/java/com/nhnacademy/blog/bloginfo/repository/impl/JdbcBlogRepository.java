@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@Repository(name = JdbcBlogRepository.BEAN_NAME)
+@Repository(JdbcBlogRepository.BEAN_NAME)
 public class JdbcBlogRepository implements BlogRepository {
     public static final String BEAN_NAME = "jdbcBlogRepository";
 
@@ -233,14 +233,14 @@ public class JdbcBlogRepository implements BlogRepository {
         Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = """
                     SELECT 
-                        count(*)
+                        1
                     FROM members a
                         INNER JOIN blog_members_mapping b ON a.mb_no = b.mb_no
                         INNER JOIN blogs c ON b.blog_id = c.blog_id
                     WHERE 
                              a.mb_no=? 
-                         and a.blog_is_main=1;
-                         and b.role_id='ROLE_OWNER';
+                         and c.blog_main=1
+                         and b.role_id='ROLE_OWNER'
                 """;
 
         try(PreparedStatement psmt = connection.prepareStatement(sql)){
