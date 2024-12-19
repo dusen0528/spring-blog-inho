@@ -6,10 +6,12 @@ import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
 import com.nhnacademy.blog.common.context.Context;
 import com.nhnacademy.blog.common.context.ContextHolder;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 
 import java.util.Optional;
 
+@Slf4j
 class JdbcBlogRepositoryTest {
     static BlogRepository blogRepository;
 
@@ -33,8 +35,10 @@ class JdbcBlogRepositoryTest {
     @Test
     @DisplayName("블로그정보 저장(생성)")
     void save() {
+
         Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         blogRepository.save(blog);
+
         Optional<Blog> blogOptional = blogRepository.findByBlogId(blog.getBlogId());
 
         Assertions.assertTrue(blogOptional.isPresent());

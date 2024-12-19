@@ -1,25 +1,27 @@
 package com.nhnacademy.blog.post.dto;
 
 public class PostSearchRequest {
-    private final Long blogId;
-    private final String keyword;
-    private final String categoryId;
 
-    public PostSearchRequest(Long blogId, String keyword, String categoryId) {
+    private final Long blogId;
+    private final Long categoryId;
+    private final boolean postIsPublic;
+
+    public PostSearchRequest(Long blogId, Long categoryId, boolean postIsPublic) {
         this.blogId = blogId;
-        this.keyword = keyword;
         this.categoryId = categoryId;
+        this.postIsPublic = postIsPublic;
     }
 
     public Long getBlogId() {
         return blogId;
     }
 
-    public String getKeyword() {
-        return keyword;
-    }
-
-    public String getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
+
+    public boolean isPostIsPublic() {
+        return postIsPublic;
+    }
+
 }

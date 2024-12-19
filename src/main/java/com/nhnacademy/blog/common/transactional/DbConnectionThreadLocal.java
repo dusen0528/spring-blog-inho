@@ -27,9 +27,11 @@ public class DbConnectionThreadLocal {
 
         try {
             Connection connection = DbUtils.getDataSource().getConnection();
+
             connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             connection.setAutoCommit(false);
             connectionThreadLocal.set(connection);
+
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
