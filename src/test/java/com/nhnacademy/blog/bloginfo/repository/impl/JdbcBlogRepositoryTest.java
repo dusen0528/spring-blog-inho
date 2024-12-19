@@ -78,6 +78,7 @@ class JdbcBlogRepositoryTest {
     @Test
     @DisplayName("blog삭제")
     void delete() {
+
         Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         blogRepository.save(blog);
         blogRepository.deleteByBlogId(blog.getBlogId());
@@ -86,6 +87,7 @@ class JdbcBlogRepositoryTest {
         Assertions.assertAll(
                 ()-> Assertions.assertTrue(dbBlog.isEmpty())
         );
+
     }
 
     @Test

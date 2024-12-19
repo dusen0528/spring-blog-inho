@@ -1,19 +1,4 @@
--- phpMyAdmin SQL Dump
--- version 5.1.1
--- https://www.phpmyadmin.net/
---
--- Host: 133.186.241.167
--- 생성 시간: 24-12-13 04:41
--- 서버 버전: 8.0.37-0ubuntu0.20.04.3
--- PHP 버전: 7.4.22
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
---
--- 테이블 구조 `blogs`
---
 
 DROP TABLE IF EXISTS `blogs`;
 CREATE TABLE `blogs` (
@@ -28,12 +13,6 @@ CREATE TABLE `blogs` (
                          `updated_at` datetime DEFAULT NULL COMMENT '수정일자'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- --------------------------------------------------------
-
---
--- 테이블 구조 `blog_members_mapping`
---
-
 DROP TABLE IF EXISTS `blog_members_mapping`;
 CREATE TABLE `blog_members_mapping` (
                                         `blog_member_id` bigint NOT NULL COMMENT 'Auto Increaments',
@@ -41,12 +20,6 @@ CREATE TABLE `blog_members_mapping` (
                                         `blog_id` bigint NOT NULL COMMENT '블로그 아이디 , mb_no + blog_id uniquekey 설정',
                                         `role_id` varchar(50) NOT NULL COMMENT '권한_아이디'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- 테이블 구조 `categories`
---
 
 DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories` (
@@ -60,12 +33,6 @@ CREATE TABLE `categories` (
                               `updated_at` datetime DEFAULT NULL COMMENT '블로그_카테고리_수정일자'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- --------------------------------------------------------
-
---
--- 테이블 구조 `members`
---
-
 DROP TABLE IF EXISTS `members`;
 CREATE TABLE `members` (
                            `mb_no` bigint NOT NULL COMMENT '회원번호 ,  auto_increament',
@@ -78,11 +45,32 @@ CREATE TABLE `members` (
                            `withdrawal_at` datetime DEFAULT NULL COMMENT '탈퇴일자'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- --------------------------------------------------------
+DROP TABLE IF EXISTS `posts`;
+CREATE TABLE `posts` (
+                         `post_id` bigint NOT NULL COMMENT '게시물 아이디,auto_increamet',
+                         `blog_id` bigint NOT NULL COMMENT '블로그 아이디 , auto increasement',
+                         `created_mb_no` bigint NOT NULL COMMENT '게시글_생성_회원번호',
+                         `updated_mb_no` bigint DEFAULT NULL COMMENT '게시글_수정_회원번호',
+                         `post_title` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '게시글  제목',
+                         `post_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '게시글 내용',
+                         `post_is_public` tinyint NOT NULL DEFAULT '1' COMMENT '공개여부 , DEFAULT  1, 공개',
+                         `created_at` datetime NOT NULL COMMENT '작성일자',
+                         `updated_at` datetime DEFAULT NULL COMMENT '수정일자'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- 테이블 구조 `roles`
---
+DROP TABLE IF EXISTS `post_categories_mapping`;
+CREATE TABLE `post_categories_mapping` (
+                                           `post_category_id` bigint NOT NULL COMMENT '포스트_카테고리_맵핑 아이디',
+                                           `post_id` bigint NOT NULL COMMENT '게시물 아이디,auto_increamet',
+                                           `category_id` bigint NOT NULL COMMENT '블로그_ 카테고리_아이디 , auto_increament'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+DROP TABLE IF EXISTS `post_tags_mapping`;
+CREATE TABLE `post_tags_mapping` (
+                                     `post_tag_id` bigint NOT NULL COMMENT '포스트 테그_연결_아이디,auto_increaments',
+                                     `tag_id` bigint NOT NULL COMMENT '테그 아이디 , tag_id + post_id unique key 설정',
+                                     `post_id` bigint NOT NULL COMMENT '게시물 아이디'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `roles`;
 CREATE TABLE `roles` (
@@ -91,20 +79,16 @@ CREATE TABLE `roles` (
                          `role_description` varchar(200) DEFAULT NULL COMMENT '권한_설명'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- 테이블의 덤프 데이터 `roles`
---
-
 INSERT INTO `roles` (`role_id`, `role_name`, `role_description`) VALUES
                                                                      ('ROLE_ADMIN', '블로그 시스템 관리자', '전체 시스템 관리자'),
                                                                      ('ROLE_MEMBER', '블로그_회원', '블로그 회원,  팀 블로그 사용시 설정'),
                                                                      ('ROLE_OWNER', '블로그 소유자', '블로그를 소유한 관리자');
 
--- --------------------------------------------------------
-
---
--- 테이블 구조 `topics`
---
+DROP TABLE IF EXISTS `tags`;
+CREATE TABLE `tags` (
+                        `tag_id` bigint NOT NULL COMMENT 'auto_increaments, 테그 아이디',
+                        `tag_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'unique 설정'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 DROP TABLE IF EXISTS `topics`;
 CREATE TABLE `topics` (
@@ -115,10 +99,6 @@ CREATE TABLE `topics` (
                           `created_at` datetime NOT NULL COMMENT '생성일자',
                           `updated_at` datetime DEFAULT NULL COMMENT '수정일자'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- 테이블의 덤프 데이터 `topics`
---
 
 INSERT INTO `topics` (`topic_id`, `topic_pid`, `topic_name`, `topic_sec`, `created_at`, `updated_at`) VALUES
                                                                                                           (1, NULL, '라이프', 1, '2024-12-11 18:08:57', NULL),
@@ -173,113 +153,106 @@ INSERT INTO `topics` (`topic_id`, `topic_pid`, `topic_name`, `topic_sec`, `creat
                                                                                                           (50, 6, '경제', 5, '2024-12-11 18:08:57', NULL),
                                                                                                           (51, 6, '경영·직장', 6, '2024-12-11 18:08:57', NULL);
 
---
--- 덤프된 테이블의 인덱스
---
 
---
--- 테이블의 인덱스 `blogs`
---
 ALTER TABLE `blogs`
     ADD PRIMARY KEY (`blog_id`),
   ADD UNIQUE KEY `blog_fid` (`blog_fid`);
 
---
--- 테이블의 인덱스 `blog_members_mapping`
---
 ALTER TABLE `blog_members_mapping`
     ADD PRIMARY KEY (`blog_member_id`),
   ADD UNIQUE KEY `uk_mb_no_blog_id` (`mb_no`,`blog_id`),
   ADD KEY `fk_mapping_blog_id` (`blog_id`),
   ADD KEY `fk_mapping_role_id` (`role_id`);
 
---
--- 테이블의 인덱스 `categories`
---
 ALTER TABLE `categories`
     ADD PRIMARY KEY (`category_id`),
   ADD KEY `fk_blog_id` (`blog_id`),
   ADD KEY `fk_topic_id` (`topic_id`),
   ADD KEY `fk_parrent_category_id` (`category_pid`);
 
---
--- 테이블의 인덱스 `members`
---
 ALTER TABLE `members`
     ADD PRIMARY KEY (`mb_no`),
   ADD UNIQUE KEY `mb_email` (`mb_email`),
   ADD UNIQUE KEY `mb_mobile` (`mb_mobile`);
 
---
--- 테이블의 인덱스 `roles`
---
+ALTER TABLE `posts`
+    ADD PRIMARY KEY (`post_id`),
+  ADD KEY `fk_posts_blog_id` (`blog_id`),
+  ADD KEY `fk_posts_created_mb_no` (`created_mb_no`),
+  ADD KEY `fk_posts_updated_mb_no` (`updated_mb_no`);
+
+ALTER TABLE `post_categories_mapping`
+    ADD PRIMARY KEY (`post_category_id`),
+  ADD UNIQUE KEY `uk_post_id_category_id` (`post_id`,`category_id`) USING BTREE,
+  ADD KEY `fk_mapping_category_id` (`category_id`);
+
+ALTER TABLE `post_tags_mapping`
+    ADD PRIMARY KEY (`post_tag_id`),
+  ADD KEY `fk_post_tag_post_id` (`post_id`),
+  ADD KEY `fk_post_tag_tag_id` (`tag_id`);
+
 ALTER TABLE `roles`
     ADD PRIMARY KEY (`role_id`);
 
---
--- 테이블의 인덱스 `topics`
---
+ALTER TABLE `tags`
+    ADD PRIMARY KEY (`tag_id`),
+  ADD UNIQUE KEY `tag_name` (`tag_name`);
+
 ALTER TABLE `topics`
     ADD PRIMARY KEY (`topic_id`),
   ADD KEY `fk_parent_topic_id` (`topic_pid`);
 
---
--- 덤프된 테이블의 AUTO_INCREMENT
---
 
---
--- 테이블의 AUTO_INCREMENT `blogs`
---
 ALTER TABLE `blogs`
-    MODIFY `blog_id` bigint NOT NULL AUTO_INCREMENT COMMENT '블로그 아이디 , auto increasement', AUTO_INCREMENT=541;
+    MODIFY `blog_id` bigint NOT NULL AUTO_INCREMENT COMMENT '블로그 아이디 , auto increasement', AUTO_INCREMENT=582;
 
---
--- 테이블의 AUTO_INCREMENT `blog_members_mapping`
---
 ALTER TABLE `blog_members_mapping`
-    MODIFY `blog_member_id` bigint NOT NULL AUTO_INCREMENT COMMENT 'Auto Increaments', AUTO_INCREMENT=24;
+    MODIFY `blog_member_id` bigint NOT NULL AUTO_INCREMENT COMMENT 'Auto Increaments', AUTO_INCREMENT=33;
 
---
--- 테이블의 AUTO_INCREMENT `categories`
---
 ALTER TABLE `categories`
-    MODIFY `category_id` bigint NOT NULL AUTO_INCREMENT COMMENT '블로그_ 카테고리_아이디 , auto_increament', AUTO_INCREMENT=631;
+    MODIFY `category_id` bigint NOT NULL AUTO_INCREMENT COMMENT '블로그_ 카테고리_아이디 , auto_increament', AUTO_INCREMENT=662;
 
---
--- 테이블의 AUTO_INCREMENT `members`
---
 ALTER TABLE `members`
-    MODIFY `mb_no` bigint NOT NULL AUTO_INCREMENT COMMENT '회원번호 ,  auto_increament', AUTO_INCREMENT=629;
+    MODIFY `mb_no` bigint NOT NULL AUTO_INCREMENT COMMENT '회원번호 ,  auto_increament', AUTO_INCREMENT=652;
 
---
--- 테이블의 AUTO_INCREMENT `topics`
---
+ALTER TABLE `posts`
+    MODIFY `post_id` bigint NOT NULL AUTO_INCREMENT COMMENT '게시물 아이디,auto_increamet';
+
+ALTER TABLE `post_categories_mapping`
+    MODIFY `post_category_id` bigint NOT NULL AUTO_INCREMENT COMMENT '포스트_카테고리_맵핑 아이디';
+
+ALTER TABLE `post_tags_mapping`
+    MODIFY `post_tag_id` bigint NOT NULL AUTO_INCREMENT COMMENT '포스트 테그_연결_아이디,auto_increaments';
+
+ALTER TABLE `tags`
+    MODIFY `tag_id` bigint NOT NULL AUTO_INCREMENT COMMENT 'auto_increaments, 테그 아이디';
+
 ALTER TABLE `topics`
-    MODIFY `topic_id` int NOT NULL AUTO_INCREMENT COMMENT '토픽_아이디, AUTO_INCREAMENTS', AUTO_INCREMENT=607;
+    MODIFY `topic_id` int NOT NULL AUTO_INCREMENT COMMENT '토픽_아이디, AUTO_INCREAMENTS', AUTO_INCREMENT=627;
 
---
--- 덤프된 테이블의 제약사항
---
 
---
--- 테이블의 제약사항 `blog_members_mapping`
---
 ALTER TABLE `blog_members_mapping`
     ADD CONSTRAINT `fk_mapping_blog_id` FOREIGN KEY (`blog_id`) REFERENCES `blogs` (`blog_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   ADD CONSTRAINT `fk_mapping_role_id` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   ADD CONSTRAINT `fk_mb_no` FOREIGN KEY (`mb_no`) REFERENCES `members` (`mb_no`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
---
--- 테이블의 제약사항 `categories`
---
 ALTER TABLE `categories`
     ADD CONSTRAINT `fk_blog_id` FOREIGN KEY (`blog_id`) REFERENCES `blogs` (`blog_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   ADD CONSTRAINT `fk_parrent_category_id` FOREIGN KEY (`category_pid`) REFERENCES `categories` (`category_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   ADD CONSTRAINT `fk_topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`topic_id`) ON DELETE SET NULL ON UPDATE RESTRICT;
 
---
--- 테이블의 제약사항 `topics`
---
+ALTER TABLE `posts`
+    ADD CONSTRAINT `fk_posts_blog_id` FOREIGN KEY (`blog_id`) REFERENCES `blogs` (`blog_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `fk_posts_created_mb_no` FOREIGN KEY (`created_mb_no`) REFERENCES `members` (`mb_no`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `fk_posts_updated_mb_no` FOREIGN KEY (`updated_mb_no`) REFERENCES `members` (`mb_no`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE `post_categories_mapping`
+    ADD CONSTRAINT `fk_mapping_category_id` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `fk_mapping_post_id` FOREIGN KEY (`post_id`) REFERENCES `posts` (`post_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE `post_tags_mapping`
+    ADD CONSTRAINT `fk_post_tag_post_id` FOREIGN KEY (`post_id`) REFERENCES `posts` (`post_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `fk_post_tag_tag_id` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`tag_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
 ALTER TABLE `topics`
     ADD CONSTRAINT `fk_parent_topic_id` FOREIGN KEY (`topic_pid`) REFERENCES `topics` (`topic_id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
-COMMIT;

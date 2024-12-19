@@ -1,5 +1,9 @@
 package com.nhnacademy.blog.topic.repository.impl;
 
+import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
+import com.nhnacademy.blog.bloginfo.repository.impl.JdbcBlogRepository;
+import com.nhnacademy.blog.category.repository.CategoryRepository;
+import com.nhnacademy.blog.category.repository.impl.JdbcCategoryRepository;
 import com.nhnacademy.blog.common.context.Context;
 import com.nhnacademy.blog.common.context.ContextHolder;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
