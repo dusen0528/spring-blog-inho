@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentMap;
 
 @Slf4j
 public class ApplicationContext  implements Context{
-    ConcurrentMap<String, Object> beanMap;
+    private final ConcurrentMap<String, Object> beanMap;
 
     public ApplicationContext() {
         //map 초기화
@@ -21,7 +21,7 @@ public class ApplicationContext  implements Context{
         initialize();
     }
 
-    private void initialize(){
+    private synchronized void initialize(){
 
         log.debug("Initializeable based, initializing application context");
 
@@ -44,19 +44,19 @@ public class ApplicationContext  implements Context{
     }
 
     @Override
-    public void registerBean(String name, Object object) {
+    public synchronized void registerBean(String name, Object object) {
         objectNameCheck(name);
         beanMap.put(name,object);
     }
 
     @Override
-    public void removeBean(String name) {
+    public synchronized void removeBean(String name) {
         objectNameCheck(name);
         beanMap.remove(name);
     }
 
     @Override
-    public Object getBean(String name) {
+    public synchronized Object getBean(String name) {
         objectNameCheck(name);
         Object object =  beanMap.get(name);
 

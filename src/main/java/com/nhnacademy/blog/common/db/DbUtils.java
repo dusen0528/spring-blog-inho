@@ -11,7 +11,7 @@ public class DbUtils {
         throw new IllegalStateException("Utility class");
     }
 
-    public static DataSource getDataSource(){
+    public static synchronized DataSource getDataSource(){
         Context context = ContextHolder.getApplicationContext();
         BlogDataSource blogDataSource = (BlogDataSource) context.getBean(BlogDataSource.BEAN_NAME);
         return blogDataSource.getDataSource();

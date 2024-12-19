@@ -17,7 +17,7 @@ public class DbConnectionThreadLocal {
         throw new IllegalStateException();
     }
 
-    public static void initialize(){
+    public static synchronized void initialize(){
 
         //connection pool에서 connectionThreadLocal에 connection을 할당합니다.
 
@@ -27,11 +27,9 @@ public class DbConnectionThreadLocal {
 
         try {
             Connection connection = DbUtils.getDataSource().getConnection();
-
             connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             connection.setAutoCommit(false);
             connectionThreadLocal.set(connection);
-
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }

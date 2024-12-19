@@ -18,7 +18,7 @@ public class InitDataSource implements Initializeable {
     public static final String BEAN_NAME = "dataSource";
     
     @Override
-    public void initialize(Context context) {
+    public synchronized void initialize(Context context) {
         DbProperties dbProperties = (DbProperties) context.getBean(DbProperties.BEAN_NAME);
         DataSource dataSource = createDataSourceByC3p0(dbProperties);
         context.registerBean(BEAN_NAME,dataSource);
