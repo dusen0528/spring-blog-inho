@@ -18,7 +18,7 @@ class JdbcTagRepositoryTest {
     @BeforeAll
     static void beforeAll() {
         Context context = ContextHolder.getApplicationContext();
-        tagRepository = (JdbcTagRepository) context.getBean(JdbcTagRepository.TABLE_NAME);
+        tagRepository = (JdbcTagRepository) context.getBean(JdbcTagRepository.BEAN_NAME);
     }
 
     @BeforeEach
