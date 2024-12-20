@@ -235,7 +235,7 @@ public class JdbcBlogRepository implements BlogRepository {
                     SELECT 
                         1
                     FROM members a
-                        INNER JOIN blog_members_mapping b ON a.mb_no = b.mb_no
+                        INNER JOIN blog_member_mappings b ON a.mb_no = b.mb_no
                         INNER JOIN blogs c ON b.blog_id = c.blog_id
                     WHERE 
                              a.mb_no=? 
@@ -306,7 +306,7 @@ public class JdbcBlogRepository implements BlogRepository {
                     select
                     	count(*)
                     from
-                    	blog_members_mapping a
+                    	blog_member_mappings a
                         left join blogs b on a.blog_id = b.blog_id
                     where
                     	a.blog_id=b.blog_id
@@ -346,7 +346,7 @@ public class JdbcBlogRepository implements BlogRepository {
                     b.created_at,
                     b.updated_at
                 from
-                	blog_members_mapping a
+                	blog_member_mappings a
                     left join blogs b on a.blog_id = b.blog_id
                 where
                 	a.blog_id=b.blog_id

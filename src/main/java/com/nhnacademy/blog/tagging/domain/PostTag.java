@@ -2,13 +2,14 @@ package com.nhnacademy.blog.tagging.domain;
 
 public class PostTag {
     private final Long postTagId;
-    private final Long tagId;
     private final Long postId;
+    private final Long tagId;
 
-    private PostTag(Long postTagId, Long tagId, Long postId) {
+
+    private PostTag(Long postTagId, Long postId, Long tagId) {
         this.postTagId = postTagId;
-        this.tagId = tagId;
         this.postId = postId;
+        this.tagId = tagId;
     }
 
     public Long getPostTagId() {
@@ -23,12 +24,12 @@ public class PostTag {
         return postId;
     }
 
-    public static PostTag ofNewPostTag(Long tagId, Long postId) {
-        return new PostTag(null, tagId, postId);
+    public static PostTag ofNewPostTag(Long postId,Long tagId) {
+        return new PostTag(null, postId, tagId );
     }
 
-    public static PostTag ofExistingPostTag(Long postTagId, Long tagId, Long postId) {
-        return new PostTag(postTagId, tagId, postId);
+    public static PostTag ofExistingPostTag(Long postTagId, Long postId, Long tagId) {
+        return new PostTag(postTagId, postId, tagId );
     }
 
 }

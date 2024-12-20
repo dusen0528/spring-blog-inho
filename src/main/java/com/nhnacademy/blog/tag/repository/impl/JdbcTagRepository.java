@@ -11,9 +11,9 @@ import com.nhnacademy.blog.tag.repository.TagRepository;
 import java.sql.*;
 import java.util.Optional;
 
-@Repository(JdbcTagRepository.TABLE_NAME)
+@Repository(JdbcTagRepository.BEAN_NAME)
 public class JdbcTagRepository implements TagRepository {
-    public static final String TABLE_NAME = "jdbcTagRepository";
+    public static final String BEAN_NAME = "jdbcTagRepository";
 
     @Override
     public void save(Tag tag) {

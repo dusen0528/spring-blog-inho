@@ -54,4 +54,12 @@ public class PageRequest implements Pageable {
     public boolean hasPrevious() {
         return pageNumber > 0;
     }
+
+    @Override
+    public String toString() {
+        return "PageRequest{" +
+                "pageNumber=" + pageNumber +
+                ", pageSize=" + pageSize +
+                '}';
+    }
 }

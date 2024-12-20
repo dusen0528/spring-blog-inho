@@ -19,7 +19,7 @@ public class JdbcBlogMemberMappingRepository implements BlogMemberMappingReposit
         Connection connection = DbConnectionThreadLocal.getConnection();
 
         String sql = """
-                    insert into blog_members_mapping set 
+                    insert into blog_member_mappings set 
                         mb_no = ?,
                         blog_id = ?,
                         role_id = ?
@@ -47,7 +47,7 @@ public class JdbcBlogMemberMappingRepository implements BlogMemberMappingReposit
     public void deleteByBlogMemberMappingId(Long blogMemberId) {
         Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = """
-                    delete from blog_members_mapping where blog_member_id=?
+                    delete from blog_member_mappings where blog_member_id=?
                 """;
         try(PreparedStatement psmt = connection.prepareStatement(sql)){
             psmt.setLong(1,blogMemberId);
@@ -66,7 +66,7 @@ public class JdbcBlogMemberMappingRepository implements BlogMemberMappingReposit
                     mb_no, 
                     blog_id, 
                     role_id 
-                from blog_members_mapping
+                from blog_member_mappings
                 where 
                     blog_member_id=?
                 """;
@@ -102,7 +102,7 @@ public class JdbcBlogMemberMappingRepository implements BlogMemberMappingReposit
                     blog_id, 
                     role_id
                 from 
-                    blog_members_mapping
+                    blog_member_mappings
                 where 
                     mb_no=? and blog_id=?
                 """;
