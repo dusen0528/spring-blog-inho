@@ -8,10 +8,7 @@ import com.nhnacademy.blog.blogmember.repository.BlogMemberMappingRepository;
 import com.nhnacademy.blog.blogmember.repository.impl.JdbcBlogMemberMappingRepository;
 import com.nhnacademy.blog.common.annotation.Qualifier;
 import com.nhnacademy.blog.common.annotation.stereotype.Service;
-import com.nhnacademy.blog.common.exception.BadRequestException;
-import com.nhnacademy.blog.common.exception.ForbiddenException;
-import com.nhnacademy.blog.common.exception.NotFoundException;
-import com.nhnacademy.blog.common.exception.UnauthorizedException;
+import com.nhnacademy.blog.common.exception.*;
 import com.nhnacademy.blog.common.websupport.page.Page;
 import com.nhnacademy.blog.common.websupport.pageable.Pageable;
 import com.nhnacademy.blog.post.domain.Post;
@@ -28,7 +25,8 @@ import java.util.Optional;
 
 @Service(PostServiceImpl.BEAN_NAME)
 public class PostServiceImpl implements PostService {
-    public final static String BEAN_NAME="postServiceImpl";
+
+    public static final String BEAN_NAME="postServiceImpl";
 
     private final PostRepository postRepository;
     private final BlogRepository blogRepository;
@@ -65,7 +63,9 @@ public class PostServiceImpl implements PostService {
 
         postRepository.save(post);
 
-        return getPost(post.getPostId());
+        return postRepository
+                .getByPostId(post.getPostId())
+                .orElseThrow(ServiceFailureException::new);
     }
 
     @Override
@@ -80,24 +80,15 @@ public class PostServiceImpl implements PostService {
         checkExistPost(postUpdateRequest.getPostId());
 
         //post 수정권한 체크 ( 등록한 사람만 수정할 수 있음)
+        //블로그의 ROLE_OWNER 인지 체크, 블로그의 ROLE_MEMBER 이면서 작성자 라면 수정 가능
         long mbNo = MemberThreadLocal.getMemberNo();
         checkOwnerOrMember(postUpdateRequest.getBlogId(), mbNo);
 
         postRepository.update(postUpdateRequest);
 
-        Optional<Post> postOptional = postRepository.findByPostId(postUpdateRequest.getPostId());
-        if (postOptional.isPresent()) {
-            Post post = postOptional.get();
-            // postResponse 형태로 가져올 수 있는 한방 쿼리가 있어야함.
-
-//            PostResponse postResponse = new PostResponse(
-//                    post.getPostId(),
-//                    post.getBlogId(),
-//
-//            );
-
-        }
-        return null;
+        return postRepository
+                .getByPostId(postUpdateRequest.getPostId())
+                .orElseThrow(ServiceFailureException::new);
     }
 
     @Override
@@ -110,28 +101,49 @@ public class PostServiceImpl implements PostService {
         checkExistPost(postId);
 
         //post를 삭제할 수 있는 권한이 있는지 체크
+        //(블로그의 권한 == ROLE_OWNER) or (블로그의 권한 == ROLE_MEMBER 이면서 작성자)
         checkUpdateOrDeletePost(postId);
 
         //post 삭제
         postRepository.deleteByPostId(postId);
     }
 
+
     @Override
     public PostResponse getPost(Long postId) {
-        //post 조회
 
-        //post 존재하는지 체크
-        checkExistPost(postId);
+        //post  존재하지 않다면 404
+        Optional<PostResponse> postResponseOptional = postRepository.getByPostId(postId);
+        if(postResponseOptional.isEmpty()){
+            throw new NotFoundException("Post not found");
+        }
+        /*
+        *   - 공개글은 모두 접근가능
+        *   - 비공개글 접근 조건
+        *       - ROLE_MEMBER 이면서 작성자
+        *       - ROLE_OWNER
+        *   - 글 작성자 이지만 ROLE_MEMBER가 아니라면 접근 불가
+        *   - 로그인 하지않은 모든 사용자는 접근 불가
+        */
 
-        //post 공개여부 체크
-
-        return null;
+        return postResponseOptional.get();
     }
 
+    /**
+     *
+     * @param pageable 페이징
+     * @param postSearchParam
+     *     private final Long blogId (필수)    블로그 아이디
+     *     private final Long categoryId (필수) 카테고리 아이디
+     *     private final Boolean postIsPublic (필수) default 1 <- 공개, 0- 비공개
+     * @return
+     */
     @Override
     public Page<PostResponse> getPostList(Pageable pageable, PostSearchParam postSearchParam) {
-        //post 리스트
-        // 관리자 또는 ROLE_OWNER or ROLE_MEMBER  비공개 글을 조회할 수 있음
+        // post 리스트
+        // postSearchParam 조건에 의해서 글이 노출 됩니다.
+        //  -
+
 
         return null;
     }

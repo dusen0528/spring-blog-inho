@@ -44,19 +44,23 @@ public class ApplicationContext  implements Context{
     }
 
     @Override
-    public synchronized void registerBean(String name, Object object) {
-        objectNameCheck(name);
-        beanMap.put(name,object);
+    public void registerBean(String name, Object object) {
+        synchronized (this) {
+            objectNameCheck(name);
+            beanMap.put(name, object);
+        }
     }
 
     @Override
-    public synchronized void removeBean(String name) {
-        objectNameCheck(name);
-        beanMap.remove(name);
+    public void removeBean(String name) {
+        synchronized (this) {
+            objectNameCheck(name);
+            beanMap.remove(name);
+        }
     }
 
     @Override
-    public synchronized Object getBean(String name) {
+    public Object getBean(String name) {
         objectNameCheck(name);
         Object object =  beanMap.get(name);
 

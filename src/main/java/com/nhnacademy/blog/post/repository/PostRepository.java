@@ -17,6 +17,7 @@ public interface PostRepository {
     void updateByPostIdAndPostIsPublic(Long postId, Boolean isPublic);
     boolean existsByPostId(Long postId);
     Optional<Post> findByPostId(Long postId);
+    Optional<PostResponse> getByPostId(Long postId);
     Page<PostResponse> findAllByPageableAndPostSearchRequest(Pageable pageable, PostSearchParam postSearchParam);
     Long totalRowsByPostSearchRequest(Pageable pageable, PostSearchParam postSearchParam);
 

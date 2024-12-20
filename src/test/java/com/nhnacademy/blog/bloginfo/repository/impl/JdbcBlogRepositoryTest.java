@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Slf4j
 class JdbcBlogRepositoryTest {
+
     static BlogRepository blogRepository;
 
     @BeforeAll

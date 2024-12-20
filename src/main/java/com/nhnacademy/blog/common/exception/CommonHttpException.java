@@ -9,6 +9,11 @@ public class CommonHttpException extends RuntimeException {
         this.statusCode = statusCode;
     }
 
+    public CommonHttpException(final int statusCode, final String message, final Throwable cause) {
+        super(message, cause);
+        this.statusCode = statusCode;
+    }
+
     public int getStatusCode() {
         return statusCode;
     }
