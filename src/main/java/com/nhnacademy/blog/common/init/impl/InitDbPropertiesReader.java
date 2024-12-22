@@ -57,14 +57,11 @@ public class InitDbPropertiesReader implements Initializeable {
         //TODO#4-3 readProperties() method를 호출 합니다.
         Properties properties = readProperties();
 
-        //TODO#4-4 getMapFromProperties(properties)를 호출해서 properties를 Map<String, String> 반환 합니다.
-        Map<String, String> map = getMapFromProperties(properties);
-
-        //TODO#4-5 getDbPropertiesFromMap(map) method를 이용해서  map<String,String> -> DbProperties 객체로 변환 합니다.
-        DbProperties dbProperties = getDbPropertiesFromMap(map);
+       //TODO#4-4 createDbProperties() 메서드를 호출하여 DbProperties객체를 생성 합니다.
+        DbProperties dbProperties = createDbProperties(properties);
 
         log.debug("context:{}",context);
-        //TODO#4-6 context에 registerBean() method를 이용해서 다음고 같은 형태로 bean을 등록 합니다.
+        //TODO#4-5 context에 registerBean() method를 이용해서 다음고 같은 형태로 bean을 등록 합니다.
         // beanName = DbProperties.BEAN_NAME, Object = dbProperties
         context.registerBean(DbProperties.BEAN_NAME,dbProperties);
     }
@@ -81,35 +78,26 @@ public class InitDbPropertiesReader implements Initializeable {
         return properties;
     }
 
-    //properties -> map 변환
-    private Map<String,String> getMapFromProperties(Properties properties) {
-        Map<String,String> map = new HashMap<>();
-        for(String key : properties.stringPropertyNames()) {
-            map.put(key, properties.getProperty(key));
-        }
-        return map;
-    }
-
     /**
-     * Map<String, String>를 DbProperties 객체로 변환 후 반환합니다.
-     *
-     * @param map Map<String, String>
-     * @return DbProperties 
+     * properties -> DbProperties 객체를 생성합니다.
+     * @param properties 데이터베이스 접속 정보를 담고 있는 Properties 객체
+     * @return DbProperties를 반환합니다.
      */
-    private DbProperties getDbPropertiesFromMap(Map<String, String> map){
 
-        String url = map.get("url");
-        String username=map.get("username");
-        String password=map.get("password");
+    private DbProperties createDbProperties(Properties properties) {
 
-        int initialSize = Integer.parseInt(map.get("initialSize"));
-        int maxTotal = Integer.parseInt(map.get("maxTotal"));
-        int maxIdle = Integer.parseInt(map.get("maxIdle"));
-        int minIdle = Integer.parseInt(map.get("minIdle"));
-        int maxWait = Integer.parseInt(map.get("maxWait"));
-        String validationQuery = map.get("validationQuery");
-        boolean testOnBorrow = Boolean.parseBoolean(map.get("testOnBorrow"));
-        boolean spy = Boolean.parseBoolean(map.get("spy"));
+        String url = properties.getProperty("url");
+        String username=properties.getProperty("username");
+        String password=properties.getProperty("password");
+
+        int initialSize = Integer.parseInt(properties.getProperty("initialSize"));
+        int maxTotal = Integer.parseInt(properties.getProperty("maxTotal"));
+        int maxIdle = Integer.parseInt(properties.getProperty("maxIdle"));
+        int minIdle = Integer.parseInt(properties.getProperty("minIdle"));
+        int maxWait = Integer.parseInt(properties.getProperty("maxWait"));
+        String validationQuery = properties.getProperty("validationQuery");
+        boolean testOnBorrow = Boolean.parseBoolean(properties.getProperty("testOnBorrow"));
+        boolean spy = Boolean.parseBoolean(properties.getProperty("spy"));
 
         DbProperties dbProperties = new DbProperties(
                 url,
