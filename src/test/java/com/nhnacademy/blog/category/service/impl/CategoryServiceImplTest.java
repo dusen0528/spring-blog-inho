@@ -568,7 +568,7 @@ class CategoryServiceImplTest {
             categoryService.deleteCategory(categoryDeleteRequest);
         });
 
-        Mockito.verify(blogMemberMappingRepository,Mockito.times(1)).findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong());;
+        Mockito.verify(blogMemberMappingRepository,Mockito.times(1)).findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong());
         Mockito.verify(categoryRepository,Mockito.never()).deleteByCategoryId(Mockito.anyLong());
     }
 

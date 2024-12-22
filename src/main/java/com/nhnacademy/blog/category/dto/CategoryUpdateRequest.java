@@ -1,7 +1,5 @@
 package com.nhnacademy.blog.category.dto;
 
-import java.time.LocalDateTime;
-
 public class CategoryUpdateRequest {
     private final Long categoryId;
     private final Long categoryPid;

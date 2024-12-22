@@ -27,7 +27,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
-//api/blogs/{blog-id}/categories/{category-id}
 @Service(CategoryServiceImpl.BEAN_NAME)
 public class CategoryServiceImpl implements CategoryService {
 

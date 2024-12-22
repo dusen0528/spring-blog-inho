@@ -1,8 +1,6 @@
 package com.nhnacademy.blog.tag.repository;
 
 import com.nhnacademy.blog.tag.domain.Tag;
-import com.nhnacademy.blog.tag.dto.TagCreateRequest;
-import com.nhnacademy.blog.tag.dto.TagResponse;
 import com.nhnacademy.blog.tag.dto.TagUpdateRequest;
 
 import java.util.Optional;

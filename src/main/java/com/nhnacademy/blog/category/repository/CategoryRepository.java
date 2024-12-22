@@ -3,8 +3,7 @@ package com.nhnacademy.blog.category.repository;
 import com.nhnacademy.blog.category.domain.Category;
 import com.nhnacademy.blog.category.dto.CategoryResponse;
 import com.nhnacademy.blog.category.dto.CategoryUpdateRequest;
-import com.nhnacademy.blog.category.dto.RootCategoryUpdateRequest;
-import com.nhnacademy.blog.category.dto.SubCategoryUpdateRequest;
+
 
 import java.util.List;
 import java.util.Optional;

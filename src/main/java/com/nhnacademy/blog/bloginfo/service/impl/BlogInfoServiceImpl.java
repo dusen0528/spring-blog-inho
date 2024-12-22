@@ -75,7 +75,7 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         //blog 소유자 체크
         checkOwner(blogUpdateRequest.getBlogId(),MemberThreadLocal.getMemberNo());
 
-        if(blogUpdateRequest.isBlogMain()==true){
+        if(blogUpdateRequest.isBlogMain()){
             long mbNo = MemberThreadLocal.getMemberNo();
 
             //모든 blog 리스트 조회

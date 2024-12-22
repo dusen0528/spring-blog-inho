@@ -34,7 +34,7 @@ public final class CategoryUtils {
         findCategory(targetList, categoryResponseList);
 
         return targetList;
-    };
+    }
 
     private static void findCategory(List<CategoryResponse> targetList, List<CategoryResponse> categoryResponseList){
 
