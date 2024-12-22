@@ -2,6 +2,11 @@ package com.nhnacademy.blog.common.db;
 
 @SuppressWarnings("java:S107")
 public class DbProperties {
+    /**
+     * TODO#4-7 DbProperties 객체를 구현 합니다.
+     */
+
+    //기본 BEAN_NAME을 설정 합니다.
     public static final String BEAN_NAME="dbProperties";
 
     private final String url;
@@ -19,6 +24,8 @@ public class DbProperties {
     private final boolean spy;
 
     public DbProperties(String url, String username, String password, int initialSize, int maxTotal, int maxIdle, int minIdle, int maxWait, String validationQuery, boolean testOnBorrow, boolean spy) {
+        //생성자를 구현하세요.
+
         this.url = url;
         this.username = username;
         this.password = password;
@@ -31,6 +38,8 @@ public class DbProperties {
         this.testOnBorrow = testOnBorrow;
         this.spy = spy;
     }
+
+    //getter method를 구현 합니다. setter method는 구현하지 않습니다.
 
     public String getUrl() {
         return url;
@@ -76,6 +85,7 @@ public class DbProperties {
         return spy;
     }
 
+    //toString()메서드를 override 하여 구현합니다.
     @Override
     public String toString() {
         return "DbProperties{" +

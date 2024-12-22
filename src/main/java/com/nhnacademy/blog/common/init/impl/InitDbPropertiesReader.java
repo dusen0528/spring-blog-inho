@@ -70,7 +70,9 @@ public class InitDbPropertiesReader implements Initializeable {
     }
 
     private Properties readProperties(){
+        //properties 객체를 초기화 합니다.
         Properties properties = new Properties();
+
         try(InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(dbPropertiesFile)) {
             properties.load(inputStream);
         } catch (Exception e) {
@@ -88,6 +90,12 @@ public class InitDbPropertiesReader implements Initializeable {
         return map;
     }
 
+    /**
+     * Map<String, String>를 DbProperties 객체로 변환 후 반환합니다.
+     *
+     * @param map Map<String, String>
+     * @return DbProperties 
+     */
     private DbProperties getDbPropertiesFromMap(Map<String, String> map){
 
         String url = map.get("url");
