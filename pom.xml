@@ -123,6 +123,21 @@
             <version>2.18.2</version>
         </dependency>
 
+        <!-- Spring core-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>6.2.1</version>
+        </dependency>
+
+        <!-- Spring context-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>6.2.1</version>
+        </dependency>
+
+
     </dependencies>
 
 </project>
