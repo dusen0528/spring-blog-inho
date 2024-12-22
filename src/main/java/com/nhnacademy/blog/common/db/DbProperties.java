@@ -3,7 +3,7 @@ package com.nhnacademy.blog.common.db;
 @SuppressWarnings("java:S107")
 public class DbProperties {
     /**
-     * TODO#4-7 DbProperties 객체를 구현 합니다.
+     * TODO#4-6 DbProperties 객체를 구현 합니다.
      */
 
     //기본 BEAN_NAME을 설정 합니다.
