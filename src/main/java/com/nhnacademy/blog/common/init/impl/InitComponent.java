@@ -15,6 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
+/* TODO#5 Stereotype Bean 생성
+    - Stereotype Bean ( @Component, @Service, @Repository ) annotation이 포함되어 있는 class를 스켄하고 해당 class를 생성 후 Application Context에 bean으로 등록 합니다.
+    - 여기서 Bean이라는 표현은 Application Context에서 관리하는 객체를 Bean이라고 합니다.
+    -
+*/
+
 @Slf4j
 @InitOrder(value = 4)
 @SuppressWarnings("java:S3740")
@@ -22,13 +28,25 @@ public class InitComponent implements Initializeable {
 
     @Override
     public void initialize(Context context) {
-        //@Component annotation을 기준으로 class를 scan 합니다.
+
+        /**
+         * TODO#5-1 @Componet annotation을 기준으로 'com.nhnacademy.blog' package 하위에 있는 class를 scan 합니다.
+         *  - @Repository, @Service 어노테이션은 @Component 어노테이션을 포함하고 있기 때문에,
+         *  - 결과적으로 @Component를 스캔했을 때 @Service, @Repository도 함께 스캔됩니다.
+         *  - ReflectionUtils.classScanByAnnotated() method를 이용해서 구현 합니다.
+         */
+
         List<ClassWrapper> classWrappers =  ReflectionUtils.classScanByAnnotated("com.nhnacademy.blog", Component.class);
 
+        /**
+         *
+         */
         //1순위
         List<Class<?>> componentList = new ArrayList<>();
+
         //2순위
         List<Class<?>> serviceList = new ArrayList<>();
+
         //3순위
         List<Class<?>> repositoryList = new ArrayList<>();
 

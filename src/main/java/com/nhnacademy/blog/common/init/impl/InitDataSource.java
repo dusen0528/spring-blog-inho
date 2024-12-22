@@ -12,16 +12,30 @@ import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 import java.time.Duration;
 
+/**
+ * TODO#5 database Connection Pool을 생성하는 Initializeable을 구현한 구현체 입니다.
+ * @InitOrder(value = 2) 설정되어 있어서 Application Context에 의해서 2번째째로 initialize() method가 호출 됩니다.
+ * InitDataSource 구현하세요.
+ */
+
 @Slf4j
 @InitOrder(value = 2)
 public class InitDataSource implements Initializeable {
+    //TODO#5-1 BEAN_NAME='dataSource'로 설정하세요
     public static final String BEAN_NAME = "dataSource";
-    
+
     @Override
     public synchronized void initialize(Context context) {
-        DbProperties dbProperties = (DbProperties) context.getBean(DbProperties.BEAN_NAME);
-        DataSource dataSource = createDataSourceByC3p0(dbProperties);
-        context.registerBean(BEAN_NAME,dataSource);
+//        //TODO#5-2 context로부터 DbProperties.BEAN_NAME을 사용하여 해당 데이터베이스 환경 설정 정보를 담고 있는 DbProperties 객체를 얻습니다.
+//        DbProperties dbProperties = (DbProperties) context.getBean(DbProperties.BEAN_NAME);
+//        /* TODO#5-3 createDataSource를 호출해서 DataSource 객체를 생성 합니다
+//
+//        */
+//        DataSource dataSource = createDataSource(dbProperties);
+//
+//        //TODO#5-4 dataSouce를 Conect에 registerBean() 메서드를 사용하여 다음과 같이 등록 합니다.
+//        //name = BEAN_NAME, object = dataSource
+//        context.registerBean(BEAN_NAME,dataSource);
     }
 
     private DataSource createDataSource(DbProperties dbProperties){
