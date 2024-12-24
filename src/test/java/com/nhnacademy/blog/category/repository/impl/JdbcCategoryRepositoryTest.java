@@ -5,13 +5,12 @@ import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
 import com.nhnacademy.blog.bloginfo.repository.impl.JdbcBlogRepository;
 import com.nhnacademy.blog.category.domain.Category;
 import com.nhnacademy.blog.category.dto.CategoryUpdateRequest;
-import com.nhnacademy.blog.category.dto.RootCategoryUpdateRequest;
 import com.nhnacademy.blog.category.repository.CategoryRepository;
-import com.nhnacademy.blog.common.context.Context;
 import com.nhnacademy.blog.common.context.ContextHolder;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
+import org.springframework.context.ApplicationContext;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +22,9 @@ class JdbcCategoryRepositoryTest {
 
     @BeforeAll
     static void beforeAll() {
-        Context context = ContextHolder.getApplicationContext();
-        blogRepository = (BlogRepository) context.getBean(JdbcBlogRepository.BEAN_NAME);
-        categoryRepository = (CategoryRepository) context.getBean(JdbcCategoryRepository.BEAN_NAME);
+        ApplicationContext context = ContextHolder.getApplicationContext();
+        blogRepository = (BlogRepository) context.getBean("jdbcBlogRepository");
+        categoryRepository = (CategoryRepository) context.getBean("jdbcCategoryRepository");
     }
 
     @BeforeEach
@@ -106,7 +105,7 @@ class JdbcCategoryRepositoryTest {
         Category category2 = Category.ofNewSubCategory(category1.getCategoryId(), blog.getBlogId(),null,"스프링-코어",1);
         categoryRepository.save(category2);
 
-        CategoryUpdateRequest categoryUpdateRequest = new CategoryUpdateRequest(category2.getCategoryId(),null,1l,null, "Spring-core",10);
+        CategoryUpdateRequest categoryUpdateRequest = new CategoryUpdateRequest(category2.getCategoryId(),null, 1L,null, "Spring-core",10);
         categoryRepository.update(categoryUpdateRequest);
 
         //then

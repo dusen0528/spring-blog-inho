@@ -1,25 +1,12 @@
 package com.nhnacademy.blog.manager.account.impl;
 
 import com.nhnacademy.blog.bloginfo.dto.BlogResponse;
-import com.nhnacademy.blog.bloginfo.service.BlogInfoService;
-import com.nhnacademy.blog.bloginfo.service.impl.BlogInfoServiceImpl;
-import com.nhnacademy.blog.blogmember.service.BlogMemberService;
-import com.nhnacademy.blog.blogmember.service.impl.BlogMemberServiceImpl;
-import com.nhnacademy.blog.category.service.CategoryService;
-import com.nhnacademy.blog.category.service.impl.CategoryServiceImpl;
-import com.nhnacademy.blog.common.context.ApplicationContext;
-import com.nhnacademy.blog.common.context.Context;
 import com.nhnacademy.blog.common.context.ContextHolder;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 import com.nhnacademy.blog.manager.account.dto.BlogAccountRequest;
-import com.nhnacademy.blog.member.service.MemberService;
-import com.nhnacademy.blog.member.service.impl.MemberServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.function.Executable;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.context.ApplicationContext;
 
 /**
  * 통합 테스트 진행
@@ -28,13 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class DefaultBlogAccountManagerTest {
     //통합 테스트 진행
 
-    static Context context;
+    static ApplicationContext context;
     static DefaultBlogAccountManager accountManager;
 
     @BeforeAll
     static void setUpAll() {
         context = ContextHolder.getApplicationContext();
-        accountManager = (DefaultBlogAccountManager) context.getBean(DefaultBlogAccountManager.BEAN_NAME);
+        accountManager = (DefaultBlogAccountManager) context.getBean("defaultBlogAccountManager");
     }
 
     @BeforeEach

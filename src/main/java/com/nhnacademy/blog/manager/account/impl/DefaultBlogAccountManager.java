@@ -3,38 +3,33 @@ package com.nhnacademy.blog.manager.account.impl;
 import com.nhnacademy.blog.bloginfo.dto.BlogCreateRequest;
 import com.nhnacademy.blog.bloginfo.dto.BlogResponse;
 import com.nhnacademy.blog.bloginfo.service.BlogInfoService;
-import com.nhnacademy.blog.bloginfo.service.impl.BlogInfoServiceImpl;
 import com.nhnacademy.blog.blogmember.dto.BlogMemberRegisterRequest;
 import com.nhnacademy.blog.blogmember.service.BlogMemberService;
-import com.nhnacademy.blog.blogmember.service.impl.BlogMemberServiceImpl;
 import com.nhnacademy.blog.category.dto.RootCategoryCreateRequest;
 import com.nhnacademy.blog.category.service.CategoryService;
-import com.nhnacademy.blog.category.service.impl.CategoryServiceImpl;
-import com.nhnacademy.blog.common.annotation.InitOrder;
-import com.nhnacademy.blog.common.annotation.Qualifier;
-import com.nhnacademy.blog.common.annotation.stereotype.Service;
+
 import com.nhnacademy.blog.manager.account.AbstractBlogAccountManager;
 import com.nhnacademy.blog.member.dto.MemberRegisterRequest;
 import com.nhnacademy.blog.member.dto.MemberResponse;
 import com.nhnacademy.blog.member.service.MemberService;
-import com.nhnacademy.blog.member.service.impl.MemberServiceImpl;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@InitOrder(Integer.MAX_VALUE)
-@Service(DefaultBlogAccountManager.BEAN_NAME)
+@Service
+@Transactional
 public class DefaultBlogAccountManager extends AbstractBlogAccountManager {
 
-    public static final String BEAN_NAME = "defaultBlogAccountManager";
     private final MemberService memberService;
     private final BlogMemberService blogMemberService;
     private final BlogInfoService blogInfoService;
     private final CategoryService categoryService;
 
     public DefaultBlogAccountManager(
-            @Qualifier(MemberServiceImpl.BEAN_NAME) MemberService memberService,
-            @Qualifier(BlogMemberServiceImpl.BEAN_NAME) BlogMemberService blogMemberService,
-            @Qualifier(BlogInfoServiceImpl.BEAN_NAME) BlogInfoService blogInfoService,
-            @Qualifier(CategoryServiceImpl.BEAN_NAME) CategoryService categoryService)
-    {
+             MemberService memberService,
+             BlogMemberService blogMemberService,
+             BlogInfoService blogInfoService,
+             CategoryService categoryService
+    ) {
         this.memberService = memberService;
         this.blogMemberService = blogMemberService;
         this.blogInfoService = blogInfoService;

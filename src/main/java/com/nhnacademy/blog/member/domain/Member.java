@@ -2,6 +2,8 @@ package com.nhnacademy.blog.member.domain;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+
+
 @SuppressWarnings("java:S107")
 public class Member {
 

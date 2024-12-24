@@ -11,26 +11,25 @@ import com.nhnacademy.blog.bloginfo.repository.impl.JdbcBlogRepository;
 import com.nhnacademy.blog.bloginfo.service.BlogInfoService;
 import com.nhnacademy.blog.blogmember.domain.BlogMemberMapping;
 import com.nhnacademy.blog.blogmember.repository.BlogMemberMappingRepository;
-import com.nhnacademy.blog.blogmember.repository.impl.JdbcBlogMemberMappingRepository;
-import com.nhnacademy.blog.common.annotation.Qualifier;
-import com.nhnacademy.blog.common.annotation.stereotype.Service;
 import com.nhnacademy.blog.common.exception.ConflictException;
 import com.nhnacademy.blog.common.exception.ForbiddenException;
 import com.nhnacademy.blog.common.exception.NotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service(BlogInfoServiceImpl.BEAN_NAME)
+@Transactional
+@Service
 public class BlogInfoServiceImpl implements BlogInfoService {
-    public static final String BEAN_NAME = "blogInfoService";
 
     private final BlogRepository blogRepository;
     private final BlogMemberMappingRepository blogMemberMappingRepository;
 
     public BlogInfoServiceImpl(
-            @Qualifier(JdbcBlogRepository.BEAN_NAME) BlogRepository blogRepository,
-            @Qualifier(JdbcBlogMemberMappingRepository.BEAN_NAME) BlogMemberMappingRepository blogMemberMappingRepository
+            BlogRepository blogRepository,
+            BlogMemberMappingRepository blogMemberMappingRepository
     ) {
         this.blogRepository = blogRepository;
         this.blogMemberMappingRepository = blogMemberMappingRepository;

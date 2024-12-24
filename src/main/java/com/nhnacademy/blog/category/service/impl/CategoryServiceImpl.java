@@ -12,8 +12,6 @@ import com.nhnacademy.blog.category.repository.CategoryRepository;
 import com.nhnacademy.blog.category.repository.impl.JdbcCategoryRepository;
 import com.nhnacademy.blog.category.service.CategoryService;
 import com.nhnacademy.blog.category.util.CategoryUtils;
-import com.nhnacademy.blog.common.annotation.Qualifier;
-import com.nhnacademy.blog.common.annotation.stereotype.Service;
 import com.nhnacademy.blog.common.exception.BadRequestException;
 import com.nhnacademy.blog.common.exception.ConflictException;
 import com.nhnacademy.blog.common.exception.ForbiddenException;
@@ -21,16 +19,17 @@ import com.nhnacademy.blog.common.exception.NotFoundException;
 import com.nhnacademy.blog.topic.repository.TopicRepository;
 import com.nhnacademy.blog.topic.repository.impl.JdbcTopicRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
-@Service(CategoryServiceImpl.BEAN_NAME)
+@Service
+@Transactional
 public class CategoryServiceImpl implements CategoryService {
-
-    public static final String BEAN_NAME="categoryService";
 
     private final CategoryRepository categoryRepository;
     private final BlogRepository blogRepository;
@@ -38,10 +37,10 @@ public class CategoryServiceImpl implements CategoryService {
     private final BlogMemberMappingRepository blogMemberMappingRepository;
 
     public CategoryServiceImpl(
-            @Qualifier(value = JdbcCategoryRepository.BEAN_NAME) CategoryRepository categoryRepository,
-            @Qualifier(value = JdbcBlogRepository.BEAN_NAME) BlogRepository blogRepository,
-            @Qualifier(value = JdbcTopicRepository.BEAN_NAME) TopicRepository topicRepository,
-            @Qualifier(value = JdbcBlogMemberMappingRepository.BEAN_NAME) BlogMemberMappingRepository blogMemberMappingRepository
+            CategoryRepository categoryRepository,
+            BlogRepository blogRepository,
+            TopicRepository topicRepository,
+            BlogMemberMappingRepository blogMemberMappingRepository
     ) {
         this.categoryRepository = categoryRepository;
         this.blogRepository = blogRepository;

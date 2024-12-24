@@ -172,13 +172,13 @@ class BlogInfoServiceImplTest {
 
         Assertions.assertAll(
                 ()->{
-                    Assertions.assertEquals(1l,blogResponse.getBlogId());
+                    Assertions.assertEquals(1L,blogResponse.getBlogId());
                 },
                 ()->{
                     Assertions.assertEquals("marco",blogResponse.getBlogFid());
                 },
                 ()->{
-                    Assertions.assertEquals(false,blogResponse.isBlogMain());
+                    Assertions.assertFalse(blogResponse.isBlogMain());
                 },
                 ()->{
                     Assertions.assertEquals(true,blogResponse.getBlogIsPublic());
@@ -310,13 +310,13 @@ class BlogInfoServiceImplTest {
 
         Assertions.assertAll(
                 ()->{
-                    Assertions.assertEquals(1l,blogResponse.getBlogId());
+                    Assertions.assertEquals(1L,blogResponse.getBlogId());
                 },
                 ()->{
                     Assertions.assertEquals("marco",blogResponse.getBlogFid());
                 },
                 ()->{
-                    Assertions.assertEquals(true,blogResponse.isBlogMain());
+                    Assertions.assertTrue(blogResponse.isBlogMain());
                 },
                 ()->{
                     Assertions.assertEquals(true,blogResponse.getBlogIsPublic());

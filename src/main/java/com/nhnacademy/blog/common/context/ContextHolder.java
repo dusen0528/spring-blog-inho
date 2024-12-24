@@ -12,11 +12,15 @@
 
 package com.nhnacademy.blog.common.context;
 
-//TODO#1-8 Context에 접근할 수 있도록 ContextHolder를 Singleton 구현 합니다.
+import com.nhnacademy.blog.RootPackageBase;
+import com.nhnacademy.blog.common.config.ApplicationConfig;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 public class ContextHolder {
 
     //ApplicationContext를 초기화 합니다.
-    private static final Context context = new ApplicationContext();
+   private static final ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
 
     private ContextHolder(){
         //ContextHoder를 new ContextHolder() 시도 한다면 IllegalStateException 예외가 발생할 수 있도록 구현 합니다.
@@ -25,6 +29,6 @@ public class ContextHolder {
 
     public static synchronized ApplicationContext getApplicationContext() {
         //Context를 반환 합니다.
-        return (ApplicationContext) context;
+        return context;
     }
 }

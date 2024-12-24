@@ -31,6 +31,7 @@ public class DbConnectionThreadLocal {
             connection.setAutoCommit(false);
             connectionThreadLocal.set(connection);
         } catch (SQLException e) {
+            log.error(e.getMessage(),e);
             throw new DatabaseException(e);
         }
     }

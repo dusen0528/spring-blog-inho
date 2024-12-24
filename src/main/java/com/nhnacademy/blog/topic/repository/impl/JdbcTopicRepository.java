@@ -1,12 +1,12 @@
 package com.nhnacademy.blog.topic.repository.impl;
 
-import com.nhnacademy.blog.common.annotation.stereotype.Repository;
 import com.nhnacademy.blog.common.db.exception.DatabaseException;
 import com.nhnacademy.blog.common.reflection.ReflectionUtils;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 import com.nhnacademy.blog.topic.domain.Topic;
 import com.nhnacademy.blog.topic.dto.TopicUpdateRequestDto;
 import com.nhnacademy.blog.topic.repository.TopicRepository;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -15,10 +15,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 @SuppressWarnings("java:S1192")
-@Repository(JdbcTopicRepository.BEAN_NAME)
-public class JdbcTopicRepository implements TopicRepository {
 
-    public static final String BEAN_NAME = "jdbcTopicRepository";
+@Repository
+public class JdbcTopicRepository implements TopicRepository {
 
     @Override
     public void save(Topic topic) {
@@ -200,7 +199,7 @@ public class JdbcTopicRepository implements TopicRepository {
                 """;
         try(PreparedStatement psmt = connection.prepareStatement(sql)){
             psmt.setInt(1, topicId);
-            try(ResultSet rs = psmt.executeQuery();){
+            try(ResultSet rs = psmt.executeQuery()){
                 if(rs.next()) {
                     return true;
                 }

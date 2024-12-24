@@ -2,26 +2,23 @@ package com.nhnacademy.blog.blogmember.service.impl;
 
 import com.nhnacademy.blog.auth.MemberThreadLocal;
 import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
-import com.nhnacademy.blog.bloginfo.repository.impl.JdbcBlogRepository;
 import com.nhnacademy.blog.blogmember.domain.BlogMemberMapping;
 import com.nhnacademy.blog.blogmember.dto.BlogMemberRegisterRequest;
 import com.nhnacademy.blog.blogmember.repository.BlogMemberMappingRepository;
-import com.nhnacademy.blog.blogmember.repository.impl.JdbcBlogMemberMappingRepository;
 import com.nhnacademy.blog.blogmember.service.BlogMemberService;
-import com.nhnacademy.blog.common.annotation.Qualifier;
-import com.nhnacademy.blog.common.annotation.stereotype.Service;
 import com.nhnacademy.blog.common.exception.BadRequestException;
 import com.nhnacademy.blog.common.exception.ForbiddenException;
 import com.nhnacademy.blog.common.exception.NotFoundException;
 import com.nhnacademy.blog.member.repository.MemberRepository;
-import com.nhnacademy.blog.member.repository.impl.JdbcMemberRepository;
 import com.nhnacademy.blog.role.repository.RoleRepository;
-import com.nhnacademy.blog.role.repository.impl.JdbcRoleRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
 
-@Service(BlogMemberServiceImpl.BEAN_NAME)
+@Service
+@Transactional
 public class BlogMemberServiceImpl implements BlogMemberService {
 
     public static final String BEAN_NAME="blogMemberService";
@@ -31,10 +28,10 @@ public class BlogMemberServiceImpl implements BlogMemberService {
     private final MemberRepository memberRepository;
 
     public BlogMemberServiceImpl(
-            @Qualifier(JdbcBlogMemberMappingRepository.BEAN_NAME) BlogMemberMappingRepository blogMemberMappingRepository,
-            @Qualifier(JdbcRoleRepository.BEAN_NAME) RoleRepository roleRepository,
-            @Qualifier(JdbcBlogRepository.BEAN_NAME) BlogRepository blogRepository,
-            @Qualifier(JdbcMemberRepository.BEAN_NAME) MemberRepository memberRepository
+            BlogMemberMappingRepository blogMemberMappingRepository,
+            RoleRepository roleRepository,
+            BlogRepository blogRepository,
+            MemberRepository memberRepository
     ) {
         this.blogMemberMappingRepository = blogMemberMappingRepository;
         this.blogRepository = blogRepository;

@@ -1,13 +1,17 @@
 package com.nhnacademy.blog.member.repository.impl;
 
-import com.nhnacademy.blog.common.context.Context;
-import com.nhnacademy.blog.common.context.ContextHolder;
-import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
+import com.nhnacademy.blog.common.config.ApplicationConfig;
 import com.nhnacademy.blog.member.domain.Member;
 import com.nhnacademy.blog.member.dto.MemberUpdateRequest;
 import com.nhnacademy.blog.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -15,26 +19,15 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
+@ContextConfiguration(classes = {ApplicationConfig.class})
+@ExtendWith(SpringExtension.class)
+@Transactional
 class JdbcMemberRepositoryTest {
-    static MemberRepository memberRepository;
+    @Autowired
+    MemberRepository memberRepository;
 
-    @BeforeAll
-    static void beforeAll() {
-        Context context = ContextHolder.getApplicationContext();
-        memberRepository = (MemberRepository) context.getBean(JdbcMemberRepository.BEAN_NAME);
-    }
-
-    @BeforeEach
-    void setUp(){
-        DbConnectionThreadLocal.initialize();
-    }
-
-    @AfterEach
-    void tearDown(){
-        DbConnectionThreadLocal.setSqlError(true);
-        DbConnectionThreadLocal.reset();
-    }
-
+    //@Rollback 에너테이션을 사용하지 않더라도 테스트에서는 @Transactional 때문에 rollback 됩니다.
+    @Rollback(value = true)
     @Test
     @DisplayName("회원등록")
     void save() {
@@ -47,6 +40,9 @@ class JdbcMemberRepositoryTest {
 
         Optional<Member> actualOptionalMember1 = memberRepository.findByMbNo(member1.getMbNo());
         Optional<Member> actualOptionalMember2 = memberRepository.findByMbNo(member1.getMbNo());
+
+        Assertions.assertTrue(actualOptionalMember1.isPresent());
+        Assertions.assertTrue(actualOptionalMember2.isPresent());
 
         log.debug("member1: {}", actualOptionalMember1.get());
         log.debug("member2: {}", actualOptionalMember2.get());
@@ -190,10 +186,9 @@ class JdbcMemberRepositoryTest {
     @Test
     @DisplayName("회원번호로 회원존제여부 : false")
     void notExistsByMbNo() {
-        boolean actual = memberRepository.existsByMbNo(1l);
+        boolean actual = memberRepository.existsByMbNo(1L);
         assertFalse(actual);
     }
-
 
     @Test
     @DisplayName("회원존재여부-by-email : true")

@@ -8,9 +8,6 @@ import com.nhnacademy.blog.category.domain.Category;
 import com.nhnacademy.blog.category.dto.*;
 import com.nhnacademy.blog.category.repository.CategoryRepository;
 import com.nhnacademy.blog.category.service.CategoryService;
-import com.nhnacademy.blog.common.context.ApplicationContext;
-import com.nhnacademy.blog.common.context.Context;
-import com.nhnacademy.blog.common.context.ContextHolder;
 import com.nhnacademy.blog.common.exception.*;
 import com.nhnacademy.blog.topic.repository.TopicRepository;
 
@@ -79,7 +76,7 @@ class CategoryServiceImplTest {
 
         Assertions.assertAll(
                 ()->Assertions.assertEquals(1L,categoryResponse.getCategoryId()),
-                ()->Assertions.assertEquals(null,categoryResponse.getCategoryPid()),
+                ()-> Assertions.assertNull(categoryResponse.getCategoryPid()),
                 ()->Assertions.assertEquals("java",categoryResponse.getCategoryName()),
                 ()->Assertions.assertEquals(10,categoryResponse.getCategorySec()),
                 ()->Assertions.assertEquals(1,categoryResponse.getTopicId()),
@@ -304,7 +301,7 @@ class CategoryServiceImplTest {
 
         Assertions.assertAll(
                 ()->Assertions.assertEquals(1L,categoryResponse.getCategoryId()),
-                ()->Assertions.assertEquals(null,categoryResponse.getCategoryPid()),
+                ()-> Assertions.assertNull(categoryResponse.getCategoryPid()),
                 ()->Assertions.assertEquals("java",categoryResponse.getCategoryName()),
                 ()->Assertions.assertEquals(10,categoryResponse.getCategorySec()),
                 ()->Assertions.assertEquals(1,categoryResponse.getTopicId()),
@@ -415,7 +412,7 @@ class CategoryServiceImplTest {
         Category category = Category.ofExistingCategory(1L,10L,1L,1,"java",10, LocalDateTime.now().minusDays(10),LocalDateTime.now());
         Mockito.when(categoryRepository.findByCategoryId(Mockito.anyLong())).thenReturn(Optional.of(category));
 
-        SubCategoryUpdateRequest subCategoryUpdateRequest = new SubCategoryUpdateRequest(1L,10l,1L,1,"java",10);
+        SubCategoryUpdateRequest subCategoryUpdateRequest = new SubCategoryUpdateRequest(1L, 10L,1L,1,"java",10);
         CategoryResponse categoryResponse = categoryService.updateSubCategory(subCategoryUpdateRequest);
 
         Assertions.assertAll(
@@ -446,7 +443,7 @@ class CategoryServiceImplTest {
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
         Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(true);
 
-        SubCategoryUpdateRequest subCategoryUpdateRequest = new SubCategoryUpdateRequest(1L,10l,1L,1,"java",10);
+        SubCategoryUpdateRequest subCategoryUpdateRequest = new SubCategoryUpdateRequest(1L, 10L,1L,1,"java",10);
 
         Assertions.assertThrows(ForbiddenException.class, () -> {
             categoryService.updateSubCategory(subCategoryUpdateRequest);
@@ -467,7 +464,7 @@ class CategoryServiceImplTest {
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
         Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(true);
 
-        SubCategoryUpdateRequest subCategoryUpdateRequest = new SubCategoryUpdateRequest(1L,10l,1L,1,"java",10);
+        SubCategoryUpdateRequest subCategoryUpdateRequest = new SubCategoryUpdateRequest(1L, 10L,1L,1,"java",10);
 
         Assertions.assertThrows(NotFoundException.class, () -> {
             categoryService.updateSubCategory(subCategoryUpdateRequest);
@@ -488,7 +485,7 @@ class CategoryServiceImplTest {
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(false);
         Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(true);
 
-        SubCategoryUpdateRequest subCategoryUpdateRequest = new SubCategoryUpdateRequest(1L,10l,1L,1,"java",10);
+        SubCategoryUpdateRequest subCategoryUpdateRequest = new SubCategoryUpdateRequest(1L, 10L,1L,1,"java",10);
 
         Assertions.assertThrows(BadRequestException.class, () -> {
             categoryService.updateSubCategory(subCategoryUpdateRequest);
@@ -509,7 +506,7 @@ class CategoryServiceImplTest {
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
         Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(false);
 
-        SubCategoryUpdateRequest subCategoryUpdateRequest = new SubCategoryUpdateRequest(1L,10l,1L,1,"java",10);
+        SubCategoryUpdateRequest subCategoryUpdateRequest = new SubCategoryUpdateRequest(1L, 10L,1L,1,"java",10);
 
         Assertions.assertThrows(BadRequestException.class, () -> {
             categoryService.updateSubCategory(subCategoryUpdateRequest);
@@ -623,17 +620,17 @@ class CategoryServiceImplTest {
     void getAllCategories_depth1() {
 
         List<CategoryResponse> dbCategoryList = new ArrayList<>(){{
-            add(new CategoryResponse(1l, null, 1l, 1, "root-1", 1));
-            add(new CategoryResponse(2l, null, 1l, 1, "root-2", 2));
-            add(new CategoryResponse(3l, null, 1l, 1, "root-3", 3));
-            add(new CategoryResponse(4l, null, 1l, 1, "root-4", 4));
-            add(new CategoryResponse(5l, null, 1l, 1, "root-5", 5));
+            add(new CategoryResponse(1L, null, 1L, 1, "root-1", 1));
+            add(new CategoryResponse(2L, null, 1L, 1, "root-2", 2));
+            add(new CategoryResponse(3L, null, 1L, 1, "root-3", 3));
+            add(new CategoryResponse(4L, null, 1L, 1, "root-4", 4));
+            add(new CategoryResponse(5L, null, 1L, 1, "root-5", 5));
         }};
 
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
         Mockito.when(categoryRepository.findAllByBlogId(Mockito.anyLong())).thenReturn(dbCategoryList);
 
-        List<CategoryResponse> categoryResponseList = categoryService.getAllCategories(1l);
+        List<CategoryResponse> categoryResponseList = categoryService.getAllCategories(1L);
 
         for(CategoryResponse categoryResponse : categoryResponseList) {
             log.debug("result: {}", categoryResponse);
@@ -660,23 +657,23 @@ class CategoryServiceImplTest {
     void getAllCategories_depth2() {
 
         List<CategoryResponse> dbCategoryList = new ArrayList<>(){{
-            add(new CategoryResponse(1l, null, 1l, 1, "root-1", 1));
-            add(new CategoryResponse(2l, null, 1l, 1, "root-2", 2));
-            add(new CategoryResponse(3l, null, 1l, 1, "root-3", 3));
-            add(new CategoryResponse(4l, null, 1l, 1, "root-4", 4));
-            add(new CategoryResponse(5l, null, 1l, 1, "root-5", 5));
+            add(new CategoryResponse(1L, null, 1L, 1, "root-1", 1));
+            add(new CategoryResponse(2L, null, 1L, 1, "root-2", 2));
+            add(new CategoryResponse(3L, null, 1L, 1, "root-3", 3));
+            add(new CategoryResponse(4L, null, 1L, 1, "root-4", 4));
+            add(new CategoryResponse(5L, null, 1L, 1, "root-5", 5));
 
-            add(new CategoryResponse(6l, 1l, 1l, 1, "root-1-4", 4));
-            add(new CategoryResponse(7l, 1l, 1l, 1, "root-1-3", 3));
-            add(new CategoryResponse(8l, 1l, 1l, 1, "root-1-2", 2));
-            add(new CategoryResponse(9l, 1l, 1l, 1, "root-1-1", 1));
+            add(new CategoryResponse(6L, 1L, 1L, 1, "root-1-4", 4));
+            add(new CategoryResponse(7L, 1L, 1L, 1, "root-1-3", 3));
+            add(new CategoryResponse(8L, 1L, 1L, 1, "root-1-2", 2));
+            add(new CategoryResponse(9L, 1L, 1L, 1, "root-1-1", 1));
 
         }};
 
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
         Mockito.when(categoryRepository.findAllByBlogId(Mockito.anyLong())).thenReturn(dbCategoryList);
 
-        List<CategoryResponse> categoryResponseList = categoryService.getAllCategories(1l);
+        List<CategoryResponse> categoryResponseList = categoryService.getAllCategories(1L);
 
         for(CategoryResponse categoryResponse : categoryResponseList) {
             log.debug("result: {}", categoryResponse);
@@ -705,20 +702,20 @@ class CategoryServiceImplTest {
     void getAllCategories_depth3() {
 
         List<CategoryResponse> dbCategoryList = new ArrayList<>(){{
-            add(new CategoryResponse(1l, null, 1l, 1, "root-1", 1));
-            add(new CategoryResponse(2l, null, 1l, 1, "root-2", 2));
-            add(new CategoryResponse(3l, null, 1l, 1, "root-3", 3));
-            add(new CategoryResponse(4l, null, 1l, 1, "root-4", 4));
-            add(new CategoryResponse(5l, null, 1l, 1, "root-5", 5));
+            add(new CategoryResponse(1L, null, 1L, 1, "root-1", 1));
+            add(new CategoryResponse(2L, null, 1L, 1, "root-2", 2));
+            add(new CategoryResponse(3L, null, 1L, 1, "root-3", 3));
+            add(new CategoryResponse(4L, null, 1L, 1, "root-4", 4));
+            add(new CategoryResponse(5L, null, 1L, 1, "root-5", 5));
 
-            add(new CategoryResponse(6l, 1l, 1l, 1, "root-1-4", 4));
-            add(new CategoryResponse(7l, 1l, 1l, 1, "root-1-3", 3));
-            add(new CategoryResponse(8l, 1l, 1l, 1, "root-1-2", 2));
-            add(new CategoryResponse(9l, 1l, 1l, 1, "root-1-1", 1));
+            add(new CategoryResponse(6L, 1L, 1L, 1, "root-1-4", 4));
+            add(new CategoryResponse(7L, 1L, 1L, 1, "root-1-3", 3));
+            add(new CategoryResponse(8L, 1L, 1L, 1, "root-1-2", 2));
+            add(new CategoryResponse(9L, 1L, 1L, 1, "root-1-1", 1));
 
-            add(new CategoryResponse(10l, 9l, 1l, 1, "root-1-1-1", 1));
-            add(new CategoryResponse(11l, 9l, 1l, 1, "root-1-1-2", 2));
-            add(new CategoryResponse(12l, 9l, 1l, 1, "root-1-1-3", 3));
+            add(new CategoryResponse(10L, 9L, 1L, 1, "root-1-1-1", 1));
+            add(new CategoryResponse(11L, 9L, 1L, 1, "root-1-1-2", 2));
+            add(new CategoryResponse(12L, 9L, 1L, 1, "root-1-1-3", 3));
 
 
         }};
@@ -726,7 +723,7 @@ class CategoryServiceImplTest {
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
         Mockito.when(categoryRepository.findAllByBlogId(Mockito.anyLong())).thenReturn(dbCategoryList);
 
-        List<CategoryResponse> categoryResponseList = categoryService.getAllCategories(1l);
+        List<CategoryResponse> categoryResponseList = categoryService.getAllCategories(1L);
 
         for(CategoryResponse categoryResponse : categoryResponseList) {
             log.debug("result: {}", categoryResponse);
@@ -760,7 +757,7 @@ class CategoryServiceImplTest {
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(false);
 
         Assertions.assertThrows(BadRequestException.class,()->{
-            categoryService.getAllCategories(1l);
+            categoryService.getAllCategories(1L);
         });
 
         Mockito.verify(blogRepository,Mockito.times(1)).existByBlogId(Mockito.anyLong());

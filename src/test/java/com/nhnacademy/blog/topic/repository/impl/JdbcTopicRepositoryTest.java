@@ -1,16 +1,13 @@
 package com.nhnacademy.blog.topic.repository.impl;
 
-import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
-import com.nhnacademy.blog.bloginfo.repository.impl.JdbcBlogRepository;
-import com.nhnacademy.blog.category.repository.CategoryRepository;
-import com.nhnacademy.blog.category.repository.impl.JdbcCategoryRepository;
-import com.nhnacademy.blog.common.context.Context;
 import com.nhnacademy.blog.common.context.ContextHolder;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 import com.nhnacademy.blog.topic.domain.Topic;
 import com.nhnacademy.blog.topic.dto.TopicUpdateRequestDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
+import org.springframework.context.ApplicationContext;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,8 +18,8 @@ class JdbcTopicRepositoryTest {
 
     @BeforeAll
     static void beforeAll() {
-        Context context = ContextHolder.getApplicationContext();
-        topicRepository = (JdbcTopicRepository) context.getBean(JdbcTopicRepository.BEAN_NAME);
+        ApplicationContext context = ContextHolder.getApplicationContext();
+        topicRepository = (JdbcTopicRepository) context.getBean("jdbcTopicRepository");
     }
 
     @BeforeEach

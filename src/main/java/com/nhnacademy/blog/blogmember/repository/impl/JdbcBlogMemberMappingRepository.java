@@ -2,17 +2,16 @@ package com.nhnacademy.blog.blogmember.repository.impl;
 
 import com.nhnacademy.blog.blogmember.domain.BlogMemberMapping;
 import com.nhnacademy.blog.blogmember.repository.BlogMemberMappingRepository;
-import com.nhnacademy.blog.common.annotation.stereotype.Repository;
 import com.nhnacademy.blog.common.db.exception.DatabaseException;
 import com.nhnacademy.blog.common.reflection.ReflectionUtils;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.Optional;
 
-@Repository(JdbcBlogMemberMappingRepository.BEAN_NAME)
+@Repository
 public class JdbcBlogMemberMappingRepository implements BlogMemberMappingRepository {
-    public static final String BEAN_NAME = "jdbcBlogMemberMappingRepository";
 
     @Override
     public void save(BlogMemberMapping blogMemberMapping) {

@@ -1,6 +1,5 @@
 package com.nhnacademy.blog.role.repository.impl;
 
-import com.nhnacademy.blog.common.context.Context;
 import com.nhnacademy.blog.common.context.ContextHolder;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 import com.nhnacademy.blog.role.doamin.Role;
@@ -8,8 +7,7 @@ import com.nhnacademy.blog.role.dto.RoleUpdateRequestDto;
 import com.nhnacademy.blog.role.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.context.ApplicationContext;
 
 @Slf4j
 class JdbcRoleRepositoryTest {
@@ -17,7 +15,7 @@ class JdbcRoleRepositoryTest {
 
     @BeforeAll
     static void beforeAll() {
-        Context context = ContextHolder.getApplicationContext();
+        ApplicationContext context = ContextHolder.getApplicationContext();
         roleRepository = (RoleRepository) context.getBean(JdbcRoleRepository.BEAN_NAME);
     }
 

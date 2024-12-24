@@ -4,36 +4,40 @@ import com.nhnacademy.blog.common.exception.BadRequestException;
 import com.nhnacademy.blog.common.exception.ConflictException;
 import com.nhnacademy.blog.common.exception.NotFoundException;
 import com.nhnacademy.blog.common.exception.UnauthorizedException;
-import com.nhnacademy.blog.common.reflection.ReflectionUtils;
 import com.nhnacademy.blog.common.security.PasswordEncoder;
 import com.nhnacademy.blog.common.security.impl.BCryptPasswordEncoder;
 import com.nhnacademy.blog.member.domain.Member;
 import com.nhnacademy.blog.member.dto.*;
 import com.nhnacademy.blog.member.repository.MemberRepository;
-import com.nhnacademy.blog.member.service.MemberService;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mindrot.jbcrypt.BCrypt;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.Import;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
+@ExtendWith(MockitoExtension.class)
+@Import(PasswordEncoder.class)
 class MemberServiceImplTest {
 
+    @Mock
     MemberRepository memberRepository;
-    MemberService memberService;
-    PasswordEncoder passwordEncoder;
-    @BeforeEach
-    void setUp() {
-        memberRepository = Mockito.mock(MemberRepository.class);
-        passwordEncoder = new BCryptPasswordEncoder();
-        memberService = new MemberServiceImpl(memberRepository , passwordEncoder);
 
-    }
+    @InjectMocks
+    MemberServiceImpl memberService;
+
+    @Spy
+    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Test
     @DisplayName("회원등록")
@@ -109,7 +113,6 @@ class MemberServiceImplTest {
         );
 
         Mockito.when(memberRepository.existsByMbEmail(Mockito.anyString())).thenReturn(true);
-        Mockito.when(memberRepository.existsByMbMobile(Mockito.anyString())).thenReturn(false);
 
         Assertions.assertThrows(ConflictException.class,()->{
             memberService.registerMember(memberRegisterRequest);
@@ -163,10 +166,6 @@ class MemberServiceImplTest {
         Mockito.when(memberRepository.existsByMbNo(Mockito.anyLong())).thenReturn(true);
         //회원탈퇴여부 체크
         Mockito.when(memberRepository.isMemberWithdrawn(Mockito.anyLong())).thenReturn(false);
-        //회원이메일 중복체크
-        Mockito.when(memberRepository.existsByMbEmail(Mockito.anyString())).thenReturn(false);
-        //회원모바일연락처 중복체크
-        Mockito.when(memberRepository.existsByMbMobile(Mockito.anyString())).thenReturn(false);
 
         MemberResponse memberResponse = memberService.updateMember(memberUpdateRequest);
         log.debug("memberResponse: {}", memberResponse);
@@ -225,8 +224,6 @@ class MemberServiceImplTest {
         Mockito.when(memberRepository.isMemberWithdrawn(Mockito.anyLong())).thenReturn(false);
         //회원이메일 중복체크
         Mockito.when(memberRepository.existsByMbEmail(Mockito.anyString())).thenReturn(true);
-        //회원모바일연락처 중복체크
-        Mockito.when(memberRepository.existsByMbMobile(Mockito.anyString())).thenReturn(false);
 
         Assertions.assertThrows(ConflictException.class,()->{
             memberService.updateMember(memberUpdateRequest);
@@ -372,7 +369,6 @@ class MemberServiceImplTest {
                 )
         );
 
-        Mockito.when(memberRepository.existsByMbNo(Mockito.anyLong())).thenReturn(true);
         Mockito.when(memberRepository.findByMbNo(Mockito.anyLong())).thenReturn(memberOptional);
         //when
         MemberResponse memberResponse = memberService.getMember(1L);
@@ -515,7 +511,7 @@ class MemberServiceImplTest {
                     Assertions.assertNotNull(loginMember);
                 },
                 ()->{
-                    Assertions.assertEquals(1l, loginMember.getMbNo());
+                    Assertions.assertEquals(1L, loginMember.getMbNo());
                 },
                 ()->{
                     Assertions.assertEquals("marco@nhnacademy.com", loginMember.getMbEmail());

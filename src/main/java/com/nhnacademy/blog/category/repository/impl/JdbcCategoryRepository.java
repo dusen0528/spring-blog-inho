@@ -4,10 +4,10 @@ import com.nhnacademy.blog.category.domain.Category;
 import com.nhnacademy.blog.category.dto.CategoryResponse;
 import com.nhnacademy.blog.category.dto.CategoryUpdateRequest;
 import com.nhnacademy.blog.category.repository.CategoryRepository;
-import com.nhnacademy.blog.common.annotation.stereotype.Repository;
 import com.nhnacademy.blog.common.db.exception.DatabaseException;
 import com.nhnacademy.blog.common.reflection.ReflectionUtils;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -17,9 +17,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 @SuppressWarnings("java:S1192")
-@Repository(JdbcCategoryRepository.BEAN_NAME)
+@Repository
 public class JdbcCategoryRepository implements CategoryRepository {
-    public static final String BEAN_NAME = "jdbcCategoryRepository";
 
     @Override
     public void save(Category category) {

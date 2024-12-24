@@ -1,7 +1,5 @@
 package com.nhnacademy.blog.member.service.impl;
 
-import com.nhnacademy.blog.common.annotation.Qualifier;
-import com.nhnacademy.blog.common.annotation.stereotype.Service;
 import com.nhnacademy.blog.common.exception.BadRequestException;
 import com.nhnacademy.blog.common.exception.ConflictException;
 import com.nhnacademy.blog.common.exception.NotFoundException;
@@ -14,21 +12,22 @@ import com.nhnacademy.blog.member.repository.MemberRepository;
 import com.nhnacademy.blog.member.repository.impl.JdbcMemberRepository;
 import com.nhnacademy.blog.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
-@Service(MemberServiceImpl.BEAN_NAME )
+@Service
+@Transactional
 public class MemberServiceImpl implements MemberService {
-    public static final String BEAN_NAME="memberService";
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public MemberServiceImpl(@Qualifier(JdbcMemberRepository.BEAN_NAME) MemberRepository memberRepository,
-                             @Qualifier(BCryptPasswordEncoder.BEAN_NAME) PasswordEncoder passwordEncoder
+    public MemberServiceImpl(MemberRepository memberRepository,
+                             PasswordEncoder passwordEncoder
     ) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;

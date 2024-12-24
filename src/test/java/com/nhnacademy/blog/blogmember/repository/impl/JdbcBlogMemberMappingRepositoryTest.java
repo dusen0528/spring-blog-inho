@@ -8,7 +8,6 @@ import com.nhnacademy.blog.blogmember.repository.BlogMemberMappingRepository;
 import com.nhnacademy.blog.category.domain.Category;
 import com.nhnacademy.blog.category.repository.CategoryRepository;
 import com.nhnacademy.blog.category.repository.impl.JdbcCategoryRepository;
-import com.nhnacademy.blog.common.context.Context;
 import com.nhnacademy.blog.common.context.ContextHolder;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 import com.nhnacademy.blog.member.domain.Member;
@@ -18,6 +17,7 @@ import com.nhnacademy.blog.role.doamin.Role;
 import com.nhnacademy.blog.role.repository.RoleRepository;
 import com.nhnacademy.blog.role.repository.impl.JdbcRoleRepository;
 import org.junit.jupiter.api.*;
+import org.springframework.context.ApplicationContext;
 
 import java.util.Optional;
 
@@ -32,12 +32,12 @@ class JdbcBlogMemberMappingRepositoryTest {
     @BeforeAll
     static void beforeAll() {
 
-        Context context = ContextHolder.getApplicationContext();
-        blogMemberMappingRepository = (BlogMemberMappingRepository) context.getBean(JdbcBlogMemberMappingRepository.BEAN_NAME);
-        blogRepository = (BlogRepository) context.getBean(JdbcBlogRepository.BEAN_NAME);
-        categoryRepository = (CategoryRepository) context.getBean(JdbcCategoryRepository.BEAN_NAME);
-        memberRepository = (MemberRepository) context.getBean(JdbcMemberRepository.BEAN_NAME);
-        roleRepository = (RoleRepository) context.getBean(JdbcRoleRepository.BEAN_NAME);
+        ApplicationContext context = ContextHolder.getApplicationContext();
+        blogMemberMappingRepository = (BlogMemberMappingRepository) context.getBean("jdbcBlogMemberMappingRepository");
+        blogRepository = (BlogRepository) context.getBean("jdbcBlogRepository");
+        categoryRepository = (CategoryRepository) context.getBean("jdbcCategoryRepository");
+        memberRepository = (MemberRepository) context.getBean("jdbcMemberRepository");
+        roleRepository = (RoleRepository) context.getBean("jdbcRoleRepository");
     }
 
     @BeforeEach

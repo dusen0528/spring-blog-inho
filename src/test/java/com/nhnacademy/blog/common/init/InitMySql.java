@@ -1,7 +1,6 @@
 package com.nhnacademy.blog.common.init;
 
-import com.nhnacademy.blog.common.annotation.InitOrder;
-import com.nhnacademy.blog.common.context.Context;
+
 import com.wix.mysql.EmbeddedMysql;
 import com.wix.mysql.config.MysqldConfig;
 import com.wix.mysql.distribution.Version;
@@ -13,14 +12,13 @@ import static com.wix.mysql.ScriptResolver.classPathScript;
 import static com.wix.mysql.config.Charset.UTF8;
 import static com.wix.mysql.config.MysqldConfig.aMysqldConfig;
 
-@InitOrder(value = 0)
 public class InitMySql /*implements Initializeable*/ {
     /**
      * 참고 : https://github.com/wix-incubator/wix-embedded-mysql
      * @param context
      */
     //@Override
-    public void initialize(Context context) {
+    public void initialize() {
         MysqldConfig config = aMysqldConfig(Version.v8_latest)
                 .withCharset(UTF8)
                 .withPort(3306)

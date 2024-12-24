@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface MemberRepository {
-
+    
     //등록
     void save(Member member);
     //수정

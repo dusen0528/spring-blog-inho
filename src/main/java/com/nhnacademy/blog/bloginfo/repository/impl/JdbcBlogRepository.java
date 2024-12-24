@@ -4,10 +4,11 @@ import com.nhnacademy.blog.bloginfo.domain.Blog;
 import com.nhnacademy.blog.bloginfo.dto.BlogResponse;
 import com.nhnacademy.blog.bloginfo.dto.BlogUpdateRequest;
 import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
-import com.nhnacademy.blog.common.annotation.stereotype.Repository;
 import com.nhnacademy.blog.common.db.exception.DatabaseException;
 import com.nhnacademy.blog.common.reflection.ReflectionUtils;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -16,12 +17,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@Repository(JdbcBlogRepository.BEAN_NAME)
+@Repository
 public class JdbcBlogRepository implements BlogRepository {
-    public static final String BEAN_NAME = "jdbcBlogRepository";
 
     @Override
     public void save(Blog blog) {
+
         Connection connection = DbConnectionThreadLocal.getConnection();
 
         String sql = """

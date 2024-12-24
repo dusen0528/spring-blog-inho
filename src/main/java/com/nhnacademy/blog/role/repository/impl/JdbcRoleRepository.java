@@ -1,16 +1,16 @@
 package com.nhnacademy.blog.role.repository.impl;
 
-import com.nhnacademy.blog.common.annotation.stereotype.Repository;
 import com.nhnacademy.blog.common.db.exception.DatabaseException;
 import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 import com.nhnacademy.blog.role.doamin.Role;
 import com.nhnacademy.blog.role.dto.RoleUpdateRequestDto;
 import com.nhnacademy.blog.role.repository.RoleRepository;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.Optional;
 
-@Repository(JdbcRoleRepository.BEAN_NAME)
+@Repository
 public class JdbcRoleRepository implements RoleRepository {
     public static final String BEAN_NAME = "jdbcRoleRepository";
 
@@ -89,7 +89,7 @@ public class JdbcRoleRepository implements RoleRepository {
                 select role_id,role_name,role_description from roles where role_id=?
             """;
 
-        try(PreparedStatement psmt = connection.prepareStatement(sql);) {
+        try(PreparedStatement psmt = connection.prepareStatement(sql)) {
             psmt.setString(1, roleId);
             try(ResultSet rs = psmt.executeQuery()) {
                 while (rs.next()) {
@@ -111,7 +111,7 @@ public class JdbcRoleRepository implements RoleRepository {
         String sql = """
                     select 1 from roles where role_id=?
                 """;
-        try(PreparedStatement psmt = connection.prepareStatement(sql);) {
+        try(PreparedStatement psmt = connection.prepareStatement(sql)) {
             psmt.setString(1, roleId);
             try(ResultSet rs = psmt.executeQuery()) {
                 if(rs.next()) {
