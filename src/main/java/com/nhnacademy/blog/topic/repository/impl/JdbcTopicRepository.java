@@ -16,6 +16,11 @@ import java.util.Objects;
 import java.util.Optional;
 @SuppressWarnings("java:S1192")
 
+/**
+ * TODO#2-5 jdbc-api -> JdbcTemplate 기반으로 Repository 구현
+ * @Repository <- org.springframework.stereotype.Repository 입니다.
+ */
+
 @Repository
 public class JdbcTopicRepository implements TopicRepository {
 

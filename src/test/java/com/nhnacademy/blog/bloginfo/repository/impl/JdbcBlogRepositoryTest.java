@@ -11,6 +11,10 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.Optional;
 
+/**
+ *  TODO#3-3 JdbcBlogRepositoryTest Spring 기반의 Repository Test환경 구성
+ *  - TODO#3-1 참고해서 구현 합니다.
+ */
 @Slf4j
 class JdbcBlogRepositoryTest {
 

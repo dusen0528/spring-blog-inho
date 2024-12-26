@@ -19,25 +19,70 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.annotation.Import;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+/**
+ * TODO#5-1 Service TEST 환경(구성)
+ */
+
 @Slf4j
+
+/**
+ * TODO#5-1-1 ExtendWith(MockitoExtension.class)
+ * JUnit 5에서 Mockito를 사용하려면 @ExtendWith(MockitoExtension.class) 애너테이션을 사용해야 합니다.
+ * 이 애너테이션은 JUnit 5 테스트 실행 시 MockitoExtension을 활성화하여 Mockito의 기능을 지원하도록 해줍니다.
+ * 이 애너테이션을 사용하면, @Mock, @InjectMocks, @Spy 등과 같은 Mockito 관련 애너테이션들이 자동으로 초기화됩니다.
+ * 즉, MockitoExtension은 다음을 제공합니다:
+ *  1. @Mock으로 선언된 객체를 테스트 클래스의 필드에 자동으로 주입.
+ *  2. @InjectMocks로 선언된 클래스에서 @Mock으로 선언된 객체를 자동으로 주입.
+ *  3. @Spy로 선언된 객체의 실제 동작을 부분적으로 감시하고 수정 가능.
+ *  4. Mockito의 모든 메소드가 테스트 실행 전에 설정되어, Mockito의 mock 객체들을 제대로 사용할 수 있게 만듭니다.
+ */
 @ExtendWith(MockitoExtension.class)
-@Import(PasswordEncoder.class)
 class MemberServiceImplTest {
 
+    /**
+     * TODO#5-1-2 @Mock 애너테이션은 필드에 대한 mock 객체를 생성하여 테스트에 사용할 수 있도록 설정합니다.
+     * `@Mock`은 테스트 대상 클래스의 의존성을 가짜(mock) 객체로 만들어서, 테스트 중 실제 객체를 사용하지 않고 가짜 객체로 테스트를 진행하게 합니다.
+     * 예를 들어, 이 경우 `MemberRepository`는 실제 데이터베이스와의 상호작용을 하지 않고, 가짜 객체로 테스트가 이루어집니다.
+     * 이렇게 하면, 데이터베이스와의 연결을 위한 복잡한 설정이나 외부 시스템에 의존하지 않고 빠르고 격리된 테스트를 할 수 있습니다.
+     * Mockito는 이 필드를 자동으로 초기화하며, 테스트 중에 해당 mock 객체의 메서드를 설정하거나 호출하여, 객체 간의 상호작용을 검증할 수 있습니다.
+     */
     @Mock
     MemberRepository memberRepository;
 
+    /**
+     * TODO#5-1-3 @InjectMocks 애너테이션은 테스트 대상 클래스에 대한 의존성을 주입할 때 사용됩니다.
+     * 이 애너테이션은 `@Mock`으로 생성된 객체들을 테스트 클래스에 자동으로 주입해줍니다.
+     * 예를 들어, `MemberServiceImpl` 클래스는 `@Mock`으로 설정된 `memberRepository` 객체를 생성자나 필드 주입 방식으로 자동으로 주입받게 됩니다.
+     * `@InjectMocks`를 사용하면, `memberService` 객체가 `memberRepository`를 의존성으로 주입받아 실제 테스트 대상이 되는 서비스 클래스를 테스트할 수 있습니다.
+     * 이 방식은 객체 간의 의존성 주입을 수동으로 설정할 필요 없이 Mockito가 자동으로 처리해주므로, 더 깔끔하고 효율적인 테스트 코드를 작성할 수 있게 해줍니다.
+     */
     @InjectMocks
     MemberServiceImpl memberService;
 
+    /**
+     * TODO#5-1-4 `@Spy`는 객체의 실제 동작을 유지하면서, 그 동작을 부분적으로 검증하거나 수정할 수 있게 해줍니다.
+     * 즉, `@Spy`는 해당 객체가 실제로 동작하는 것을 유지하되, 특정 메서드 호출에 대해서만 Mockito를 사용해 동작을 변경하거나 검증할 수 있습니다.
+     * 예를 들어, `passwordEncoder`는 `BCryptPasswordEncoder`의 실제 구현체로, 암호화 로직은 실제로 수행됩니다.
+     * 하지만 `@Spy`를 사용하면, 이 객체의 메서드가 호출될 때 어떤 동작을 했는지 확인하거나, 특정 메서드를 스텁(stub)하여 예상되는 값을 반환하도록 설정할 수 있습니다.
+     * `@Spy`는 실제 객체를 기반으로 하므로, `@Mock`처럼 모든 메서드를 가짜로 만드는 것이 아니라 실제 동작과 일부 검증을 병행할 수 있습니다.
+     */
+
     @Spy
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    // TODO#5-1-5 이전 코드와 비교해 보세요
+//    @BeforeEach
+//    void setUp() {
+//        memberRepository = Mockito.mock(MemberRepository.class); -> @Mock
+//        passwordEncoder = new BCryptPasswordEncoder(); - > @Spy
+//        memberService = new MemberServiceImpl(memberRepository , passwordEncoder); -> @InjectMocks
+//
+//    }
 
     @Test
     @DisplayName("회원등록")

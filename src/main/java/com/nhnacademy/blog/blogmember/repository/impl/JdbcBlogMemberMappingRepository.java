@@ -10,6 +10,11 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.util.Optional;
 
+/**
+ * TODO#2-4 jdbc-api -> JdbcTemplate 기반으로 Repository 구현
+ * @Repository <- org.springframework.stereotype.Repository 입니다.
+ */
+
 @Repository
 public class JdbcBlogMemberMappingRepository implements BlogMemberMappingRepository {
 

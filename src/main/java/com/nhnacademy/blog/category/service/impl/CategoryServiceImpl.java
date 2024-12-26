@@ -19,6 +19,7 @@ import com.nhnacademy.blog.common.exception.NotFoundException;
 import com.nhnacademy.blog.topic.repository.TopicRepository;
 import com.nhnacademy.blog.topic.repository.impl.JdbcTopicRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

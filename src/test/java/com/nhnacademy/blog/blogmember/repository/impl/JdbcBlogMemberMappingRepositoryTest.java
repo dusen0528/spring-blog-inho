@@ -21,6 +21,10 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.Optional;
 
+/**
+ *  TODO#3-4 JdbcBlogMemberMappingRepositoryTest Spring 기반의 Repository Test환경 구성
+ *  - TODO#3-1 참고해서 구현 합니다.
+ */
 class JdbcBlogMemberMappingRepositoryTest {
 
     static BlogRepository blogRepository;
