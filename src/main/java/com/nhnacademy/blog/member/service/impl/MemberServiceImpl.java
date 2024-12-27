@@ -45,7 +45,7 @@ import java.util.Optional;
  * 예외를 다룰 때 `@Transactional(rollbackFor = Exception.class)`와 같이 설정하여 커스텀 예외를 지정할 수도 있습니다.
  * @Transactional
  */
-@Transactional
+@Transactional(readOnly = true)
 public class MemberServiceImpl implements MemberService {
     /**
      * TODO#4-3 생성자 주입(Constructor Injection)
@@ -92,6 +92,7 @@ public class MemberServiceImpl implements MemberService {
 //        this.passwordEncoder = passwordEncoder;
 //    }
 
+    @Transactional
     @Override
     public MemberResponse registerMember(MemberRegisterRequest memberRegisterRequest) {
 
@@ -115,6 +116,7 @@ public class MemberServiceImpl implements MemberService {
         return getMember(member.getMbNo());
     }
 
+    @Transactional
     @Override
     public MemberResponse updateMember(MemberUpdateRequest memberUpdateRequest) {
 
@@ -145,6 +147,7 @@ public class MemberServiceImpl implements MemberService {
         return getMember(member.getMbNo());
     }
 
+    @Transactional
     @Override
     public void withdrawalMember(long mbNo) {
 
@@ -179,6 +182,7 @@ public class MemberServiceImpl implements MemberService {
         );
     }
 
+    @Transactional
     @Override
     public void changePassword(MemberPasswordUpdateRequest memberPasswordUpdateRequest) {
 
@@ -225,28 +229,28 @@ public class MemberServiceImpl implements MemberService {
         );
     }
 
-    private void checkMemberExists(long mbNo) {
+    protected void checkMemberExists(long mbNo) {
         boolean flag = memberRepository.existsByMbNo(mbNo);
         if(!flag) {
            throw new NotFoundException("Member not found with mb no: %s ".formatted(mbNo));
         }
     }
 
-    private void checkEmailDuplicate(String email) {
+    protected void checkEmailDuplicate(String email) {
         boolean flag = memberRepository.existsByMbEmail(email);
         if(flag) {
             throw new ConflictException("Email [%s] already exists".formatted(email));
         }
     }
 
-    private void checkMobileDuplicate(String mobile) {
+    protected void checkMobileDuplicate(String mobile) {
         boolean flag = memberRepository.existsByMbMobile(mobile);
         if(flag) {
             throw new ConflictException("Mobile [%s] already exists".formatted(mobile));
         }
     }
 
-    private void checkWithdrawal(Long mbNo) {
+    protected void checkWithdrawal(Long mbNo) {
         boolean flag = memberRepository.isMemberWithdrawn(mbNo);
         if(flag) {
             throw new NotFoundException("This member [%d] has bean withdrawal".formatted(mbNo));

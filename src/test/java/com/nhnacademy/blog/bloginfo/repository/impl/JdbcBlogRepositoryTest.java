@@ -3,39 +3,25 @@ package com.nhnacademy.blog.bloginfo.repository.impl;
 import com.nhnacademy.blog.bloginfo.domain.Blog;
 import com.nhnacademy.blog.bloginfo.dto.BlogUpdateRequest;
 import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
-import com.nhnacademy.blog.common.context.ContextHolder;
-import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
+import com.nhnacademy.blog.common.config.ApplicationConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
-import org.springframework.context.ApplicationContext;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-/**
- *  TODO#3-3 JdbcBlogRepositoryTest Spring 기반의 Repository Test환경 구성
- *  - TODO#3-1 참고해서 구현 합니다.
- */
 @Slf4j
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {ApplicationConfig.class})
+@Transactional
 class JdbcBlogRepositoryTest {
 
-    static BlogRepository blogRepository;
-
-    @BeforeAll
-    static void beforeAll() {
-        ApplicationContext context = ContextHolder.getApplicationContext();
-        blogRepository = (BlogRepository) context.getBean("jdbcBlogRepository");
-    }
-
-    @BeforeEach
-    void setUp(){
-        DbConnectionThreadLocal.initialize();
-    }
-
-    @AfterEach
-    void tearDown(){
-        DbConnectionThreadLocal.setSqlError(true);
-        DbConnectionThreadLocal.reset();
-    }
+    @Autowired
+    BlogRepository blogRepository;
 
     @Test
     @DisplayName("블로그정보 저장(생성)")
@@ -87,16 +73,12 @@ class JdbcBlogRepositoryTest {
     @Test
     @DisplayName("blog삭제")
     void delete() {
-
         Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
         blogRepository.save(blog);
         blogRepository.deleteByBlogId(blog.getBlogId());
 
-        Optional<Blog> dbBlog =  blogRepository.findByBlogId(blog.getBlogId());
-        Assertions.assertAll(
-                ()-> Assertions.assertTrue(dbBlog.isEmpty())
-        );
-
+        boolean actual =blogRepository.existByBlogId(blog.getBlogId());
+        Assertions.assertFalse(actual);
     }
 
     @Test

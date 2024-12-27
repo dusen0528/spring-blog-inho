@@ -13,7 +13,11 @@ import com.nhnacademy.blog.topic.repository.TopicRepository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
@@ -22,23 +26,26 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
+@ExtendWith(MockitoExtension.class)
 class CategoryServiceImplTest {
-
-    CategoryService categoryService;
+    @Mock
     CategoryRepository categoryRepository;
+
+    @Mock
     BlogRepository blogRepository;
+
+    @Mock
     TopicRepository topicRepository;
+
+    @Mock
     BlogMemberMappingRepository blogMemberMappingRepository;
+
+    @InjectMocks
+    CategoryServiceImpl categoryService;
 
     @BeforeEach
     void setUp() {
         MemberThreadLocal.setMemberNo(1L);
-        categoryRepository = Mockito.mock(CategoryRepository.class);
-        blogRepository = Mockito.mock(BlogRepository.class);
-        topicRepository = Mockito.mock(TopicRepository.class);
-        blogMemberMappingRepository = Mockito.mock(BlogMemberMappingRepository.class);
-
-        categoryService = new CategoryServiceImpl(categoryRepository, blogRepository, topicRepository, blogMemberMappingRepository);
     }
 
     @AfterEach
@@ -98,9 +105,6 @@ class CategoryServiceImplTest {
         BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(1L,1L,1L,"ROLE_MEMBER");
         Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
 
-        Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
-        Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(true);
-
         RootCategoryCreateRequest rootCategoryCreateRequest = new RootCategoryCreateRequest(1L,1,"java",10);
         CommonHttpException commonHttpException = Assertions.assertThrows(ForbiddenException.class,()->{
             categoryService.createRootCategory(rootCategoryCreateRequest);
@@ -121,7 +125,6 @@ class CategoryServiceImplTest {
         Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
 
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(false);
-        Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(true);
 
         RootCategoryCreateRequest rootCategoryCreateRequest = new RootCategoryCreateRequest(1L,1,"java",10);
         Assertions.assertThrows(BadRequestException.class,()->{
@@ -200,9 +203,6 @@ class CategoryServiceImplTest {
         //given
         BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(1L,1L,1L,"ROLE_MEMBER");
         Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
-        Mockito.when(categoryRepository.existsByCategoryId(Mockito.anyLong())).thenReturn(true);
-        Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
-        Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(true);
         SubCategoryCreateRequest subCategoryCreateRequest = new SubCategoryCreateRequest(1L,10L,1L,1,"java",10);
         //when
         Assertions.assertThrows(ForbiddenException.class,()->{
@@ -225,8 +225,6 @@ class CategoryServiceImplTest {
         Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(true);
 
         Category category = Category.ofExistingCategory(1L,10L,1L,1,"java",10, LocalDateTime.now().minusDays(10),LocalDateTime.now());
-        Mockito.when(categoryRepository.findByCategoryId(Mockito.anyLong())).thenReturn(Optional.of(category));
-
         SubCategoryCreateRequest subCategoryCreateRequest = new SubCategoryCreateRequest(1L,10L,1L,1,"java",10);
         Assertions.assertThrows(NotFoundException.class,()->{
             categoryService.createSubCategory(subCategoryCreateRequest);
@@ -243,12 +241,9 @@ class CategoryServiceImplTest {
         BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(1L,1L,1L,"ROLE_OWNER");
 
         Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
-        Mockito.when(categoryRepository.existsByCategoryId(Mockito.anyLong())).thenReturn(true);
+
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(false);
         Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(true);
-
-        Category category = Category.ofExistingCategory(1L,10L,1L,1,"java",10, LocalDateTime.now().minusDays(10),LocalDateTime.now());
-        Mockito.when(categoryRepository.findByCategoryId(Mockito.anyLong())).thenReturn(Optional.of(category));
 
         SubCategoryCreateRequest subCategoryCreateRequest = new SubCategoryCreateRequest(1L,10L,1L,1,"java",10);
         Assertions.assertThrows(BadRequestException.class,()->{
@@ -266,13 +261,7 @@ class CategoryServiceImplTest {
         BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(1L,1L,1L,"ROLE_OWNER");
 
         Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
-        Mockito.when(categoryRepository.existsByCategoryId(Mockito.anyLong())).thenReturn(true);
-        Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
         Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(false);
-
-        Category category = Category.ofExistingCategory(1L,10L,1L,1,"java",10, LocalDateTime.now().minusDays(10),LocalDateTime.now());
-        Mockito.when(categoryRepository.findByCategoryId(Mockito.anyLong())).thenReturn(Optional.of(category));
-
         SubCategoryCreateRequest subCategoryCreateRequest = new SubCategoryCreateRequest(1L,10L,1L,1,"java",10);
         Assertions.assertThrows(BadRequestException.class,()->{
             categoryService.createSubCategory(subCategoryCreateRequest);
@@ -322,12 +311,6 @@ class CategoryServiceImplTest {
 
         BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(1L, 1L, 1L, "ROLE_MEMBER");
         Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(), Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
-        Mockito.when(categoryRepository.existsByCategoryId(Mockito.anyLong())).thenReturn(true);
-        Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
-        Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(true);
-
-        Category category = Category.ofExistingCategory(1L, null, 1L, 1, "java", 10, LocalDateTime.now().minusDays(10), LocalDateTime.now());
-        Mockito.when(categoryRepository.findByCategoryId(Mockito.anyLong())).thenReturn(Optional.of(category));
 
         RootCategoryUpdateRequest rootCategoryUpdateRequest = new RootCategoryUpdateRequest(1L, 1L, 1, "java", 10);
         Assertions.assertThrows(ForbiddenException.class, () -> {
@@ -347,7 +330,6 @@ class CategoryServiceImplTest {
         Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
         Mockito.when(categoryRepository.existsByCategoryId(Mockito.anyLong())).thenReturn(false);
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
-        Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(true);
 
         RootCategoryUpdateRequest rootCategoryUpdateRequest = new RootCategoryUpdateRequest(1L,1L,1,"java",10);
         Assertions.assertThrows(NotFoundException.class, () -> {
@@ -365,10 +347,7 @@ class CategoryServiceImplTest {
 
         BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(1L,1L,1L,"ROLE_OWNER");
         Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
-        Mockito.when(categoryRepository.existsByCategoryId(Mockito.anyLong())).thenReturn(true);
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(false);
-        Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(true);
-
         RootCategoryUpdateRequest rootCategoryUpdateRequest = new RootCategoryUpdateRequest(1L,1L,1,"java",10);
         Assertions.assertThrows(BadRequestException.class, () -> {
             categoryService.updateRootCategory(rootCategoryUpdateRequest);
@@ -439,9 +418,6 @@ class CategoryServiceImplTest {
 
         BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(1L,1L,1L,"ROLE_MEMBER");
         Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
-        Mockito.when(categoryRepository.existsByCategoryId(Mockito.anyLong())).thenReturn(true);
-        Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
-        Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(true);
 
         SubCategoryUpdateRequest subCategoryUpdateRequest = new SubCategoryUpdateRequest(1L, 10L,1L,1,"java",10);
 
@@ -462,7 +438,6 @@ class CategoryServiceImplTest {
         Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
         Mockito.when(categoryRepository.existsByCategoryId(Mockito.anyLong())).thenReturn(false);
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
-        Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(true);
 
         SubCategoryUpdateRequest subCategoryUpdateRequest = new SubCategoryUpdateRequest(1L, 10L,1L,1,"java",10);
 
@@ -481,9 +456,7 @@ class CategoryServiceImplTest {
 
         BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(1L,1L,1L,"ROLE_OWNER");
         Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
-        Mockito.when(categoryRepository.existsByCategoryId(Mockito.anyLong())).thenReturn(true);
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(false);
-        Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(true);
 
         SubCategoryUpdateRequest subCategoryUpdateRequest = new SubCategoryUpdateRequest(1L, 10L,1L,1,"java",10);
 
@@ -553,13 +526,6 @@ class CategoryServiceImplTest {
         BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(1L,1L,1L,"ROLE_MEMBER");
         Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
 
-        //1.카테고리 존재여부체크
-        Mockito.when(categoryRepository.existsByCategoryId(Mockito.anyLong())).thenReturn(true);
-
-        //2.서브카테고리 존재여부 체크
-        Mockito.when(categoryRepository.existsSubCategoryByCategoryId(Mockito.anyLong())).thenReturn(false);
-
-
         CategoryDeleteRequest categoryDeleteRequest = new CategoryDeleteRequest(1L,1L);
         Assertions.assertThrows(ForbiddenException.class, () -> {
             categoryService.deleteCategory(categoryDeleteRequest);
@@ -579,9 +545,6 @@ class CategoryServiceImplTest {
 
         //1.카테고리 존재여부체크
         Mockito.when(categoryRepository.existsByCategoryId(Mockito.anyLong())).thenReturn(false);
-
-        //2.서브카테고리 존재여부 체크
-        Mockito.when(categoryRepository.existsSubCategoryByCategoryId(Mockito.anyLong())).thenReturn(false);
 
         CategoryDeleteRequest categoryDeleteRequest = new CategoryDeleteRequest(1L,1L);
         Assertions.assertThrows(NotFoundException.class, () -> {

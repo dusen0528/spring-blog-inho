@@ -24,14 +24,11 @@ import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-/**
- * TODO#5-1 Service TEST 환경(구성)
- */
 
 @Slf4j
 
 /**
- * TODO#5-1-1 ExtendWith(MockitoExtension.class)
+ * ExtendWith(MockitoExtension.class)
  * JUnit 5에서 Mockito를 사용하려면 @ExtendWith(MockitoExtension.class) 애너테이션을 사용해야 합니다.
  * 이 애너테이션은 JUnit 5 테스트 실행 시 MockitoExtension을 활성화하여 Mockito의 기능을 지원하도록 해줍니다.
  * 이 애너테이션을 사용하면, @Mock, @InjectMocks, @Spy 등과 같은 Mockito 관련 애너테이션들이 자동으로 초기화됩니다.
@@ -45,7 +42,7 @@ import java.util.Optional;
 class MemberServiceImplTest {
 
     /**
-     * TODO#5-1-2 @Mock 애너테이션은 필드에 대한 mock 객체를 생성하여 테스트에 사용할 수 있도록 설정합니다.
+     * @Mock 애너테이션은 필드에 대한 mock 객체를 생성하여 테스트에 사용할 수 있도록 설정합니다.
      * `@Mock`은 테스트 대상 클래스의 의존성을 가짜(mock) 객체로 만들어서, 테스트 중 실제 객체를 사용하지 않고 가짜 객체로 테스트를 진행하게 합니다.
      * 예를 들어, 이 경우 `MemberRepository`는 실제 데이터베이스와의 상호작용을 하지 않고, 가짜 객체로 테스트가 이루어집니다.
      * 이렇게 하면, 데이터베이스와의 연결을 위한 복잡한 설정이나 외부 시스템에 의존하지 않고 빠르고 격리된 테스트를 할 수 있습니다.
@@ -55,7 +52,7 @@ class MemberServiceImplTest {
     MemberRepository memberRepository;
 
     /**
-     * TODO#5-1-3 @InjectMocks 애너테이션은 테스트 대상 클래스에 대한 의존성을 주입할 때 사용됩니다.
+     * @InjectMocks 애너테이션은 테스트 대상 클래스에 대한 의존성을 주입할 때 사용됩니다.
      * 이 애너테이션은 `@Mock`으로 생성된 객체들을 테스트 클래스에 자동으로 주입해줍니다.
      * 예를 들어, `MemberServiceImpl` 클래스는 `@Mock`으로 설정된 `memberRepository` 객체를 생성자나 필드 주입 방식으로 자동으로 주입받게 됩니다.
      * `@InjectMocks`를 사용하면, `memberService` 객체가 `memberRepository`를 의존성으로 주입받아 실제 테스트 대상이 되는 서비스 클래스를 테스트할 수 있습니다.
@@ -65,7 +62,7 @@ class MemberServiceImplTest {
     MemberServiceImpl memberService;
 
     /**
-     * TODO#5-1-4 `@Spy`는 객체의 실제 동작을 유지하면서, 그 동작을 부분적으로 검증하거나 수정할 수 있게 해줍니다.
+     * `@Spy`는 객체의 실제 동작을 유지하면서, 그 동작을 부분적으로 검증하거나 수정할 수 있게 해줍니다.
      * 즉, `@Spy`는 해당 객체가 실제로 동작하는 것을 유지하되, 특정 메서드 호출에 대해서만 Mockito를 사용해 동작을 변경하거나 검증할 수 있습니다.
      * 예를 들어, `passwordEncoder`는 `BCryptPasswordEncoder`의 실제 구현체로, 암호화 로직은 실제로 수행됩니다.
      * 하지만 `@Spy`를 사용하면, 이 객체의 메서드가 호출될 때 어떤 동작을 했는지 확인하거나, 특정 메서드를 스텁(stub)하여 예상되는 값을 반환하도록 설정할 수 있습니다.
@@ -74,15 +71,6 @@ class MemberServiceImplTest {
 
     @Spy
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    // TODO#5-1-5 이전 코드와 비교해 보세요
-//    @BeforeEach
-//    void setUp() {
-//        memberRepository = Mockito.mock(MemberRepository.class); -> @Mock
-//        passwordEncoder = new BCryptPasswordEncoder(); - > @Spy
-//        memberService = new MemberServiceImpl(memberRepository , passwordEncoder); -> @InjectMocks
-//
-//    }
 
     @Test
     @DisplayName("회원등록")

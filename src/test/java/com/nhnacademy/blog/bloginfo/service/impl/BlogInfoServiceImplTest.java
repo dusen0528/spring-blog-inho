@@ -15,7 +15,11 @@ import com.nhnacademy.blog.common.exception.ForbiddenException;
 import com.nhnacademy.blog.common.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
@@ -23,18 +27,19 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
+@ExtendWith(MockitoExtension.class)
 class BlogInfoServiceImplTest {
-
+    @Mock
     BlogRepository blogRepository;
+
+    @Mock
     BlogMemberMappingRepository blogMemberMappingRepository;
-    BlogInfoService blogInfoService;
+
+    @InjectMocks
+    BlogInfoServiceImpl blogInfoService;
 
     @BeforeEach
     void setUp() {
-        blogRepository = Mockito.mock(BlogRepository.class);
-        blogMemberMappingRepository = Mockito.mock(BlogMemberMappingRepository.class);
-        blogInfoService = new BlogInfoServiceImpl(blogRepository, blogMemberMappingRepository);
-
         MemberThreadLocal.setMemberNo(1L);
     }
 
@@ -112,17 +117,6 @@ class BlogInfoServiceImplTest {
                 LocalDateTime.now().minusDays(30),
                 LocalDateTime.now()
         );
-
-        //blog 생성
-        Mockito.doAnswer(invocationOnMock -> {
-            Blog paramBlog = invocationOnMock.getArgument(0);
-            //save() 호출시 1L로 변경
-            Field field = paramBlog.getClass().getDeclaredField("blogId");
-            field.setAccessible(true);
-            field.set(paramBlog,1L);
-            log.debug("paramBlog: {}", paramBlog);
-            return null;
-        }).when(blogRepository).save(Mockito.any(Blog.class));
 
         Throwable throwable = Assertions.assertThrows(ConflictException.class, () -> blogInfoService.createBlog(blogCreateRequest));
         log.debug("exception: {}, message:{}",throwable.getClass().getSimpleName(),throwable.getMessage());

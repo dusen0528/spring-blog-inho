@@ -2,58 +2,45 @@ package com.nhnacademy.blog.blogmember.repository.impl;
 
 import com.nhnacademy.blog.bloginfo.domain.Blog;
 import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
-import com.nhnacademy.blog.bloginfo.repository.impl.JdbcBlogRepository;
 import com.nhnacademy.blog.blogmember.domain.BlogMemberMapping;
 import com.nhnacademy.blog.blogmember.repository.BlogMemberMappingRepository;
 import com.nhnacademy.blog.category.domain.Category;
 import com.nhnacademy.blog.category.repository.CategoryRepository;
-import com.nhnacademy.blog.category.repository.impl.JdbcCategoryRepository;
-import com.nhnacademy.blog.common.context.ContextHolder;
-import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
+import com.nhnacademy.blog.common.config.ApplicationConfig;
 import com.nhnacademy.blog.member.domain.Member;
 import com.nhnacademy.blog.member.repository.MemberRepository;
-import com.nhnacademy.blog.member.repository.impl.JdbcMemberRepository;
 import com.nhnacademy.blog.role.doamin.Role;
 import com.nhnacademy.blog.role.repository.RoleRepository;
-import com.nhnacademy.blog.role.repository.impl.JdbcRoleRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
-import org.springframework.context.ApplicationContext;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-/**
- *  TODO#3-4 JdbcBlogMemberMappingRepositoryTest Spring 기반의 Repository Test환경 구성
- *  - TODO#3-1 참고해서 구현 합니다.
- */
+@Slf4j
+@Transactional
+@ContextConfiguration(classes = {ApplicationConfig.class})
+@ExtendWith(SpringExtension.class)
 class JdbcBlogMemberMappingRepositoryTest {
 
-    static BlogRepository blogRepository;
-    static BlogMemberMappingRepository blogMemberMappingRepository;
-    static CategoryRepository categoryRepository;
-    static MemberRepository memberRepository;
-    static RoleRepository roleRepository;
+    @Autowired
+    BlogRepository blogRepository;
 
-    @BeforeAll
-    static void beforeAll() {
+    @Autowired
+    BlogMemberMappingRepository blogMemberMappingRepository;
 
-        ApplicationContext context = ContextHolder.getApplicationContext();
-        blogMemberMappingRepository = (BlogMemberMappingRepository) context.getBean("jdbcBlogMemberMappingRepository");
-        blogRepository = (BlogRepository) context.getBean("jdbcBlogRepository");
-        categoryRepository = (CategoryRepository) context.getBean("jdbcCategoryRepository");
-        memberRepository = (MemberRepository) context.getBean("jdbcMemberRepository");
-        roleRepository = (RoleRepository) context.getBean("jdbcRoleRepository");
-    }
+    @Autowired
+    CategoryRepository categoryRepository;
 
-    @BeforeEach
-    void setUp(){
-        DbConnectionThreadLocal.initialize();
-    }
+    @Autowired
+    MemberRepository memberRepository;
 
-    @AfterEach
-    void tearDown(){
-        DbConnectionThreadLocal.setSqlError(true);
-        DbConnectionThreadLocal.reset();
-    }
+    @Autowired
+    RoleRepository roleRepository;
 
     @Test
     @DisplayName("블로그+회원 : 연결")
@@ -118,8 +105,13 @@ class JdbcBlogMemberMappingRepositoryTest {
         blogMemberMappingRepository.deleteByBlogMemberMappingId(blogMemberMapping.getBlogMemberId());
 
         //then
-        boolean actual = blogMemberMappingRepository.findByBlogMemberId(blogMemberMapping.getBlogMemberId()).isEmpty();
-        Assertions.assertTrue(actual);
+        //boolean actual = blogMemberMappingRepository.findByBlogMemberId(blogMemberMapping.getBlogMemberId()).isEmpty();
+
+        Optional<BlogMemberMapping> blogMemberMappingOptional = blogMemberMappingRepository.findByBlogMemberId(blogMemberMapping.getBlogMemberId());
+
+        log.debug("blogMemberMappingOptional: {}", blogMemberMappingOptional.isPresent());
+        Assertions.assertTrue(blogMemberMappingOptional.isEmpty());
+
     }
 
     @Test
@@ -154,6 +146,5 @@ class JdbcBlogMemberMappingRepositoryTest {
                 ()->Assertions.assertEquals(blog.getBlogId(),blogMemberMappingOptional.get().getBlogId()),
                 ()->Assertions.assertEquals(role.getRoleId(),blogMemberMappingOptional.get().getRoleId())
         );
-
     }
 }

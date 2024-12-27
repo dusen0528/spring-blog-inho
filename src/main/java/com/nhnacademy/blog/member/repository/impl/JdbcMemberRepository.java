@@ -16,15 +16,6 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
-/**
- * TODO#2-1 JdbcMemberRepository를 참고하여 모든 Repository를 JdbcTemplate 기반으로 변경하세요.
- * 더 이상 개발자가 Connection을 직접 공유하고 하나의 트랜잭션으로 묶는 일에 관여할 필요가 없습니다.
- * connection을 획득하기 위해서 Connection connection = DbConnectionThreadLocal.getConnection();을 더 이상 사용하지 않습니다.
- * 대신 PlatformTransactionManager에 의해 관리됩니다.
- *
- * @Repository <- org.springframework.stereotype.Repository 입니다.
- */
-
 @Slf4j
 @Repository
 public class JdbcMemberRepository implements MemberRepository {

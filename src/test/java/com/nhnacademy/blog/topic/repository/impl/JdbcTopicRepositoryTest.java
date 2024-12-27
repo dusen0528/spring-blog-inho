@@ -1,42 +1,28 @@
 package com.nhnacademy.blog.topic.repository.impl;
 
-import com.nhnacademy.blog.common.context.ContextHolder;
-import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
+import com.nhnacademy.blog.common.config.ApplicationConfig;
 import com.nhnacademy.blog.topic.domain.Topic;
 import com.nhnacademy.blog.topic.dto.TopicUpdateRequestDto;
+import com.nhnacademy.blog.topic.repository.TopicRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
-import org.springframework.context.ApplicationContext;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-/**
- *  TODO#3-5 JdbcTopicRepositoryTest Spring 기반의 Repository Test환경 구성
- *  - TODO#3-1 참고해서 구현 합니다.
- */
-
 @Slf4j
+@Transactional
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {ApplicationConfig.class})
 class JdbcTopicRepositoryTest {
 
-    static JdbcTopicRepository topicRepository;
-
-    @BeforeAll
-    static void beforeAll() {
-        ApplicationContext context = ContextHolder.getApplicationContext();
-        topicRepository = (JdbcTopicRepository) context.getBean("jdbcTopicRepository");
-    }
-
-    @BeforeEach
-    void setUp(){
-        DbConnectionThreadLocal.initialize();
-    }
-
-    @AfterEach
-    void tearDown(){
-        DbConnectionThreadLocal.setSqlError(true);
-        DbConnectionThreadLocal.reset();
-    }
+    @Autowired
+    TopicRepository topicRepository;
 
     @Test
     @DisplayName("topic-저장")

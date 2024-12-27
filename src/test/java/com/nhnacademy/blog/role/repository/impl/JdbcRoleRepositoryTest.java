@@ -1,38 +1,25 @@
 package com.nhnacademy.blog.role.repository.impl;
 
-import com.nhnacademy.blog.common.context.ContextHolder;
-import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
+import com.nhnacademy.blog.common.config.ApplicationConfig;
 import com.nhnacademy.blog.role.doamin.Role;
 import com.nhnacademy.blog.role.dto.RoleUpdateRequestDto;
 import com.nhnacademy.blog.role.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
-import org.springframework.context.ApplicationContext;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
-/**
- *  TODO#3-2 JdbcRoleRepositoryTest Spring 기반의 Repository Test환경 구성
- *  - TODO#3-1 참고해서 구현 합니다.
- */
 @Slf4j
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {ApplicationConfig.class})
+@Transactional
 class JdbcRoleRepositoryTest {
-    static RoleRepository roleRepository;
 
-    @BeforeAll
-    static void beforeAll() {
-        ApplicationContext context = ContextHolder.getApplicationContext();
-        roleRepository = (RoleRepository) context.getBean(JdbcRoleRepository.BEAN_NAME);
-    }
-
-    @BeforeEach
-    void setUp() {
-        DbConnectionThreadLocal.initialize();
-    }
-
-    @AfterEach
-    void tearDown() {
-        DbConnectionThreadLocal.setSqlError(true);
-        DbConnectionThreadLocal.reset();
-    }
+    @Autowired
+    RoleRepository roleRepository;
 
     @Test
     @DisplayName("권한등록")

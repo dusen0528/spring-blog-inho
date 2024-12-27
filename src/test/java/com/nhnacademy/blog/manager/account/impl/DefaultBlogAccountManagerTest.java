@@ -1,43 +1,28 @@
 package com.nhnacademy.blog.manager.account.impl;
 
 import com.nhnacademy.blog.bloginfo.dto.BlogResponse;
-import com.nhnacademy.blog.common.context.ContextHolder;
-import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
+import com.nhnacademy.blog.common.config.ApplicationConfig;
 import com.nhnacademy.blog.manager.account.dto.BlogAccountRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
-import org.springframework.context.ApplicationContext;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 통합 테스트 진행
  */
 @Slf4j
+@Transactional
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = ApplicationConfig.class)
 class DefaultBlogAccountManagerTest {
     //통합 테스트 진행
 
-    static ApplicationContext context;
-    static DefaultBlogAccountManager accountManager;
-
-    @BeforeAll
-    static void setUpAll() {
-        context = ContextHolder.getApplicationContext();
-        accountManager = (DefaultBlogAccountManager) context.getBean("defaultBlogAccountManager");
-    }
-
-    @BeforeEach
-    void setUp() {
-        DbConnectionThreadLocal.initialize();
-    }
-    @AfterEach
-    void tearDown() {
-        DbConnectionThreadLocal.setSqlError(true);
-        DbConnectionThreadLocal.reset();
-    }
-
-    @AfterAll
-    static void tearDownAll() {
-
-    }
+    @Autowired
+    DefaultBlogAccountManager accountManager;
 
     @Test
     @DisplayName("blog 회원가입 - 통합테스트")

@@ -27,12 +27,11 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class ContextHolder {
 
     /**
-     * TODO#1-2 ApplicationContext를 정적으로 초기화합니다.
      * - AnnotationConfigApplicationContext를 사용하여 애플리케이션 컨텍스트를 생성합니다.
      * - ApplicationConfig.class를 설정으로 사용합니다.
      * - 초기화 시점에 클래스가 로드될 때 애플리케이션 컨텍스트가 생성됩니다.
      */
-    private static final ApplicationContext context = null;
+    private static final ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
 
     /**
      * ContextHolder 클래스의 기본 생성자.

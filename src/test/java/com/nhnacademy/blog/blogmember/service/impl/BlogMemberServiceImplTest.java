@@ -5,37 +5,39 @@ import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
 import com.nhnacademy.blog.blogmember.domain.BlogMemberMapping;
 import com.nhnacademy.blog.blogmember.dto.BlogMemberRegisterRequest;
 import com.nhnacademy.blog.blogmember.repository.BlogMemberMappingRepository;
-import com.nhnacademy.blog.blogmember.service.BlogMemberService;
 import com.nhnacademy.blog.common.exception.BadRequestException;
 import com.nhnacademy.blog.common.exception.ForbiddenException;
 import com.nhnacademy.blog.common.exception.NotFoundException;
 import com.nhnacademy.blog.member.repository.MemberRepository;
 import com.nhnacademy.blog.role.repository.RoleRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-
+@ExtendWith(MockitoExtension.class)
 class BlogMemberServiceImplTest {
 
-    BlogMemberService blogMemberService;
+    @Mock
     BlogMemberMappingRepository blogMemberMappingRepository;
+
+    @Mock
     RoleRepository roleRepository;
+
+    @Mock
     MemberRepository memberRepository;
+
+    @Mock
     BlogRepository blogRepository;
 
-    @BeforeEach
-    void setUp(){
-        blogMemberMappingRepository = Mockito.mock(BlogMemberMappingRepository.class);
-        roleRepository = Mockito.mock(RoleRepository.class);
-        memberRepository = Mockito.mock(MemberRepository.class);
-        blogRepository = Mockito.mock(BlogRepository.class);
+    @InjectMocks
+    BlogMemberServiceImpl blogMemberService;
 
-        blogMemberService = new BlogMemberServiceImpl(blogMemberMappingRepository,roleRepository,blogRepository,memberRepository);
-    }
 
     @Test
     @DisplayName("블로그에 회원연결")
@@ -65,12 +67,6 @@ class BlogMemberServiceImplTest {
     void registerBlogMember_exception_case1() {
         //blog 존재여부
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(false);
-        //role 권한 존재여부
-        Mockito.when(roleRepository.existsByRoleId(Mockito.anyString())).thenReturn(true);
-        //회원  존재여부
-        Mockito.when(memberRepository.existsByMbNo(Mockito.anyLong())).thenReturn(true);
-        //회원 탈퇴여부
-        Mockito.when(memberRepository.isMemberWithdrawn(Mockito.anyLong())).thenReturn(false);
 
         BlogMemberRegisterRequest blogMemberRegisterRequest = new BlogMemberRegisterRequest(
                 1L,
@@ -91,10 +87,6 @@ class BlogMemberServiceImplTest {
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
         //role 권한 존재여부
         Mockito.when(roleRepository.existsByRoleId(Mockito.anyString())).thenReturn(false);
-        //회원  존재여부
-        Mockito.when(memberRepository.existsByMbNo(Mockito.anyLong())).thenReturn(true);
-        //회원 탈퇴여부
-        Mockito.when(memberRepository.isMemberWithdrawn(Mockito.anyLong())).thenReturn(false);
 
         BlogMemberRegisterRequest blogMemberRegisterRequest = new BlogMemberRegisterRequest(
                 1L,
@@ -200,18 +192,12 @@ class BlogMemberServiceImplTest {
         //회원 탈퇴여부
         Mockito.when(memberRepository.isMemberWithdrawn(Mockito.anyLong())).thenReturn(false);
 
-        //blog 존재여부
-        Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
-
         BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(
                 1L,
                 1L,
                 1L,
                 "ROLE_OWNER"
         );
-
-        //블로그 맴버를 삭제할 수 있는 권한 여부
-        Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
 
         Assertions.assertThrows(NotFoundException.class,()->{
             blogMemberService.removeBlogMember(1L,1L);
@@ -232,19 +218,6 @@ class BlogMemberServiceImplTest {
 
         //회원 탈퇴여부
         Mockito.when(memberRepository.isMemberWithdrawn(Mockito.anyLong())).thenReturn(true);
-
-        //blog 존재여부
-        Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
-
-        BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(
-                1L,
-                1L,
-                1L,
-                "ROLE_OWNER"
-        );
-
-        //블로그 맴버를 삭제할 수 있는 권한 여부
-        Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
 
         Assertions.assertThrows(NotFoundException.class,()->{
             blogMemberService.removeBlogMember(1L,1L);
@@ -267,16 +240,6 @@ class BlogMemberServiceImplTest {
 
         //blog 존재여부
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(false);
-
-        BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(
-                1L,
-                1L,
-                1L,
-                "ROLE_OWNER"
-        );
-
-        //블로그 맴버를 삭제할 수 있는 권한 여부
-        Mockito.when(blogMemberMappingRepository.findByMbNoAndBlogId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(Optional.of(blogMemberMapping));
 
         Assertions.assertThrows(NotFoundException.class,()->{
             blogMemberService.removeBlogMember(1L,1L);

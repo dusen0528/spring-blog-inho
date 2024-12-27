@@ -4,81 +4,78 @@ import com.nhnacademy.blog.category.domain.Category;
 import com.nhnacademy.blog.category.dto.CategoryResponse;
 import com.nhnacademy.blog.category.dto.CategoryUpdateRequest;
 import com.nhnacademy.blog.category.repository.CategoryRepository;
-import com.nhnacademy.blog.common.db.exception.DatabaseException;
 import com.nhnacademy.blog.common.reflection.ReflectionUtils;
-import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 @SuppressWarnings("java:S1192")
-/**
- * TODO#2-6 jdbc-api -> JdbcTemplate 기반으로 Repository 구현
- * @Repository <- org.springframework.stereotype.Repository 입니다.
- */
+
 @Repository
 public class JdbcCategoryRepository implements CategoryRepository {
 
+    private final JdbcTemplate jdbcTemplate;
+
+    public JdbcCategoryRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+
     @Override
     public void save(Category category) {
-        Connection connection = DbConnectionThreadLocal.getConnection();
-
         String sql = """
-                    insert into categories 
-                    set 
+                    insert into categories
+                    set
                         category_pid=?,
                         blog_id=?,
                         topic_id=?,
                         category_name=?,
                         category_sec=?,
-                        created_at=?                        
+                        created_at=?
                 """;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        try(PreparedStatement psmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
-            int index=1;
+        int rows = jdbcTemplate.update(connection->{
+                PreparedStatement psmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                int index=1;
 
-            if(Objects.nonNull(category.getCategoryPid())){
-                psmt.setLong(index++, category.getCategoryPid());
-            }else {
-                psmt.setNull(index++, Types.BIGINT);
-            }
-
-            psmt.setLong(index++,category.getBlogId());
-            if(Objects.nonNull(category.getTopicId())){
-                psmt.setInt(index++, category.getTopicId());
-            }else {
-                psmt.setNull(index++, Types.INTEGER);
-            }
-
-            psmt.setString(index++,category.getCategoryName());
-            psmt.setInt(index++,category.getCategorySec());
-            psmt.setTimestamp(index++, Timestamp.valueOf(category.getCreatedAt()));
-
-            psmt.executeUpdate();
-
-            try(ResultSet rs = psmt.getGeneratedKeys()){
-                if(rs.next()){
-                    ReflectionUtils.setField(category,"categoryId", rs.getLong(1));
+                if(Objects.nonNull(category.getCategoryPid())){
+                    psmt.setLong(index++, category.getCategoryPid());
+                }else {
+                    psmt.setNull(index++, Types.BIGINT);
                 }
-            }
 
-        }catch (SQLException e){
-            throw new DatabaseException(e);
+                psmt.setLong(index++,category.getBlogId());
+                if(Objects.nonNull(category.getTopicId())){
+                    psmt.setInt(index++, category.getTopicId());
+                }else {
+                    psmt.setNull(index++, Types.INTEGER);
+                }
+
+                psmt.setString(index++,category.getCategoryName());
+                psmt.setInt(index++,category.getCategorySec());
+                psmt.setTimestamp(index++, Timestamp.valueOf(category.getCreatedAt()));
+
+                return psmt;
+            },keyHolder);
+
+        if(rows>0){
+            ReflectionUtils.setField(category, "categoryId", Objects.requireNonNull(keyHolder.getKey()).longValue());
         }
-
     }
 
     @Override
     public void update(CategoryUpdateRequest categoryUpdateRequest) {
-        Connection connection = DbConnectionThreadLocal.getConnection();
-
         String sql = """
-                    update categories 
+                    update categories
                     set 
                         category_pid=?,
                         topic_id=?,
@@ -88,9 +85,9 @@ public class JdbcCategoryRepository implements CategoryRepository {
                     where category_id=?
                 """;
 
-        try(PreparedStatement psmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+        jdbcTemplate.update(connection->{
             int index=1;
-
+            PreparedStatement psmt = connection.prepareStatement(sql);
             if(Objects.nonNull(categoryUpdateRequest.getCategoryPid())){
                 psmt.setLong(index++, categoryUpdateRequest.getCategoryPid());
             }else{
@@ -106,32 +103,21 @@ public class JdbcCategoryRepository implements CategoryRepository {
             psmt.setString(index++, categoryUpdateRequest.getCategoryName());
             psmt.setInt(index++, categoryUpdateRequest.getCategorySec());
             psmt.setLong(index++, categoryUpdateRequest.getCategoryId());
-
-            psmt.executeUpdate();
-
-        }catch (SQLException e){
-            throw new DatabaseException(e);
-        }
-
+            return psmt;
+        });
     }
 
     @Override
     public void deleteByCategoryId(Long categoryId) {
-        Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = "delete from categories where category_id=?";
-        try(PreparedStatement psmt = connection.prepareStatement(sql)){
-            psmt.setLong(1,categoryId);
-            psmt.executeUpdate();
-        }catch (SQLException e){
-            throw new DatabaseException(e);
-        }
+        jdbcTemplate.update(sql, categoryId);
     }
+
 
     @Override
     public Optional<Category> findByCategoryId(Long categoryId) {
-        Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = """
-                select 
+                select
                     category_id,
                     category_pid,
                     blog_id,
@@ -145,37 +131,15 @@ public class JdbcCategoryRepository implements CategoryRepository {
                 where 
                     category_id=?
                 """;
-
-        try(PreparedStatement psmt = connection.prepareStatement(sql)){
-            psmt.setLong(1,categoryId);
-
-            try(ResultSet rs = psmt.executeQuery()){
-                if(rs.next()){
-                    Long dbCategoryId = rs.getLong("category_id");
-                    Long categoryPid = Objects.nonNull(rs.getObject("category_pid")) ? rs.getLong("category_pid") : null;
-                    Long blogId = rs.getLong("blog_id");
-                    Integer topicId = Objects.nonNull(rs.getObject("topic_id")) ? rs.getInt("topic_id") : null;
-                    String categoryName = rs.getString("category_name");
-                    Integer categorySec = rs.getInt("category_sec");
-                    LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
-                    LocalDateTime updatedAt = Objects.nonNull(rs.getTimestamp("updated_at")) ?  rs.getTimestamp("updated_at").toLocalDateTime() : null;
-                    Category category = Category.ofExistingCategory(dbCategoryId,categoryPid,blogId,topicId,categoryName,categorySec,createdAt,updatedAt);
-                    return Optional.of(category);
-                }
-            }
-        }catch (SQLException e){
-            throw new DatabaseException(e);
-        }
-
-        return Optional.empty();
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(sql,new CategoryRowMapper(),categoryId)
+        );
     }
 
     @Override
     public List<Category> findAll(Long blogId, Long categoryPid) {
-
-        Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = """
-                select 
+                select
                     category_id,
                     category_pid,
                     blog_id,
@@ -184,9 +148,9 @@ public class JdbcCategoryRepository implements CategoryRepository {
                     category_sec,
                     created_at,
                     updated_at
-                from 
+                from
                     categories
-                where 
+                where
                     blog_id=?
             """;
 
@@ -196,109 +160,90 @@ public class JdbcCategoryRepository implements CategoryRepository {
             sb.append(" and category_pid=? ");
         }
         sb.append(" order by category_sec asc ");
-
-        List<Category> categories = new ArrayList<>();
-        try (PreparedStatement psmt = connection.prepareStatement(sb.toString())){
-            psmt.setLong(1,blogId);
-
-            if(Objects.nonNull(categoryPid)){
-                psmt.setLong(2,categoryPid);
-            }
-
-            try(ResultSet rs = psmt.executeQuery()){
-                while(rs.next()){
-                    Long dbCategoryId = rs.getLong("category_id");
-                    Long dbCategoryPid = rs.getLong("category_pid");
-                    Long dbBlogId = rs.getLong("blog_id");
-                    Integer topicId = rs.getInt("topic_id");
-                    String categoryName = rs.getString("category_name");
-                    Integer categorySec = rs.getInt("category_sec");
-                    LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
-                    LocalDateTime updatedAt = Objects.nonNull(rs.getTimestamp("updated_at")) ?  rs.getTimestamp("updated_at").toLocalDateTime() : null;
-                    Category category = Category.ofExistingCategory(dbCategoryId,dbCategoryPid,dbBlogId,topicId,categoryName,categorySec,createdAt,updatedAt);
-                    categories.add(category);
-                }
-            }
-        }catch (SQLException e){
-            throw new DatabaseException(e);
+        if(Objects.isNull(categoryPid)){
+            return jdbcTemplate.query(sb.toString(),new CategoryRowMapper(), blogId);
         }
-
-        return categories;
+        return jdbcTemplate.query(sb.toString(),new CategoryRowMapper(), blogId, categoryPid);
     }
 
     @Override
     public List<CategoryResponse> findAllByBlogId(Long blogId) {
-        Connection connection = DbConnectionThreadLocal.getConnection();
+
         String sql = """
-                select 
+                select
                     category_id,
                     category_pid,
                     blog_id,
                     topic_id,
                     category_name,
                     category_sec
-                from 
+                from
                     categories
                 where 
                     blog_id=?
                 order by category_sec asc
             """;
 
-        List<CategoryResponse> categoryResponseList = new ArrayList<>();
-        try (PreparedStatement psmt = connection.prepareStatement(sql)){
-            psmt.setLong(1,blogId);
-
-            try(ResultSet rs = psmt.executeQuery()){
-                while(rs.next()){
-                    Long dbCategoryId = rs.getLong("category_id");
-                    Long dbCategoryPid = rs.getLong("category_pid");
-                    Long dbBlogId = rs.getLong("blog_id");
-                    Integer topicId = rs.getInt("topic_id");
-                    String categoryName = rs.getString("category_name");
-                    Integer categorySec = rs.getInt("category_sec");
-                    CategoryResponse categoryResponse = new CategoryResponse(dbCategoryId,dbCategoryPid,dbBlogId,topicId,categoryName,categorySec);
-                    categoryResponseList.add(categoryResponse);
-                }
-            }
-        }catch (SQLException e){
-            throw new DatabaseException(e);
-        }
-
-        return categoryResponseList;
+        return jdbcTemplate.query(sql,new CategoryResponseRowMapper(),blogId);
     }
 
     @Override
     public boolean existsByCategoryId(Long categoryId) {
-        Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = "select 1 from categories where category_id=?";
-
-        try(PreparedStatement psmt = connection.prepareStatement(sql)){
-            psmt.setLong(1,categoryId);
-            try(ResultSet rs = psmt.executeQuery()){
-                if(rs.next()){
-                    return true;
-                }
-            }
-        }catch (SQLException e){
-            throw new DatabaseException(e);
-        }
-        return false;
+        return Boolean.TRUE.equals(jdbcTemplate.query(sql, ResultSet::next, categoryId));
     }
 
     @Override
     public boolean existsSubCategoryByCategoryId(Long categoryId) {
-        Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = "select 1 from categories where category_pid = ? ";
-        try(PreparedStatement psmt = connection.prepareStatement(sql)){
-            psmt.setLong(1,categoryId);
-            try(ResultSet rs = psmt.executeQuery()){
-                if(rs.next()){
-                    return true;
-                }
-            }
-        }catch (SQLException e){
-            throw new DatabaseException(e);
+        return Boolean.TRUE.equals(jdbcTemplate.query(sql, ResultSet::next, categoryId));
+    }
+
+    private static class CategoryRowMapper implements RowMapper<Category> {
+        @Override
+        public Category mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+            Long dbCategoryId = rs.getLong("category_id");
+            Long categoryPid = Objects.nonNull(rs.getObject("category_pid")) ? rs.getLong("category_pid") : null;
+            Long blogId = rs.getLong("blog_id");
+            Integer topicId = Objects.nonNull(rs.getObject("topic_id")) ? rs.getInt("topic_id") : null;
+            String categoryName = rs.getString("category_name");
+            Integer categorySec = rs.getInt("category_sec");
+            LocalDateTime createdAt = rs.getTimestamp("created_at").toLocalDateTime();
+            LocalDateTime updatedAt = Objects.nonNull(rs.getTimestamp("updated_at")) ?  rs.getTimestamp("updated_at").toLocalDateTime() : null;
+
+            return Category.ofExistingCategory(
+                            dbCategoryId,
+                            categoryPid,
+                            blogId,
+                            topicId,
+                            categoryName,
+                            categorySec,
+                            createdAt,
+                            updatedAt
+            );
         }
-        return false;
+    }//end inner class
+
+    private static class CategoryResponseRowMapper implements RowMapper<CategoryResponse> {
+
+        @Override
+        public CategoryResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Long dbCategoryId = rs.getLong("category_id");
+            Long dbCategoryPid = rs.getLong("category_pid");
+            Long dbBlogId = rs.getLong("blog_id");
+            Integer topicId = rs.getInt("topic_id");
+            String categoryName = rs.getString("category_name");
+            Integer categorySec = rs.getInt("category_sec");
+
+            return new CategoryResponse(
+                    dbCategoryId,
+                    dbCategoryPid,
+                    dbBlogId,
+                    topicId,
+                    categoryName,
+                    categorySec
+            );
+        }
     }
 }

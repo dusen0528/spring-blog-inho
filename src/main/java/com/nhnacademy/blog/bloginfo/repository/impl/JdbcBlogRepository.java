@@ -4,34 +4,35 @@ import com.nhnacademy.blog.bloginfo.domain.Blog;
 import com.nhnacademy.blog.bloginfo.dto.BlogResponse;
 import com.nhnacademy.blog.bloginfo.dto.BlogUpdateRequest;
 import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
-import com.nhnacademy.blog.common.db.exception.DatabaseException;
 import com.nhnacademy.blog.common.reflection.ReflectionUtils;
-import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-/**
- * TODO#2-3 jdbc-api -> JdbcTemplate 기반으로 Repository 구현
- * @Repository <- org.springframework.stereotype.Repository 입니다.
- */
-
 @Repository
 public class JdbcBlogRepository implements BlogRepository {
+
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public JdbcBlogRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
 
     @Override
     public void save(Blog blog) {
 
-        Connection connection = DbConnectionThreadLocal.getConnection();
-
         String sql = """
-                    insert into blogs 
+                    insert into blogs
                     set
                         blog_fid=?,
                         blog_main=?,
@@ -41,35 +42,30 @@ public class JdbcBlogRepository implements BlogRepository {
                         blog_is_public=?,
                         created_at=?
                 """;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        try(PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            int index=1;
-            statement.setString(index++,blog.getBlogFid());
-            statement.setBoolean(index++, blog.isBlogMain());
-            statement.setString(index++, blog.getBlogName());
-            statement.setString(index++, blog.getBlogMbNickname());
-            statement.setString(index++, blog.getBlogDescription());
-            statement.setBoolean(index++, blog.getBlogIsPublic());
-            statement.setTimestamp(index++, Timestamp.valueOf(blog.getCreatedAt()));
-            int rows = statement.executeUpdate();
-            if(rows > 0) {
-                try(ResultSet rs = statement.getGeneratedKeys()) {
-                    if(rs.next()) {
-                        long blogId = rs.getLong(1);
-                        ReflectionUtils.setField(blog, "blogId", blogId);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
+        int rows = jdbcTemplate.update(connection->{
+            PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                int index=1;
+                statement.setString(index++,blog.getBlogFid());
+                statement.setBoolean(index++, blog.isBlogMain());
+                statement.setString(index++, blog.getBlogName());
+                statement.setString(index++, blog.getBlogMbNickname());
+                statement.setString(index++, blog.getBlogDescription());
+                statement.setBoolean(index++, blog.getBlogIsPublic());
+                statement.setTimestamp(index++, Timestamp.valueOf(blog.getCreatedAt()));
+            return statement;
+        },keyHolder);
+
+        if(rows>0) {
+            ReflectionUtils.setField(blog, "blogId", Objects.requireNonNull(keyHolder.getKey()).longValue());
         }
+
     }
+
 
     @Override
     public void update(BlogUpdateRequest blogUpdateRequest) {
-
-        Connection connection = DbConnectionThreadLocal.getConnection();
-
         String sql = """
                     update blogs 
                     set
@@ -81,106 +77,54 @@ public class JdbcBlogRepository implements BlogRepository {
                     where 
                         blog_id=?
                 """;
-
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+        jdbcTemplate.update(connection->{
+            PreparedStatement statement = connection.prepareStatement(sql);
             int index=1;
             statement.setBoolean(index++, blogUpdateRequest.isBlogMain());
             statement.setString(index++, blogUpdateRequest.getBlogName());
             statement.setString(index++, blogUpdateRequest.getBlogMbNickname());
             statement.setString(index++, blogUpdateRequest.getBlogDescription());
             statement.setLong(index++, blogUpdateRequest.getBlogId());
-
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+            return statement;
+        });
     }
+
 
     @Override
     public void deleteByBlogId(long blogId) {
 
-        Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = """
                     delete from blogs where blog_id=?
                 """;
 
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setLong(1,blogId);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-
+        jdbcTemplate.update(sql,blogId);
     }
 
     @Override
     public Optional<Blog> findByBlogId(long blogId) {
 
-        Connection connection = DbConnectionThreadLocal.getConnection();
-
         String sql = """
-                    select 
+                    select
                         blog_id,
                         blog_fid,
                         blog_main,
-                        blog_name, 
-                        blog_mb_nickname, 
+                        blog_name,
+                        blog_mb_nickname,
                         blog_description,
                         blog_is_public,
-                        created_at, 
-                        updated_at 
-                    from 
-                        blogs 
-                    where 
+                        created_at,
+                        updated_at
+                    from
+                        blogs
+                    where
                         blog_id=?
                 """;
 
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setLong(1,blogId);
-
-            try(ResultSet rs = statement.executeQuery()){
-                if(rs.next()) {
-
-                    long id = rs.getLong("blog_id");
-                    String blogFid = rs.getString("blog_fid");
-                    Boolean blogMain = rs.getBoolean("blog_main");
-                    String blogName = rs.getString("blog_name");
-                    String blogMbNickname = rs.getString("blog_mb_nickname");
-                    String blogDescription = rs.getString("blog_description");
-                    Boolean blogIsPublic = rs.getBoolean("blog_is_public");
-                    LocalDateTime createdAt =  rs.getTimestamp("created_at").toLocalDateTime();
-                    LocalDateTime updatedAt = null;
-                    if(Objects.nonNull(rs.getTimestamp("updated_at"))){
-                        updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
-                    }
-
-                    Blog blog = Blog.ofExistingBlogInfo(
-                            id,
-                            blogFid,
-                            blogMain,
-                            blogName,
-                            blogMbNickname,
-                            blogDescription,
-                            blogIsPublic,
-                            createdAt,
-                            updatedAt
-                    );
-
-                    return Optional.of(blog);
-                }//end if
-
-            }//end try
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-
-        return Optional.empty();
+        return Optional.of(jdbcTemplate.queryForObject(sql, new BlogRowMapper(), blogId));
     }
 
     @Override
     public boolean existByBlogId(long blogId) {
-
-        Connection connection = DbConnectionThreadLocal.getConnection();
 
         String sql = """
                     select 
@@ -191,24 +135,11 @@ public class JdbcBlogRepository implements BlogRepository {
                         blog_id=?
                 """;
 
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setLong(1,blogId);
-
-            try(ResultSet rs = statement.executeQuery()){
-                if(rs.next()) {
-                    return true;
-                }//end if
-            }//end try
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-        return false;
+        return Boolean.TRUE.equals(jdbcTemplate.query(sql, ResultSet::next, blogId));
     }
 
     @Override
     public boolean existByBlogFid(String blogFid) {
-
-        Connection connection = DbConnectionThreadLocal.getConnection();
 
         String sql = """
                     select 
@@ -219,24 +150,12 @@ public class JdbcBlogRepository implements BlogRepository {
                         blog_fid=?
                 """;
 
-        try(PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1,blogFid);
-
-            try(ResultSet rs = statement.executeQuery()){
-                if(rs.next()) {
-                    return true;
-                }//end if
-            }//end try
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-        return false;
+        return Boolean.TRUE.equals(jdbcTemplate.query(sql, ResultSet::next, blogFid));
     }
 
     @Override
     public boolean existMainBlogByMbNo(long mbNo) {
 
-        Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = """
                     SELECT 
                         1
@@ -248,43 +167,25 @@ public class JdbcBlogRepository implements BlogRepository {
                          and c.blog_main=1
                          and b.role_id='ROLE_OWNER'
                 """;
-
-        try(PreparedStatement psmt = connection.prepareStatement(sql)){
-            psmt.setLong(1,mbNo);
-            try(ResultSet rs = psmt.executeQuery()){
-                if(rs.next()) {
-                    return true;
-                }
-            }
-        }catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-        return false;
+        return Boolean.TRUE.equals(jdbcTemplate.query(sql, ResultSet::next, mbNo));
     }
+
 
     @Override
     public void updateByBlogIsPublic(long blogId, boolean blogIsPublic) {
-        Connection connection = DbConnectionThreadLocal.getConnection();
         String sql = """
                 update blogs 
                 set 
                     blog_is_public=? 
                 where blog_id=?
                 """;
-        try(PreparedStatement psmt = connection.prepareStatement(sql)){
-            int index=1;
-            psmt.setBoolean(index++,blogIsPublic);
-            psmt.setLong(index++,blogId);
-            psmt.executeUpdate();
-        }catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+
+        jdbcTemplate.update(sql,blogIsPublic,blogId);
     }
+
 
     @Override
     public void updateBlogMain(long blogId, boolean isBlogMain) {
-        Connection connection = DbConnectionThreadLocal.getConnection();
-
         String sql = """
                     update blogs 
                     set
@@ -292,115 +193,116 @@ public class JdbcBlogRepository implements BlogRepository {
                     where 
                             blog_id = ?
                 """;
-
-        try(PreparedStatement psmt = connection.prepareStatement(sql)){
-            int index=1;
-            psmt.setBoolean(index++,isBlogMain);
-            psmt.setLong(index++,blogId);
-            psmt.executeUpdate();
-        }catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        jdbcTemplate.update(sql,isBlogMain,blogId);
 
     }
 
     @Override
     public long countByMbNo(long mbNo, String roleId) {
-        Connection connection = DbConnectionThreadLocal.getConnection();
 
         String sql = """
-                    select
-                    	count(*)
-                    from
-                    	blog_member_mappings a
-                        left join blogs b on a.blog_id = b.blog_id
-                    where
-                    	a.blog_id=b.blog_id
-                      and a.mb_no=?  
-                      and a.role_id=?
-                """;
-        try(PreparedStatement psmt = connection.prepareStatement(sql)){
-            int index=1;
-            psmt.setLong(index++,mbNo);
-            psmt.setString(index++,roleId);
+            select
+                count(*)
+            from
+                blog_member_mappings a
+            left join blogs b on a.blog_id = b.blog_id
+            where
+                        a.blog_id=b.blog_id
+                    and a.mb_no=?  
+                    and a.role_id=?
+        """;
 
-            try(ResultSet rs = psmt.executeQuery()){
-                if(rs.next()) {
-                    return rs.getLong(1);
-                }
-            }
-        }catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        Long count = jdbcTemplate.queryForObject(sql,Long.class,mbNo, roleId);
+        return Objects.isNull(count) ? 0 : count;
 
-        return 0;
     }
 
     @Override
     public List<BlogResponse> findAllBlogs(long mbNo, String roleId) {
-        Connection connection = DbConnectionThreadLocal.getConnection();
 
         String sql = """
-                select
-                	b.blog_id,
-                    b.blog_fid,
-                    b.blog_main,
-                    b.blog_name,
-                    b.blog_mb_nickname,
-                    b.blog_description,
-                    b.blog_is_public,
-                    b.created_at,
-                    b.updated_at
-                from
-                	blog_member_mappings a
-                    left join blogs b on a.blog_id = b.blog_id
-                where
-                	a.blog_id=b.blog_id
-                    and a.mb_no=?
-                    and a.role_id=?
-                """;
+                        select
+                            b.blog_id,
+                            b.blog_fid,
+                            b.blog_main,
+                            b.blog_name,
+                            b.blog_mb_nickname,
+                            b.blog_description,
+                            b.blog_is_public,
+                            b.created_at,
+                            b.updated_at
+                        from
+                            blog_member_mappings a
+                            left join blogs b on a.blog_id = b.blog_id
+                        where
+                                a.blog_id=b.blog_id
+                            and a.mb_no=?
+                            and a.role_id=?
+        """;
 
-        List<BlogResponse> blogResponseList = new ArrayList<>();
+        return jdbcTemplate.query(sql, new BlogResponseRowMapper(),mbNo, roleId);
+    }
 
-        try(PreparedStatement psmt = connection.prepareStatement(sql)){
+    private static class BlogRowMapper implements RowMapper<Blog> {
 
-            psmt.setLong(1,mbNo);
-            psmt.setString(2,roleId);
+        @Override
+        public Blog mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-            try(ResultSet rs = psmt.executeQuery()){
-
-                while(rs.next()) {
-
-                    Long blogId = rs.getLong("blog_id");
-                    String blogFid = rs.getString("blog_fid");
-                    boolean blogMain = rs.getBoolean("blog_main");
-                    String blogName = rs.getString("blog_name");
-                    String blogMbNickname = rs.getString("blog_mb_nickname");
-                    String blogDescription = rs.getString("blog_description");
-                    Boolean blogIsPublic = rs.getBoolean("blog_is_public");
-                    LocalDateTime createdAt = Objects.nonNull(rs.getObject("created_at")) ? rs.getTimestamp("created_at").toLocalDateTime() : null;
-                    LocalDateTime updatedAt = Objects.nonNull(rs.getObject("updated_at")) ? rs.getTimestamp("updated_at").toLocalDateTime() : null;
-
-                    BlogResponse blogResponse = new BlogResponse(
-                        blogId,
-                        blogFid,
-                        blogMain,
-                        blogName,
-                        blogMbNickname,
-                        blogDescription,
-                        blogIsPublic,
-                        createdAt,
-                        updatedAt
-                    );
-                    blogResponseList.add(blogResponse);
-                }
+            long blogId = rs.getLong("blog_id");
+            String blogFid = rs.getString("blog_fid");
+            Boolean blogMain = rs.getBoolean("blog_main");
+            String blogName = rs.getString("blog_name");
+            String blogMbNickname = rs.getString("blog_mb_nickname");
+            String blogDescription = rs.getString("blog_description");
+            Boolean blogIsPublic = rs.getBoolean("blog_is_public");
+            LocalDateTime createdAt =  rs.getTimestamp("created_at").toLocalDateTime();
+            LocalDateTime updatedAt = null;
+            if(Objects.nonNull(rs.getTimestamp("updated_at"))){
+                updatedAt = rs.getTimestamp("updated_at").toLocalDateTime();
             }
 
-        }catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+            return Blog.ofExistingBlogInfo(
+                    blogId,
+                    blogFid,
+                    blogMain,
+                    blogName,
+                    blogMbNickname,
+                    blogDescription,
+                    blogIsPublic,
+                    createdAt,
+                    updatedAt
+            );
 
-        return blogResponseList;
+        }
+    }
+
+    private static class BlogResponseRowMapper implements RowMapper<BlogResponse> {
+
+        @Override
+        public BlogResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+            Long blogId = rs.getLong("blog_id");
+            String blogFid = rs.getString("blog_fid");
+            boolean blogMain = rs.getBoolean("blog_main");
+            String blogName = rs.getString("blog_name");
+            String blogMbNickname = rs.getString("blog_mb_nickname");
+            String blogDescription = rs.getString("blog_description");
+            Boolean blogIsPublic = rs.getBoolean("blog_is_public");
+            LocalDateTime createdAt = Objects.nonNull(rs.getObject("created_at")) ? rs.getTimestamp("created_at").toLocalDateTime() : null;
+            LocalDateTime updatedAt = Objects.nonNull(rs.getObject("updated_at")) ? rs.getTimestamp("updated_at").toLocalDateTime() : null;
+
+            return new BlogResponse(
+                    blogId,
+                    blogFid,
+                    blogMain,
+                    blogName,
+                    blogMbNickname,
+                    blogDescription,
+                    blogIsPublic,
+                    createdAt,
+                    updatedAt
+            );
+        }
     }
 
 }

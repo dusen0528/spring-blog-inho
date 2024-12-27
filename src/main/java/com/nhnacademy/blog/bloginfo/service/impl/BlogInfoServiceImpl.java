@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class BlogInfoServiceImpl implements BlogInfoService {
 
@@ -35,6 +35,7 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         this.blogMemberMappingRepository = blogMemberMappingRepository;
     }
 
+    @Transactional
     @Override
     public BlogResponse createBlog(BlogCreateRequest blogCreateRequest) {
 
@@ -65,6 +66,7 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         return getBlog(blog.getBlogId());
     }
 
+    @Transactional
     @Override
     public BlogResponse updateBlog(BlogUpdateRequest blogUpdateRequest) {
 
@@ -94,6 +96,7 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         return getBlog(blogUpdateRequest.getBlogId());
     }
 
+    @Transactional
     @Override
     public void updateBlogVisibility(BlogVisibilityUpdateRequest blogVisibilityUpdateRequest) {
         //blog 존재여부 체크

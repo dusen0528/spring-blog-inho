@@ -5,11 +5,9 @@ import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
 import com.nhnacademy.blog.bloginfo.repository.impl.JdbcBlogRepository;
 import com.nhnacademy.blog.blogmember.domain.BlogMemberMapping;
 import com.nhnacademy.blog.blogmember.repository.BlogMemberMappingRepository;
-import com.nhnacademy.blog.blogmember.repository.impl.JdbcBlogMemberMappingRepository;
 import com.nhnacademy.blog.category.domain.Category;
 import com.nhnacademy.blog.category.dto.*;
 import com.nhnacademy.blog.category.repository.CategoryRepository;
-import com.nhnacademy.blog.category.repository.impl.JdbcCategoryRepository;
 import com.nhnacademy.blog.category.service.CategoryService;
 import com.nhnacademy.blog.category.util.CategoryUtils;
 import com.nhnacademy.blog.common.exception.BadRequestException;
@@ -17,9 +15,7 @@ import com.nhnacademy.blog.common.exception.ConflictException;
 import com.nhnacademy.blog.common.exception.ForbiddenException;
 import com.nhnacademy.blog.common.exception.NotFoundException;
 import com.nhnacademy.blog.topic.repository.TopicRepository;
-import com.nhnacademy.blog.topic.repository.impl.JdbcTopicRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +25,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
@@ -49,6 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
         this.blogMemberMappingRepository = blogMemberMappingRepository;
     }
 
+    @Transactional
     @Override
     public CategoryResponse createRootCategory(RootCategoryCreateRequest rootCategoryCreateRequest) {
 
@@ -59,13 +56,15 @@ public class CategoryServiceImpl implements CategoryService {
         return commonCreateRootCategory(rootCategoryCreateRequest);
     }
 
+    @Transactional
     @Override
     public CategoryResponse initializeCreateRootCategory(RootCategoryCreateRequest rootCategoryCreateRequest) {
         //권한체크 없이 블로그 계정 생성시 기본카테고리 생성을 위한 method
         return commonCreateRootCategory(rootCategoryCreateRequest);
     }
 
-    private CategoryResponse commonCreateRootCategory(RootCategoryCreateRequest rootCategoryCreateRequest){
+    @Transactional
+    protected CategoryResponse commonCreateRootCategory(RootCategoryCreateRequest rootCategoryCreateRequest){
 
         //1.블로그 존재여부 체크
         checkExistBlog(rootCategoryCreateRequest.getBlogId());
@@ -94,6 +93,7 @@ public class CategoryServiceImpl implements CategoryService {
         );
     }
 
+    @Transactional
     @Override
     public CategoryResponse createSubCategory(SubCategoryCreateRequest subCategoryCreateRequest) {
 
@@ -131,6 +131,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     }
 
+    @Transactional
     @Override
     public CategoryResponse updateRootCategory(RootCategoryUpdateRequest rootCategoryUpdateRequest) {
 
@@ -173,6 +174,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     }
 
+    @Transactional
     @Override
     public CategoryResponse updateSubCategory(SubCategoryUpdateRequest subCategoryUpdateRequest) {
         //0.blog의 카테고리를 수정할 수 있는지 권한체크
@@ -213,6 +215,7 @@ public class CategoryServiceImpl implements CategoryService {
         );
     }
 
+    @Transactional
     @Override
     public void deleteCategory(CategoryDeleteRequest categoryDeleteRequest) {
         //0.blog의 카테고리를 수정할 수 있는지 권한체크
@@ -247,7 +250,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     //blog 소유자체크
-    private void checkOwner(long blogId, long mbNo) {
+    protected void checkOwner(long blogId, long mbNo) {
         Optional<BlogMemberMapping> blogMemberMappingOptional =  blogMemberMappingRepository.findByMbNoAndBlogId(mbNo, blogId);
 
         //블로그의 맴버가 아니라면. ForbiddenException() 발생
@@ -256,14 +259,14 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    private void checkExistBlog(long blogId) {
+    protected void checkExistBlog(long blogId) {
         boolean existBlog = blogRepository.existByBlogId(blogId);
         if(!existBlog) {
             throw new BadRequestException("blog [%d] does not exist".formatted(blogId));
         }
     }
 
-    private void checkExistTopic(Integer topicId) {
+    protected void checkExistTopic(Integer topicId) {
         if(Objects.nonNull(topicId)) {
             boolean existTopic = topicRepository.existByTopicId(topicId);
             if(!existTopic) {
@@ -272,14 +275,14 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    private void checkExistCategory(long categoryId){
+    protected void checkExistCategory(long categoryId){
         boolean existCategory = categoryRepository.existsByCategoryId(categoryId);
         if(!existCategory) {
             throw new NotFoundException("category [%d] does not exist".formatted(categoryId));
         }
     }
 
-    private void checkExistSubCategory(long categoryId){
+    protected void checkExistSubCategory(long categoryId){
         boolean existSubCategory = categoryRepository.existsSubCategoryByCategoryId(categoryId);
         if(existSubCategory) {
            throw new ConflictException("%d 's subCategory already exist".formatted(categoryId));

@@ -2,45 +2,30 @@ package com.nhnacademy.blog.category.repository.impl;
 
 import com.nhnacademy.blog.bloginfo.domain.Blog;
 import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
-import com.nhnacademy.blog.bloginfo.repository.impl.JdbcBlogRepository;
 import com.nhnacademy.blog.category.domain.Category;
 import com.nhnacademy.blog.category.dto.CategoryUpdateRequest;
 import com.nhnacademy.blog.category.repository.CategoryRepository;
-import com.nhnacademy.blog.common.context.ContextHolder;
-import com.nhnacademy.blog.common.transactional.DbConnectionThreadLocal;
+import com.nhnacademy.blog.common.config.ApplicationConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
-import org.springframework.context.ApplicationContext;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-/**
- *  TODO#3-6 JdbcCategoryRepositoryTest Spring 기반의 Repository Test환경 구성
- *  - TODO#3-1 참고해서 구현 합니다.
- */
 @Slf4j
+@Transactional
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {ApplicationConfig.class})
 class JdbcCategoryRepositoryTest {
-    static CategoryRepository categoryRepository;
-    static BlogRepository blogRepository;
-
-    @BeforeAll
-    static void beforeAll() {
-        ApplicationContext context = ContextHolder.getApplicationContext();
-        blogRepository = (BlogRepository) context.getBean("jdbcBlogRepository");
-        categoryRepository = (CategoryRepository) context.getBean("jdbcCategoryRepository");
-    }
-
-    @BeforeEach
-    void setUp() {
-        DbConnectionThreadLocal.initialize();
-    }
-
-    @AfterEach
-    void tearDown() {
-        DbConnectionThreadLocal.setSqlError(true);
-        DbConnectionThreadLocal.reset();
-    }
+    @Autowired
+    CategoryRepository categoryRepository;
+    @Autowired
+    BlogRepository blogRepository;
 
     @Test
     @DisplayName("카테고리 등록")
