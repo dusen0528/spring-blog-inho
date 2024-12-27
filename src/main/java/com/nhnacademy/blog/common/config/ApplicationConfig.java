@@ -45,7 +45,6 @@ import org.springframework.context.annotation.Import;
  * - 주로 HTTP 요청을 매핑하고, 적절한 뷰(View)를 선택하거나 데이터를 반환합니다.
  */
 @ComponentScan(basePackageClasses = RootPackageBase.class)
-
 public class ApplicationConfig {
 
 }

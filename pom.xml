@@ -102,7 +102,7 @@
             <version>0.4</version>
         </dependency>
 
-        <!--TODO#1-1 Spring관련 의존성 추가
+        <!-- Spring관련 의존성 추가
               - spring-core - 핵심코어
               - spring-context - Application Context
               - spring-tx - 트랜잭션 처리
@@ -151,6 +151,19 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>5.12.0</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- jpa 환경설정 -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.5.2.Final</version>
         </dependency>
 
     </dependencies>
