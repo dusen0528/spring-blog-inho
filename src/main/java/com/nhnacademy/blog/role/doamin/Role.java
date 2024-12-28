@@ -1,14 +1,29 @@
 package com.nhnacademy.blog.role.doamin;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.util.Objects;
 
+@Entity
+@Table(name = "roles")
 public class Role {
-    private final String roleId;
-    private final String roleName;
-    private final String roleDescription;
+
+    @Id
+    private String roleId;
+    private String roleName;
+    private String roleDescription;
 
     public Role(String roleId, String roleName, String roleDescription) {
         this.roleId = roleId;
+        this.roleName = roleName;
+        this.roleDescription = roleDescription;
+    }
+
+    public Role() {}
+
+    public void update(String roleName, String roleDescription){
         this.roleName = roleName;
         this.roleDescription = roleDescription;
     }

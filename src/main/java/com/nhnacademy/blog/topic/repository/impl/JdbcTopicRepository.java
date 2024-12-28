@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -18,7 +19,7 @@ import java.util.Optional;
 @SuppressWarnings("java:S1192")
 
 
-@Repository
+@Component
 public class JdbcTopicRepository implements TopicRepository {
 
     private final JdbcTemplate jdbcTemplate;

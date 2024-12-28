@@ -1,18 +1,40 @@
 package com.nhnacademy.blog.bloginfo.domain;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 @SuppressWarnings("java:S107")
+
+@Entity
+@Table(name = "blogs")
 public class Blog {
 
-    private final Long blogId;
-    private final String blogFid;
-    private final boolean blogMain;
-    private final String blogName;
-    private final String blogMbNickname;
-    private final String blogDescription;
-    private final Boolean blogIsPublic;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
+    private Long blogId;
+    @Column(nullable = false, unique = true, length = 50)
+    private String blogFid;
+    @Column(nullable = false)
+    private boolean blogMain;
+    @Column(nullable = false, length = 100)
+    private String blogName;
+    @Column(nullable = false, length = 100)
+    private String blogMbNickname;
+    /**
+     * columnDefinition 속성을 사용하여 데이터베이스 컬럼의 타입을 직접 지정할 수 있습니다.
+     */
+    @Column(columnDefinition = "text")
+    private String blogDescription;
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+    @Column(nullable = false)
+    private Boolean blogIsPublic = true;
 
     private Blog(Long blogId, String blogFid, boolean blogMain, String blogName, String blogMbNickname, String blogDescription, Boolean blogIsPublic, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.blogId = blogId;
@@ -24,6 +46,10 @@ public class Blog {
         this.blogIsPublic = blogIsPublic;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public Blog() {
+
     }
 
     public static Blog ofNewBlog(String blogFid, Boolean blogMain, String blogName, String blogMbNickname, String blogDescription){
@@ -48,6 +74,21 @@ public class Blog {
                 blogDescription,
                 blogIsPublic,
                 createdAt, updatedAt);
+    }
+
+    public void update(String blogName, String blogMbNickname, String blogDescription, Boolean blogIsPublic){
+        this.blogName = blogName;
+        this.blogMbNickname = blogMbNickname;
+        this.blogDescription = blogDescription;
+        this.blogIsPublic = blogIsPublic;
+    }
+
+    /**
+     * 블로그 공개여부 설정
+     * @param blogIsPublic
+     */
+    public void enableBlogPublicAccess(boolean blogIsPublic){
+        this.blogIsPublic = blogIsPublic;
     }
 
     public Long getBlogId() {

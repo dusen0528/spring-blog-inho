@@ -1,19 +1,25 @@
 package com.nhnacademy.blog.category.domain;
 
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
+
 @SuppressWarnings("java:S107")
+@Entity
+@Table(name = "categories")
 public class Category {
 
-    private final Long categoryId;
-    private final Long categoryPid;
-    private final Long blogId;
-    private final Integer topicId;
-    private final String categoryName;
-    private final Integer categorySec;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long categoryId;
+    private Long categoryPid;
+    private Long blogId;
+    private Integer topicId;
+    private String categoryName;
+    private Integer categorySec;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     private Category(Long categoryId, Long categoryPid, Long blogId, Integer topicId, String categoryName, Integer categorySec, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.categoryId = categoryId;
@@ -24,6 +30,10 @@ public class Category {
         this.categorySec = categorySec;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public Category() {
+
     }
 
     public static Category ofNewRootCategory(Long blogId,Integer topicId, String categoryName, Integer categorySec){
@@ -63,6 +73,13 @@ public class Category {
                 createdAt,
                 updatedAt
         );
+    }
+
+    public void update(Long categoryPid, Integer topicId,String categoryName,Integer categorySec){
+        this.categoryPid = categoryPid;
+        this.topicId = topicId;
+        this.categoryName = categoryName;
+        this.categorySec = categorySec;
     }
 
     public Long getCategoryId() {

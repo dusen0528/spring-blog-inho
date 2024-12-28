@@ -2,8 +2,7 @@ package com.nhnacademy.blog.topic.repository.impl;
 
 import com.nhnacademy.blog.common.config.ApplicationConfig;
 import com.nhnacademy.blog.topic.domain.Topic;
-import com.nhnacademy.blog.topic.dto.TopicUpdateRequestDto;
-import com.nhnacademy.blog.topic.repository.TopicRepository;
+import com.nhnacademy.blog.topic.repository.JpaTopicRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +21,7 @@ import java.util.Optional;
 class JdbcTopicRepositoryTest {
 
     @Autowired
-    TopicRepository topicRepository;
+    JpaTopicRepository topicRepository;
 
     @Test
     @DisplayName("topic-저장")
@@ -31,16 +30,16 @@ class JdbcTopicRepositoryTest {
         Topic topic = Topic.ofNewRootTopic("IT",1);
 
         //when
-        topicRepository.save(topic);
+        topicRepository.saveAndFlush(topic);
+
 
         //then
-        Optional<Topic> topicOptional = topicRepository.findByTopicId(topic.getTopicId());
+        Optional<Topic> topicOptional = topicRepository.findById(topic.getTopicId());
         Assertions.assertAll(
                 ()->Assertions.assertEquals(topic.getTopicId(),topicOptional.get().getTopicId()),
                 ()->Assertions.assertNull(topicOptional.get().getTopicPid()),
                 ()->Assertions.assertEquals(topic.getTopicName(),topicOptional.get().getTopicName()),
-                ()->Assertions.assertNotNull(topicOptional.get().getCreatedAt()),
-                ()->Assertions.assertNull(topicOptional.get().getUpdatedAt())
+                ()->Assertions.assertNotNull(topicOptional.get().getCreatedAt())
         );
     }
 
@@ -54,15 +53,16 @@ class JdbcTopicRepositoryTest {
         topicRepository.save(subTopic);
 
         //when
-        Optional<Topic> subTopicOptional = topicRepository.findByTopicId(subTopic.getTopicId());
+        Optional<Topic> subTopicOptional = topicRepository.findById(subTopic.getTopicId());
+        log.debug("sub-topic: {}", subTopicOptional);
+        Assertions.assertTrue(subTopicOptional.isPresent());
 
         //then
         Assertions.assertAll(
                 ()->Assertions.assertEquals(subTopic.getTopicId(),subTopicOptional.get().getTopicId()),
                 ()->Assertions.assertNotNull(subTopicOptional.get().getTopicPid()),
                 ()->Assertions.assertEquals(subTopic.getTopicName(),subTopicOptional.get().getTopicName()),
-                ()->Assertions.assertNotNull(subTopicOptional.get().getCreatedAt()),
-                ()->Assertions.assertNull(subTopicOptional.get().getUpdatedAt())
+                ()->Assertions.assertNotNull(subTopicOptional.get().getCreatedAt())
         );
     }
 
@@ -72,17 +72,28 @@ class JdbcTopicRepositoryTest {
 
         //given
         Topic topic = Topic.ofNewRootTopic("IT",1);
-        topicRepository.save(topic);
+        topicRepository.saveAndFlush(topic);
+        int topicId = topic.getTopicId();
 
         //when
-        TopicUpdateRequestDto topicUpdateRequestDto = new TopicUpdateRequestDto(topic.getTopicId(),null,"IT/프로그래밍",10);
-        topicRepository.update(topicUpdateRequestDto);
+
+        Optional<Topic> topicOptional = topicRepository.findById(topicId);
+        topicOptional.ifPresent(dbTopic -> {
+                dbTopic.update(
+            null,
+            "IT/프로그래밍",
+            10
+                );
+                topicRepository.saveAndFlush(topic);
+            }
+        );
 
         //then
-        Optional<Topic> actual = topicRepository.findByTopicId(topic.getTopicId());
+        Optional<Topic> actual = topicRepository.findById(topicId);
+        Assertions.assertTrue(actual.isPresent());
         Assertions.assertAll(
-                ()->Assertions.assertEquals(topicUpdateRequestDto.getTopicName(),actual.get().getTopicName()),
-                ()->Assertions.assertEquals(topicUpdateRequestDto.getTopicSec(),actual.get().getTopicSec()),
+                ()->Assertions.assertEquals("IT/프로그래밍",actual.get().getTopicName()),
+                ()->Assertions.assertEquals(10,actual.get().getTopicSec()),
                 ()->Assertions.assertNotNull(actual.get().getUpdatedAt())
         );
     }
@@ -92,9 +103,9 @@ class JdbcTopicRepositoryTest {
     void deleteByTopicId() {
         Topic topic = Topic.ofNewRootTopic("IT",1);
         topicRepository.save(topic);
-        topicRepository.deleteByTopicId(topic.getTopicId());
+        topicRepository.deleteById(topic.getTopicId());
 
-        boolean actual = topicRepository.existByTopicId(topic.getTopicId());
+        boolean actual = topicRepository.existsById(topic.getTopicId());
         Assertions.assertFalse(actual);
     }
 
@@ -103,20 +114,19 @@ class JdbcTopicRepositoryTest {
     void findByTopicId() {
         Topic topic = Topic.ofNewRootTopic("IT",1);
         topicRepository.save(topic);
-        Optional<Topic> actual = topicRepository.findByTopicId(topic.getTopicId());
+        Optional<Topic> actual = topicRepository.findById(topic.getTopicId());
 
+        Assertions.assertTrue(actual.isPresent());
         Assertions.assertAll(
                 ()->Assertions.assertEquals(topic.getTopicId(),actual.get().getTopicId()),
                 ()->Assertions.assertNull(actual.get().getTopicPid()),
                 ()->Assertions.assertEquals(topic.getTopicName(),actual.get().getTopicName()),
-                ()->Assertions.assertNotNull(actual.get().getCreatedAt()),
-                ()->Assertions.assertNull(actual.get().getUpdatedAt())
+                ()->Assertions.assertNotNull(actual.get().getCreatedAt())
         );
     }
 
     @Test
     @DisplayName("topic -조회 (Root)")
-    @Disabled
     void findAll() {
 
         Topic topic1 = Topic.ofNewRootTopic("주제없음",1);
@@ -137,7 +147,7 @@ class JdbcTopicRepositoryTest {
         topicRepository.save(topic7);
         topicRepository.save(topic8);
 
-        List<Topic> topics = topicRepository.findAll(null);
+        List<Topic> topics = topicRepository.findAllByOrderByTopicSecAsc();
         log.debug("count of topics : {}", topics.size());
 
         Assertions.assertFalse(topics.isEmpty());
@@ -190,7 +200,7 @@ class JdbcTopicRepositoryTest {
         topicRepository.save(subTopic4);
         topicRepository.save(subTopic5);
 
-        List<Topic>subTopics = topicRepository.findAll(topic5.getTopicId());
+        List<Topic>subTopics = topicRepository.findAllByTopicPid(topic5.getTopicId());
         log.debug("count of subTopics : {}", subTopics.size());
 
         Assertions.assertAll(
@@ -208,14 +218,14 @@ class JdbcTopicRepositoryTest {
     void existByTopicId() {
         Topic topic = Topic.ofNewRootTopic("IT",1);
         topicRepository.save(topic);
-        boolean actual = topicRepository.existByTopicId(topic.getTopicId());
+        boolean actual = topicRepository.existsById(topic.getTopicId());
         Assertions.assertTrue(actual);
     }
 
     @Test
     @DisplayName("topic-존재여부체크 : false")
     void notExistByTopicId() {
-        boolean actual = topicRepository.existByTopicId(-1);
+        boolean actual = topicRepository.existsById(-1);
         Assertions.assertFalse(actual);
     }
 }

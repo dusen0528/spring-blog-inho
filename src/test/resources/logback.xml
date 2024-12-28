@@ -9,6 +9,10 @@
         <appender-ref ref="CONSOLE" />
     </logger>
 
+    <logger name="org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl" level="info" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
     <root level="DEBUG">
         <appender-ref ref="CONSOLE" />
     </root>

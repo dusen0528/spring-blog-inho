@@ -1,15 +1,24 @@
 package com.nhnacademy.blog.topic.domain;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "topics")
 public class Topic {
-
-    private final Integer topicId;
-    private final Integer topicPid;
-    private final String topicName;
-    private final Integer topicSec;
-    private final LocalDateTime createdAt;
-    private final LocalDateTime updatedAt;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer topicId;
+    private String topicName;
+    private Integer topicPid;
+    private Integer topicSec;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     private Topic(Integer topicId, Integer topicPid, String topicName, Integer topicSec, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.topicId = topicId;
@@ -18,6 +27,16 @@ public class Topic {
         this.topicSec = topicSec;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public Topic() {
+
+    }
+
+    public void update(Integer topicPid, String topicName, Integer topicSec) {
+        this.topicPid = topicPid;
+        this.topicName = topicName;
+        this.topicSec = topicSec;
     }
 
     public static Topic ofNewRootTopic(String topicName,Integer topicSec) {

@@ -2,9 +2,11 @@ package com.nhnacademy.blog.category.repository.impl;
 
 import com.nhnacademy.blog.bloginfo.domain.Blog;
 import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
+import com.nhnacademy.blog.bloginfo.repository.JpaBlogRepository;
 import com.nhnacademy.blog.category.domain.Category;
 import com.nhnacademy.blog.category.dto.CategoryUpdateRequest;
 import com.nhnacademy.blog.category.repository.CategoryRepository;
+import com.nhnacademy.blog.category.repository.JpaCategoryRepository;
 import com.nhnacademy.blog.common.config.ApplicationConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
@@ -23,9 +25,9 @@ import java.util.Optional;
 @ContextConfiguration(classes = {ApplicationConfig.class})
 class JdbcCategoryRepositoryTest {
     @Autowired
-    CategoryRepository categoryRepository;
+    JpaCategoryRepository categoryRepository;
     @Autowired
-    BlogRepository blogRepository;
+    JpaBlogRepository blogRepository;
 
     @Test
     @DisplayName("카테고리 등록")
@@ -40,7 +42,7 @@ class JdbcCategoryRepositoryTest {
         categoryRepository.save(category);
 
         //then
-        Optional<Category> categoryOptional = categoryRepository.findByCategoryId(category.getCategoryId());
+        Optional<Category> categoryOptional = categoryRepository.findById(category.getCategoryId());
         Assertions.assertTrue(categoryOptional.isPresent());
         Assertions.assertAll(
                 ()->Assertions.assertNotNull(category.getCategoryId()),
@@ -66,7 +68,7 @@ class JdbcCategoryRepositoryTest {
         Category category2 = Category.ofNewSubCategory(category1.getCategoryId(), blog.getBlogId(),null,"스프링-코어",1);
         categoryRepository.save(category2);
 
-        Optional<Category> categoryOptional = categoryRepository.findByCategoryId(category2.getCategoryId());
+        Optional<Category> categoryOptional = categoryRepository.findById(category2.getCategoryId());
 
         //then
         Assertions.assertTrue(categoryOptional.isPresent());
@@ -93,17 +95,22 @@ class JdbcCategoryRepositoryTest {
 
         Category category2 = Category.ofNewSubCategory(category1.getCategoryId(), blog.getBlogId(),null,"스프링-코어",1);
         categoryRepository.save(category2);
+        long categoryId = category2.getCategoryId();
 
-        CategoryUpdateRequest categoryUpdateRequest = new CategoryUpdateRequest(category2.getCategoryId(),null, 1L,null, "Spring-core",10);
-        categoryRepository.update(categoryUpdateRequest);
+        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+        categoryOptional.ifPresent(category -> {
+            category.update(null,null,"Spring-core",10);
+            categoryRepository.saveAndFlush(category);
+        });
 
         //then
-        Optional<Category> categoryOptional = categoryRepository.findByCategoryId(category2.getCategoryId());
+        Optional<Category> updatedCategoryOptional = categoryRepository.findById(categoryId);
+        Assertions.assertTrue(updatedCategoryOptional.isPresent());
+
         Assertions.assertAll(
-                ()->Assertions.assertEquals(category2.getCategoryId(),categoryOptional.get().getCategoryId()),
-                ()->Assertions.assertEquals(categoryUpdateRequest.getCategoryName(),categoryOptional.get().getCategoryName()),
-                ()->Assertions.assertEquals(categoryUpdateRequest.getCategorySec(),categoryOptional.get().getCategorySec()),
-                ()->Assertions.assertNotNull(categoryOptional.get().getUpdatedAt())
+                ()->Assertions.assertEquals(categoryId,updatedCategoryOptional.get().getCategoryId()),
+                ()->Assertions.assertEquals("Spring-core",updatedCategoryOptional.get().getCategoryName()),
+                ()->Assertions.assertEquals(10,updatedCategoryOptional.get().getCategorySec())
         );
     }
 
@@ -112,11 +119,13 @@ class JdbcCategoryRepositoryTest {
     void delete() {
         //given
         Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
-        blogRepository.save(blog);
+        blogRepository.saveAndFlush(blog);
+        long blogId = blog.getBlogId();
         //when
-        blogRepository.deleteByBlogId(blog.getBlogId());
+        blogRepository.deleteById(blogId);
+        blogRepository.flush();
 
-        boolean actual = blogRepository.existByBlogId(blog.getBlogId());
+        boolean actual = blogRepository.existsById(blogId);
 
         Assertions.assertFalse(actual);
     }
@@ -126,13 +135,13 @@ class JdbcCategoryRepositoryTest {
     void findByCategoryId() {
         //given
         Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
-        blogRepository.save(blog);
+        blogRepository.saveAndFlush(blog);
 
         Category category = Category.ofNewRootCategory(blog.getBlogId(),null,"스프링",1);
-        categoryRepository.save(category);
-
+        categoryRepository.saveAndFlush(category);
+        long categoryId = category.getCategoryId();
         //when
-        Optional<Category> categoryOptional = categoryRepository.findByCategoryId(category.getCategoryId());
+        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
 
         //then
         Assertions.assertTrue(categoryOptional.isPresent());
@@ -151,7 +160,7 @@ class JdbcCategoryRepositoryTest {
     void findAll() {
         //given
         Blog blog = Blog.ofNewBlog("marco",true,"NHN아카데미-blog","nhn-academy-marco","NHN아카데미-블로그 입니다.");
-        blogRepository.save(blog);
+        blogRepository.saveAndFlush(blog);
 
         Category category1 = Category.ofNewRootCategory(blog.getBlogId(),null,"카테고리-1",1);
         Category category2 = Category.ofNewRootCategory(blog.getBlogId(),null,"카테고리-2",2);
@@ -165,7 +174,7 @@ class JdbcCategoryRepositoryTest {
         categoryRepository.save(category4);
         categoryRepository.save(category5);
 
-        List<Category> categoryList = categoryRepository.findAll(blog.getBlogId(), null);
+        List<Category> categoryList = categoryRepository.findAllByBlogId(blog.getBlogId());
 
         log.debug("categoryList-size: {}", categoryList.size());
 
@@ -210,7 +219,7 @@ class JdbcCategoryRepositoryTest {
         categoryRepository.save(subCategory4);
         categoryRepository.save(subCategory5);
 
-        List<Category> categoryList = categoryRepository.findAll(blog.getBlogId(), category1.getCategoryId());
+        List<Category> categoryList = categoryRepository.findAllByBlogIdAndCategoryPid(blog.getBlogId(), category1.getCategoryId());
 
         log.debug("categoryList-size: {}", categoryList.size());
 
@@ -235,7 +244,7 @@ class JdbcCategoryRepositoryTest {
         categoryRepository.save(category);
 
         //then
-        Assertions.assertTrue(categoryRepository.existsByCategoryId(category.getCategoryId()));
+        Assertions.assertTrue(categoryRepository.existsById(category.getCategoryId()));
     }
 
     @Test
@@ -269,7 +278,7 @@ class JdbcCategoryRepositoryTest {
         categoryRepository.save(subCategory4);
         categoryRepository.save(subCategory5);
 
-        boolean actual = categoryRepository.existsSubCategoryByCategoryId(category1.getCategoryId());
+        boolean actual = categoryRepository.existsByCategoryPid(category1.getCategoryId());
         Assertions.assertTrue(actual);
 
     }
@@ -304,7 +313,7 @@ class JdbcCategoryRepositoryTest {
         categoryRepository.save(subCategory4);
         categoryRepository.save(subCategory5);
 
-        boolean actual = categoryRepository.existsSubCategoryByCategoryId(category2.getCategoryId());
+        boolean actual = categoryRepository.existsByCategoryPid(category2.getCategoryId());
         Assertions.assertFalse(actual);
     }
 }

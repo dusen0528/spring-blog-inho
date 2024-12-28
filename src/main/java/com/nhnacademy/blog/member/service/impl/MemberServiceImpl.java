@@ -7,6 +7,7 @@ import com.nhnacademy.blog.common.exception.UnauthorizedException;
 import com.nhnacademy.blog.common.security.PasswordEncoder;
 import com.nhnacademy.blog.member.domain.Member;
 import com.nhnacademy.blog.member.dto.*;
+import com.nhnacademy.blog.member.repository.JpaMemberRepository;
 import com.nhnacademy.blog.member.repository.MemberRepository;
 import com.nhnacademy.blog.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
@@ -72,10 +73,10 @@ public class MemberServiceImpl implements MemberService {
      * @param memberRepository
      * @param passwordEncoder
      */
-    private final MemberRepository memberRepository;
+    private final JpaMemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public MemberServiceImpl(MemberRepository memberRepository,
+    public MemberServiceImpl(JpaMemberRepository memberRepository,
                              PasswordEncoder passwordEncoder
     ) {
         this.memberRepository = memberRepository;
@@ -125,7 +126,6 @@ public class MemberServiceImpl implements MemberService {
 
         //2.회원 존재여부 체크
         checkMemberExists(memberUpdateRequest.getMbNo());
-
         Optional<Member> memberOptional =  memberRepository.findByMbNo(memberUpdateRequest.getMbNo());
         Member member = memberOptional.get();
 
@@ -141,8 +141,13 @@ public class MemberServiceImpl implements MemberService {
             checkMobileDuplicate(memberUpdateRequest.getMbMobile());
         }
 
-        //회원정보(수정)
-        memberRepository.update(memberUpdateRequest);
+        //회원정보(수정), 변경감지
+        member.update(
+                memberUpdateRequest.getMbEmail(),
+                memberUpdateRequest.getMbName(),
+                memberUpdateRequest.getMbMobile()
+        );
+
 
         return getMember(member.getMbNo());
     }
@@ -158,7 +163,8 @@ public class MemberServiceImpl implements MemberService {
         checkWithdrawal(mbNo);
 
         //탈퇴일자를 수정한다.
-        memberRepository.updateWithdrawalAt(mbNo, LocalDateTime.now());
+        //memberRepository.updateWithdrawalAt(mbNo, LocalDateTime.now());
+
     }
 
     @Override
@@ -203,8 +209,7 @@ public class MemberServiceImpl implements MemberService {
 
         //newPassword Bcrypt 암호화
         String newPassword = passwordEncoder.encode(memberPasswordUpdateRequest.getNewPassword());
-
-        memberRepository.updatePassword(memberPasswordUpdateRequest.getMbNo(), newPassword);
+        member.changePassword(newPassword);
     }
 
     @Override
@@ -251,10 +256,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     protected void checkWithdrawal(Long mbNo) {
-        boolean flag = memberRepository.isMemberWithdrawn(mbNo);
+        boolean flag = memberRepository.existsByMbNoAndWithdrawalAtIsNotNull(mbNo);
         if(flag) {
             throw new NotFoundException("This member [%d] has bean withdrawal".formatted(mbNo));
         }
     }
-
 }

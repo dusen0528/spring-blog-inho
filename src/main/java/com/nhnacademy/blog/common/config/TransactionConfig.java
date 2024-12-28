@@ -18,8 +18,8 @@ import javax.sql.DataSource;
  * @EnableTransactionManagement: 트랜잭션 관리를 활성화하고, 트랜잭션 관련 어노테이션(@Transactional)을 사용할 수 있게 합니다.
  * 트랜잭션 관리는 데이터베이스 작업의 일관성을 보장하기 위해 필요하며, 데이터베이스 연산 중 문제가 발생했을 때 롤백할 수 있도록 도와줍니다.
  */
-@Configuration
-@EnableTransactionManagement // 트랜잭션 관리 기능을 활성화하는 어노테이션
+//@Configuration
+//@EnableTransactionManagement // 트랜잭션 관리 기능을 활성화하는 어노테이션
 public class TransactionConfig {
 
     /**
@@ -37,7 +37,7 @@ public class TransactionConfig {
      * 즉, 데이터베이스의 트랜잭션을 관리하여, 여러 개의 데이터베이스 작업을 하나의 트랜잭션으로 묶고,
      * 모든 작업이 성공적으로 완료되면 커밋하고, 오류가 발생하면 롤백하여 데이터의 일관성을 보장합니다.
      */
-    @Bean
+ //   @Bean
     PlatformTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource); // DataSource를 사용한 트랜잭션 매니저
     }

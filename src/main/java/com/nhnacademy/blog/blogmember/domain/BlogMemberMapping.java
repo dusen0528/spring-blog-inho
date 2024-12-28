@@ -1,11 +1,21 @@
 package com.nhnacademy.blog.blogmember.domain;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "blog_member_mapping")
 public class BlogMemberMapping {
 
-    private final Long blogMemberId;
-    private final Long mbNo;
-    private final Long blogId;
-    private final String roleId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long blogMemberId;
+    private Long mbNo;
+    private Long blogId;
+    private String roleId;
+
+    public BlogMemberMapping() {
+
+    }
 
     enum Role{
 

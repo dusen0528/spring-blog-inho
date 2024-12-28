@@ -6,11 +6,10 @@ import com.nhnacademy.blog.bloginfo.dto.BlogCreateRequest;
 import com.nhnacademy.blog.bloginfo.dto.BlogResponse;
 import com.nhnacademy.blog.bloginfo.dto.BlogUpdateRequest;
 import com.nhnacademy.blog.bloginfo.dto.BlogVisibilityUpdateRequest;
-import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
-import com.nhnacademy.blog.bloginfo.repository.impl.JdbcBlogRepository;
+import com.nhnacademy.blog.bloginfo.repository.JpaBlogRepository;
 import com.nhnacademy.blog.bloginfo.service.BlogInfoService;
 import com.nhnacademy.blog.blogmember.domain.BlogMemberMapping;
-import com.nhnacademy.blog.blogmember.repository.BlogMemberMappingRepository;
+import com.nhnacademy.blog.blogmember.repository.JpaBlogMemberMappingRepository;
 import com.nhnacademy.blog.common.exception.ConflictException;
 import com.nhnacademy.blog.common.exception.ForbiddenException;
 import com.nhnacademy.blog.common.exception.NotFoundException;
@@ -23,13 +22,12 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 @Service
 public class BlogInfoServiceImpl implements BlogInfoService {
-
-    private final BlogRepository blogRepository;
-    private final BlogMemberMappingRepository blogMemberMappingRepository;
+    private final JpaBlogRepository blogRepository;
+    private final JpaBlogMemberMappingRepository blogMemberMappingRepository;
 
     public BlogInfoServiceImpl(
-            BlogRepository blogRepository,
-            BlogMemberMappingRepository blogMemberMappingRepository
+            JpaBlogRepository blogRepository,
+            JpaBlogMemberMappingRepository blogMemberMappingRepository
     ) {
         this.blogRepository = blogRepository;
         this.blogMemberMappingRepository = blogMemberMappingRepository;
@@ -46,7 +44,7 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         boolean isBlogMain = !existMainBlog;
 
         //2.blog_fid 중복여부 체크
-        boolean existBlogFid = blogRepository.existByBlogFid(blogCreateRequest.getBlogFid());
+        boolean existBlogFid = blogRepository.existsByBlogFid(blogCreateRequest.getBlogFid());
 
         if(existBlogFid) {
            throw new ConflictException("exist blog  fid : %s".formatted(blogCreateRequest.getBlogFid()));
@@ -76,22 +74,26 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         //blog 소유자 체크
         checkOwner(blogUpdateRequest.getBlogId(),MemberThreadLocal.getMemberNo());
 
-        if(blogUpdateRequest.isBlogMain()){
+        if(Boolean.TRUE.equals(blogUpdateRequest.isBlogMain())){
             long mbNo = MemberThreadLocal.getMemberNo();
 
             //모든 blog 리스트 조회
-            List<BlogResponse> blogResponseList = blogRepository.findAllBlogs(mbNo,"ROLE_OWNER");
+            List<Blog> blogList = blogRepository.findAllBlogs(mbNo,"ROLE_OWNER");
 
-            for(BlogResponse blogResponse : blogResponseList){
+            for(Blog blog : blogList){
                 //대상 블로그를 제외한 나머지 블로그들의 blog_ㅡmain 값을 false로 변경
-                if(!blogResponse.getBlogId().equals(blogUpdateRequest.getBlogId())){
-                    blogRepository.updateBlogMain(blogResponse.getBlogId(),false);
+                if(blog.getBlogId().equals(blogUpdateRequest.getBlogId())){
+                    blog.update(
+                            blogUpdateRequest.getBlogName(),
+                            blogUpdateRequest.getBlogMbNickname(),
+                            blogUpdateRequest.getBlogDescription(),
+                            true
+                    );
+                }else{
+                    blog.enableBlogPublicAccess(false);
                 }
             }
-
-            blogRepository.updateBlogMain(blogUpdateRequest.getBlogId(),true);
         }
-        blogRepository.update(blogUpdateRequest);
 
         return getBlog(blogUpdateRequest.getBlogId());
     }
@@ -105,12 +107,15 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         //blog 소유자 체크
         checkOwner(blogVisibilityUpdateRequest.getBlogId(), MemberThreadLocal.getMemberNo());
 
-        blogRepository.updateByBlogIsPublic(blogVisibilityUpdateRequest.getBlogId(),blogVisibilityUpdateRequest.getBlogIsPublic());
+        Optional<Blog> blogOptional = blogRepository.findById(blogVisibilityUpdateRequest.getBlogId());
+        blogOptional.ifPresent(blog -> {
+            blog.enableBlogPublicAccess(blogVisibilityUpdateRequest.getBlogIsPublic());
+        });
     }
 
     @Override
     public BlogResponse getBlog(long blogId) {
-        Optional<Blog> blogOptional = blogRepository.findByBlogId(blogId);
+        Optional<Blog> blogOptional = blogRepository.findById(blogId);
 
         //blog 존재여부 체크
         if(blogOptional.isEmpty()){
@@ -133,7 +138,7 @@ public class BlogInfoServiceImpl implements BlogInfoService {
     }
 
     private void checkExistBlog(long blogId) {
-        boolean flag = blogRepository.existByBlogId(blogId);
+        boolean flag = blogRepository.existsById(blogId);
         if(!flag) {
             throw new NotFoundException("Blog not found:%S".formatted(blogId));
         }

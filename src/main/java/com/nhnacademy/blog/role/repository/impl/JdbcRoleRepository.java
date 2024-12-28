@@ -5,12 +5,12 @@ import com.nhnacademy.blog.role.dto.RoleUpdateRequestDto;
 import com.nhnacademy.blog.role.repository.RoleRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.Optional;
 
-@Repository
+@Component
 public class JdbcRoleRepository implements RoleRepository {
 
     private final JdbcTemplate jdbcTemplate;

@@ -1,28 +1,61 @@
 package com.nhnacademy.blog.member.domain;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-
 @SuppressWarnings("java:S107")
+
+/**
+ *
+ * JPA 엔티티의 조건
+ *  - @Entity 애노테이션: 클래스에 @Entity 애노테이션이 있어야 합니다.
+ *  - final 사용 금지: 클래스는 final로 선언될 수 없습니다.
+ *  - 기본 생성자: public 또는 protected 기본 생성자가 필요합니다.
+ *
+ * 필드 및 메서드 수준
+ *  - 식별자 필드: 하나 이상의 필드에 @Id 애노테이션을 사용하여 식별자를 지정해야 합니다.
+ *  - final 사용 금지: 필드와 메서드는 final로 선언될 수 없습니다.
+ *  - 접근 제한자: 필드는 private 또는 protected로 선언되고, 접근자 메서드(게터와 세터)를 통해 접근해야 합니다.
+ */
+
+@Entity
+@Table(name = "members")
 public class Member {
 
     //회원_번호
-    private final Long mbNo;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long mbNo;
     //회원_이메일
-    private final String mbEmail;
+
+    @Column(nullable = false, unique = true)
+    private String mbEmail;
     //회원_이름
-    private final String mbName;
+    @Column(nullable = false)
+    private String mbName;
     //비밀_번호
-    private final String mbPassword;
+    @Column(nullable = false)
+    private String mbPassword;
     //모바일 연락처
-    private final String mbMobile;
+    @Column(nullable = false, unique = true)
+    private String mbMobile;
     //생성일(가입일)
-    private final LocalDateTime createdAt;
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
     //수정일
-    private final LocalDateTime updatedAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
     //탈퇴일
-    private final LocalDateTime withdrawalAt;
+    private LocalDateTime withdrawalAt;
+
+    public Member() {
+
+    }
 
     private Member(Long mbNo, String mbEmail, String mbName, String mbPassword, String mbMobile, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime withdrawalAt) {
         this.mbNo = mbNo;
@@ -41,6 +74,20 @@ public class Member {
 
     public static Member ofExistingMember(Long mbNo, String mbEmail, String mbName, String mbPassword, String mbMobile,LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime withdrawalAt) {
         return new Member(mbNo, mbEmail, mbName, mbPassword, mbMobile, createdAt, updatedAt, withdrawalAt);
+    }
+
+    public void update(String mbEmail, String mbName, String mbMobile){
+        this.mbEmail = mbEmail;
+        this.mbName = mbName;
+        this.mbMobile= mbMobile;
+    }
+
+    public void changePassword(String mbPassword){
+        this.mbPassword = mbPassword;
+    }
+
+    public void withdraw(){
+        this.withdrawalAt = LocalDateTime.now();
     }
 
     public Long getMbNo() {
