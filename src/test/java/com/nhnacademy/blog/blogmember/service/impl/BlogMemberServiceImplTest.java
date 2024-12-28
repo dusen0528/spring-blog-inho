@@ -192,13 +192,6 @@ class BlogMemberServiceImplTest {
         //회원 탈퇴여부
         Mockito.when(memberRepository.isMemberWithdrawn(Mockito.anyLong())).thenReturn(false);
 
-        BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofExistingBlogMemberMapping(
-                1L,
-                1L,
-                1L,
-                "ROLE_OWNER"
-        );
-
         Assertions.assertThrows(NotFoundException.class,()->{
             blogMemberService.removeBlogMember(1L,1L);
         });

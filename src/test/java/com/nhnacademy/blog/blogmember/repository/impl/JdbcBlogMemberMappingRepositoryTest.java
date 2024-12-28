@@ -2,11 +2,13 @@ package com.nhnacademy.blog.blogmember.repository.impl;
 
 import com.nhnacademy.blog.bloginfo.domain.Blog;
 import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
+import com.nhnacademy.blog.bloginfo.repository.JpaBlogRepository;
 import com.nhnacademy.blog.blogmember.domain.BlogMemberMapping;
 import com.nhnacademy.blog.blogmember.repository.BlogMemberMappingRepository;
 import com.nhnacademy.blog.category.domain.Category;
 import com.nhnacademy.blog.category.repository.CategoryRepository;
 import com.nhnacademy.blog.common.config.ApplicationConfig;
+import com.nhnacademy.blog.common.config.init.CustomContextInitializer;
 import com.nhnacademy.blog.member.domain.Member;
 import com.nhnacademy.blog.member.repository.MemberRepository;
 import com.nhnacademy.blog.role.doamin.Role;
@@ -17,18 +19,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Slf4j
 @Transactional
-@ContextConfiguration(classes = {ApplicationConfig.class})
+@ContextConfiguration(classes = {ApplicationConfig.class},
+        loader = AnnotationConfigContextLoader.class,
+        initializers = CustomContextInitializer.class
+)
 @ExtendWith(SpringExtension.class)
 class JdbcBlogMemberMappingRepositoryTest {
 
     @Autowired
-    BlogRepository blogRepository;
+    JpaBlogRepository blogRepository;
 
     @Autowired
     BlogMemberMappingRepository blogMemberMappingRepository;
@@ -105,8 +111,6 @@ class JdbcBlogMemberMappingRepositoryTest {
         blogMemberMappingRepository.deleteByBlogMemberMappingId(blogMemberMapping.getBlogMemberId());
 
         //then
-        //boolean actual = blogMemberMappingRepository.findByBlogMemberId(blogMemberMapping.getBlogMemberId()).isEmpty();
-
         Optional<BlogMemberMapping> blogMemberMappingOptional = blogMemberMappingRepository.findByBlogMemberId(blogMemberMapping.getBlogMemberId());
 
         log.debug("blogMemberMappingOptional: {}", blogMemberMappingOptional.isPresent());

@@ -1,7 +1,6 @@
 package com.nhnacademy.blog.bloginfo.repository;
 
 import com.nhnacademy.blog.bloginfo.domain.Blog;
-import com.nhnacademy.blog.bloginfo.dto.BlogResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

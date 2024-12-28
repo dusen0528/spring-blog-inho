@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 import java.util.Optional;
 
-@Service
+//@Service
 @Transactional(readOnly = true)
 public class BlogMemberServiceImpl implements BlogMemberService {
 

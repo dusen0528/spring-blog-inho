@@ -18,7 +18,7 @@ public final class CategoryUtils {
     public static List<CategoryResponse> generateCategoryHierarchy(List<CategoryResponse> categoryResponseList){
         List<CategoryResponse> targetList = new ArrayList<>();
 
-        Collections.sort(categoryResponseList, (o1,o2) ->{
+        categoryResponseList.sort((o1, o2) -> {
             return o1.getCategorySec() - o2.getCategorySec();
         });
 
@@ -42,14 +42,14 @@ public final class CategoryUtils {
             List<CategoryResponse> filteredList = categoryResponseList.stream()
                     .filter(o->Objects.nonNull(o.getCategoryPid()))
                     .filter(o -> o.getCategoryPid().equals(target.getCategoryId()))
-                    .collect(Collectors.toList());
+                    .toList();
 
             //subCategory 등록
             for (CategoryResponse categoryResponse : filteredList) {
                 target.addSubCategory(categoryResponse);
             }
 
-            if(target.getSubCategories().size()>0){
+            if(!target.getSubCategories().isEmpty()){
                 findCategory(target.getSubCategories(), categoryResponseList);
             }
 

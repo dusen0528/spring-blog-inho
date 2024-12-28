@@ -8,22 +8,20 @@ import com.nhnacademy.blog.common.security.PasswordEncoder;
 import com.nhnacademy.blog.member.domain.Member;
 import com.nhnacademy.blog.member.dto.*;
 import com.nhnacademy.blog.member.repository.JpaMemberRepository;
-import com.nhnacademy.blog.member.repository.MemberRepository;
 import com.nhnacademy.blog.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
- * TODO#4 Spring 기반의 Service 환경(구성)
+ * Spring 기반의 Service 환경(구성)
  */
 @Slf4j
 
 /**
- * TODO#4-1 @Service
+ * @Service
  * 이 어노테이션은 Spring의 서비스 계층(Component)로 사용되는 클래스에 적용됩니다.
  * 서비스 계층은 비즈니스 로직을 처리하는 역할을 하며, @Service 어노테이션을 사용하면 Spring이 해당 클래스를 자동으로
  * 빈(Bean)으로 등록하여 의존성 주입을 할 수 있게 됩니다.
@@ -33,10 +31,10 @@ import java.util.Optional;
  * @Service는 @Component의 특수화된 형태이기 때문에, Spring의 컴포넌트 스캔에 의해 자동으로 빈으로 등록됩니다.
  * 따라서 다른 컴포넌트나 클래스에서 의존성 주입을 통해 사용할 수 있습니다.
  */
-@Service
+//@Service
 
 /**
- * TODO#4-2 @Transactional
+ * @Transactional
  * 이 어노테이션은 메소드 또는 클래스 수준에 적용되어 트랜잭션 처리를 자동으로 관리합니다.
  * 트랜잭션은 데이터베이스 작업에서 여러 연산을 하나의 단위로 묶어, 그 연산들이 모두 성공하거나 실패해야 하는 조건을 처리합니다.
  * @Transactional은 주로 서비스 계층에서 사용되며, 메소드 실행이 끝나면 트랜잭션을 자동으로 커밋하거나 롤백합니다.
@@ -49,7 +47,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class MemberServiceImpl implements MemberService {
     /**
-     * TODO#4-3 생성자 주입(Constructor Injection)
+     * 생성자 주입(Constructor Injection)
      * Spring에서 의존성 주입을 받는 방법 중 하나입니다.
      * 생성자 주입은 클래스의 생성자를 통해 필요한 의존 객체를 전달받습니다.
      * 이 방식은 다음과 같은 장점이 있습니다:
@@ -62,7 +60,7 @@ public class MemberServiceImpl implements MemberService {
      *
      * 생성자 주입은 필드 주입이나 세터 주입에 비해 안정적인 의존성 주입 방법으로 권장됩니다.
      *
-     * TODO#4-4 @Qualifier는 동일 타입의 빈이 여러 개 있을 때 특정 빈을 선택적으로 주입하는 데 사용됩니다.
+     * @Qualifier는 동일 타입의 빈이 여러 개 있을 때 특정 빈을 선택적으로 주입하는 데 사용됩니다.
      * 하지만 여기에서는 MemberRepository와 PasswordEncoder 두 객체는 서로 다른 타입이므로,
      * @Qualifier를 사용하지 않아도 Spring이 자동으로 해당 타입에 맞는 빈을 주입합니다.
      * 따라서 @Qualifier를 사용할 필요는 없습니다.
@@ -84,7 +82,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     /**
-     * TODO#4-5 이전 생성자 , 4-4와 비교 합니다.
+     * 이전 생성자 , 4-4와 비교 합니다.
      */
 //    public MemberServiceImpl(@Qualifier(JdbcMemberRepository.BEAN_NAME) MemberRepository memberRepository,
 //                             @Qualifier(BCryptPasswordEncoder.BEAN_NAME) PasswordEncoder passwordEncoder

@@ -311,18 +311,6 @@ class MemberServiceImplTest {
     @DisplayName("회원정보-수정 - 탈퇴한 회원")
     void updateMember_exception_case3() {
 
-        Optional<Member> memberOptional = Optional.of(
-                Member.ofExistingMember(1L,
-                        "marco@nhnacademy.com",
-                        "마르코",
-                        "password",
-                        "01012345678",
-                        LocalDateTime.now(),
-                        null,
-                        LocalDateTime.now()
-                )
-        );
-
         MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest(1L,"nhn-academy-marco@nhnacademy.com","NHN아카데미","01012345678");
 
         //탈퇴한 회원 체크
@@ -429,7 +417,7 @@ class MemberServiceImplTest {
 
         //when
         Assertions.assertThrows(NotFoundException.class,()->{
-            MemberResponse memberResponse = memberService.getMember(1L);
+            memberService.getMember(1L);
         });
 
         //then

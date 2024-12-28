@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
-@Component
+//@Component
 public class JdbcMemberRepository implements MemberRepository {
 
     private final JdbcTemplate jdbcTemplate;

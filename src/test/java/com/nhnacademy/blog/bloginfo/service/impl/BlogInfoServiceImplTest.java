@@ -106,18 +106,6 @@ class BlogInfoServiceImplTest {
         //blogFid 중복체크
         Mockito.when(blogRepository.existByBlogFid(Mockito.anyString())).thenReturn(true);
 
-        Blog blog = Blog.ofExistingBlogInfo(
-                1L,
-                blogCreateRequest.getBlogFid(),
-                true,
-                blogCreateRequest.getBlogName(),
-                blogCreateRequest.getBlogMbNickname(),
-                blogCreateRequest.getBlogDescription(),
-                true,
-                LocalDateTime.now().minusDays(30),
-                LocalDateTime.now()
-        );
-
         Throwable throwable = Assertions.assertThrows(ConflictException.class, () -> blogInfoService.createBlog(blogCreateRequest));
         log.debug("exception: {}, message:{}",throwable.getClass().getSimpleName(),throwable.getMessage());
 

@@ -1,16 +1,17 @@
 package com.nhnacademy.blog.common.config;
 
 import com.nhnacademy.blog.RootPackageBase;
+import com.nhnacademy.blog.common.config.prod.DataSourceConfig;
+import com.nhnacademy.blog.common.config.prod.TransactionConfig;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 /**
- * TODO#1-3 Application Context를 생성할 때의 환경설정을 담당.
+ * Application Context를 생성할 때의 환경설정을 담당.
  *
  * - 이 클래스는 Spring 애플리케이션 컨텍스트 초기화 시, 필요한 설정을 제공합니다.
  * - @Import와 @ComponentScan 애노테이션을 사용하여 설정 및 컴포넌트 스캔 범위를 정의합니다.
  */
-
 
 /**
  * @Import:

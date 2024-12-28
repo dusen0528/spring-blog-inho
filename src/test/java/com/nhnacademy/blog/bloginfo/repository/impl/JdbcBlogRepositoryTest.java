@@ -3,19 +3,24 @@ package com.nhnacademy.blog.bloginfo.repository.impl;
 import com.nhnacademy.blog.bloginfo.domain.Blog;
 import com.nhnacademy.blog.bloginfo.repository.JpaBlogRepository;
 import com.nhnacademy.blog.common.config.ApplicationConfig;
+import com.nhnacademy.blog.common.config.init.CustomContextInitializer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Slf4j
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {ApplicationConfig.class})
+@ContextConfiguration(classes = {ApplicationConfig.class},
+        loader = AnnotationConfigContextLoader.class,
+        initializers = CustomContextInitializer.class
+)
 @Transactional
 class JdbcBlogRepositoryTest {
 

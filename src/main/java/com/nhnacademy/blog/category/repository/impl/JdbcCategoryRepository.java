@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
+
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @SuppressWarnings("java:S1192")
 
-@Component
+//@Component
 public class JdbcCategoryRepository implements CategoryRepository {
 
     private final JdbcTemplate jdbcTemplate;

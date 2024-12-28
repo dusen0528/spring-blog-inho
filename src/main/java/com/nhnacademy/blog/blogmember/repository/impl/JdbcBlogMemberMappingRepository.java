@@ -17,7 +17,7 @@ import java.sql.*;
 import java.util.Objects;
 import java.util.Optional;
 @Slf4j
-@Component
+//@Component
 public class JdbcBlogMemberMappingRepository implements BlogMemberMappingRepository {
 
     private final JdbcTemplate jdbcTemplate;

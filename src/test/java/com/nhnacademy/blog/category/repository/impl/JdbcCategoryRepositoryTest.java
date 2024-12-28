@@ -1,11 +1,8 @@
 package com.nhnacademy.blog.category.repository.impl;
 
 import com.nhnacademy.blog.bloginfo.domain.Blog;
-import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
 import com.nhnacademy.blog.bloginfo.repository.JpaBlogRepository;
 import com.nhnacademy.blog.category.domain.Category;
-import com.nhnacademy.blog.category.dto.CategoryUpdateRequest;
-import com.nhnacademy.blog.category.repository.CategoryRepository;
 import com.nhnacademy.blog.category.repository.JpaCategoryRepository;
 import com.nhnacademy.blog.common.config.ApplicationConfig;
 import lombok.extern.slf4j.Slf4j;

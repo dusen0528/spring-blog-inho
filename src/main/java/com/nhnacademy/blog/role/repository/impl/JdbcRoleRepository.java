@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.sql.*;
 import java.util.Optional;
 
-@Component
+//@Component
 public class JdbcRoleRepository implements RoleRepository {
 
     private final JdbcTemplate jdbcTemplate;

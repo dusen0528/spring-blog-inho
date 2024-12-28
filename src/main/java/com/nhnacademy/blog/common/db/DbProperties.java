@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 /**
- * TODO#1-6 db.properties 파일을 기반으로 데이터베이스 접속 정보 객체화
+ * db.properties 파일을 기반으로 데이터베이스 접속 정보 객체화
  *
  * 이 클래스는 db.properties 파일에 정의된 데이터베이스 접속 정보를 바탕으로
  * 해당 정보를 객체로 변환하는 역할을 합니다.

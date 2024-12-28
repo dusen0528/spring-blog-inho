@@ -19,12 +19,12 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * TODO#3-1 JdbcMemberRepositoryTest 참고하여 모든 Repository의 테스트 환경 설정 합니다.
+ * JdbcMemberRepositoryTest 참고하여 모든 Repository의 테스트 환경 설정 합니다.
  */
 
 @Slf4j
 /**
- * TODO#3-1-1 Spring 기반 테스트 환경 구성
+ * Spring 기반 테스트 환경 구성
  * @ContextConfiguration: 테스트 클래스에서 사용할 Spring 설정 클래스를 지정합니다.
  * 이 예제에서는 ApplicationConfig.class를 지정하여,
  * 테스트 실행 시 해당 클래스에서 설정된 Spring Bean들을 사용할 수 있도록 합니다.
@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ContextConfiguration(classes = {ApplicationConfig.class})
 
 /**
- * TODO#3-1-2 JUnit 5에서 Spring 테스트 기능 활성화
+ * JUnit 5에서 Spring 테스트 기능 활성화
  * @ExtendWith(SpringExtension.class): JUnit 5에서 Spring 테스트 기능을 활성화하는 어노테이션입니다.
  * 이 어노테이션을 사용하면 Spring TestContext Framework가 활성화되어 Spring의 테스트 환경을 설정할 수 있습니다.
  * SpringExtension은 JUnit 5의 Extension API를 구현한 클래스로, 이를 통해 Spring ApplicationContext와 연동할 수 있습니다.
@@ -47,19 +47,19 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 
 /**
- * TODO#3-1-3 테스트 환경에서의 트랜잭션 처리
+ * 테스트 환경에서의 트랜잭션 처리
  * @Transactional: 이 어노테이션은 테스트 메소드가 실행될 때 트랜잭션을 시작하고, 메소드 실행 후 자동으로 롤백되도록 설정합니다.
  * 주로 데이터베이스의 상태를 변경하는 테스트에서 사용되며, 테스트가 끝난 후 데이터베이스에 변경 사항을 남기지 않도록 합니다.
  */
 @Transactional
 
 class JdbcMemberRepositoryTest {
-    //TODO#3-1-4 Spring Context로부터 memberRepository 주입합니다.
+    //Spring Context로부터 memberRepository 주입합니다.
     @Autowired
     MemberRepository memberRepository;
 
     /**
-     * TODO#3-1-5 Rollback 관리
+     * Rollback 관리
      *  - @Rollback(value=true)  =  test method 실행 후 rollback 됩니다.
      *  - @Rollback(value=false) =  test method 실행 후 rollback 되지 않습니다.
      *  - @Rollback 에너테이션을 사용하지 않더라도 테스트에서는 @Transactional 때문에 rollback 됩니다.

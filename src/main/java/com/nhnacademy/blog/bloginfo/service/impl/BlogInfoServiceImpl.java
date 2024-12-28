@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Transactional(readOnly = true)
-@Service
+//@Service
 public class BlogInfoServiceImpl implements BlogInfoService {
     private final JpaBlogRepository blogRepository;
     private final JpaBlogMemberMappingRepository blogMemberMappingRepository;

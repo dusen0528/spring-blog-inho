@@ -24,7 +24,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
-@Service
+//@Service
 @Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
 
@@ -171,7 +171,6 @@ public class CategoryServiceImpl implements CategoryService {
                 categoryOptional.get().getCategoryName(),
                 categoryOptional.get().getCategorySec()
         );
-
     }
 
     @Transactional

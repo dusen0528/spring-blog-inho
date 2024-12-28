@@ -1,4 +1,4 @@
-package com.nhnacademy.blog.common.config;
+package com.nhnacademy.blog.common.config.prod;
 
 import com.nhnacademy.blog.common.db.DbProperties;
 import com.p6spy.engine.spy.P6DataSource;
@@ -6,14 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.context.annotation.Profile;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.time.Duration;
 
 /**
- * TODO#1-5 DataSource Bean 생성
+ * DataSource Bean 생성
  *
  * 이 클래스는 데이터베이스 연결에 필요한 DataSource를 설정하는 클래스입니다.
  * Spring의 @Configuration 어노테이션을 사용하여 Spring IoC 컨테이너에 설정 정보를 제공하며,
@@ -32,7 +32,7 @@ import java.time.Duration;
  */
 
 @Slf4j
-//@Configuration
+@Configuration
 public class DataSourceConfig {
 
     /**
@@ -48,7 +48,8 @@ public class DataSourceConfig {
      *                    Spring IoC 컨테이너에 의해 관리되며, DataSourceConfig에서 자동으로 주입됩니다.
      * @return 설정된 DataSource 객체
      */
-    //@Bean("dataSource")
+    @Profile("prod")
+    @Bean("dataSource")
     public DataSource dataSource(DbProperties dbProperties){
         log.debug("datasource-dbProperties: {}", dbProperties);
 

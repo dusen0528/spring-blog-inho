@@ -15,7 +15,7 @@ import com.nhnacademy.blog.member.service.MemberService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+//@Service
 @Transactional
 public class DefaultBlogAccountManager extends AbstractBlogAccountManager {
 

@@ -1,7 +1,7 @@
 package com.nhnacademy.blog;
 
 /**
- * TODO#1-4 Root Package Marker interface
+ * Root Package Marker interface
  *
  * 마커 인터페이스는 메소드나 상수가 없는 인터페이스입니다.
  * 이 인터페이스는 클래스가 특정 속성이나 행동을 가지고 있음을 나타내기 위해 사용됩니다.

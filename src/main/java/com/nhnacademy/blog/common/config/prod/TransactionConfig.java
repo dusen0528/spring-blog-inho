@@ -1,7 +1,8 @@
-package com.nhnacademy.blog.common.config;
+package com.nhnacademy.blog.common.config.prod;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -11,15 +12,15 @@ import javax.sql.DataSource;
 
 
 /**
- * TODO#1-8 Transaction 관리
+ * Transaction 관리
  *
  * 이 클래스는 데이터베이스의 트랜잭션 관리를 설정합니다.
  * @Configuration: 해당 클래스가 스프링의 설정 클래스임을 나타냅니다.
  * @EnableTransactionManagement: 트랜잭션 관리를 활성화하고, 트랜잭션 관련 어노테이션(@Transactional)을 사용할 수 있게 합니다.
  * 트랜잭션 관리는 데이터베이스 작업의 일관성을 보장하기 위해 필요하며, 데이터베이스 연산 중 문제가 발생했을 때 롤백할 수 있도록 도와줍니다.
  */
-//@Configuration
-//@EnableTransactionManagement // 트랜잭션 관리 기능을 활성화하는 어노테이션
+@Configuration
+@EnableTransactionManagement // 트랜잭션 관리 기능을 활성화하는 어노테이션
 public class TransactionConfig {
 
     /**
@@ -37,7 +38,8 @@ public class TransactionConfig {
      * 즉, 데이터베이스의 트랜잭션을 관리하여, 여러 개의 데이터베이스 작업을 하나의 트랜잭션으로 묶고,
      * 모든 작업이 성공적으로 완료되면 커밋하고, 오류가 발생하면 롤백하여 데이터의 일관성을 보장합니다.
      */
- //   @Bean
+    @Profile("prod")
+    @Bean
     PlatformTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource); // DataSource를 사용한 트랜잭션 매니저
     }
@@ -58,6 +60,8 @@ public class TransactionConfig {
      *
      * JdbcTemplate은 반복적인 JDBC 코드를 간소화하고, 자원 관리 및 예외 처리를 자동화하여 개발자가 쉽게 사용할 수 있도록 도와줍니다.
      */
+    
+    @Profile("prod")
     @Bean
     JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource); // DataSource를 사용하여 JdbcTemplate 객체 생성

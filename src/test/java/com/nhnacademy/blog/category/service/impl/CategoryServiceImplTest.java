@@ -223,8 +223,7 @@ class CategoryServiceImplTest {
         Mockito.when(categoryRepository.existsByCategoryId(Mockito.anyLong())).thenReturn(false);
         Mockito.when(blogRepository.existByBlogId(Mockito.anyLong())).thenReturn(true);
         Mockito.when(topicRepository.existByTopicId(Mockito.anyInt())).thenReturn(true);
-
-        Category category = Category.ofExistingCategory(1L,10L,1L,1,"java",10, LocalDateTime.now().minusDays(10),LocalDateTime.now());
+        
         SubCategoryCreateRequest subCategoryCreateRequest = new SubCategoryCreateRequest(1L,10L,1L,1,"java",10);
         Assertions.assertThrows(NotFoundException.class,()->{
             categoryService.createSubCategory(subCategoryCreateRequest);
