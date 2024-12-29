@@ -13,11 +13,8 @@
 package com.nhnacademy.blog.common.context;
 
 import com.nhnacademy.blog.common.config.ApplicationConfig;
-import com.nhnacademy.blog.common.config.init.CustomContextInitializer;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
  * ContextHolder 클래스는 애플리케이션 전역에서 사용할 수 있는
@@ -36,12 +33,8 @@ public class ContextHolder {
      */
     private static final ApplicationContext context;
     static {
-        context = new AnnotationConfigApplicationContext();
-        ConfigurableEnvironment environment = (ConfigurableEnvironment) context.getEnvironment();
-        environment.setActiveProfiles("test"); // 원하는 프로파일 설정
-        //context ApplicationConfig기반으로 bean 등록
-        ((AnnotationConfigApplicationContext)context).register(ApplicationConfig.class);
-        ((AnnotationConfigApplicationContext)context).refresh();
+        //TODO#6 - ApplicationContext 생성
+        context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.nhnacademy.blog.common.config.prod;
+package com.nhnacademy.blog.common.config;
 
 import com.nhnacademy.blog.common.db.DbProperties;
 import com.p6spy.engine.spy.P6DataSource;
@@ -48,8 +48,9 @@ public class DataSourceConfig {
      *                    Spring IoC 컨테이너에 의해 관리되며, DataSourceConfig에서 자동으로 주입됩니다.
      * @return 설정된 DataSource 객체
      */
-    @Profile("prod")
-    @Bean("dataSource")
+
+    //TODO#8 - dataSource Bean 생성
+    @Bean
     public DataSource dataSource(DbProperties dbProperties){
         log.debug("datasource-dbProperties: {}", dbProperties);
 
@@ -58,7 +59,6 @@ public class DataSourceConfig {
         basicDataSource.setUrl(dbProperties.getUrl());
         basicDataSource.setUsername(dbProperties.getUsername());
         basicDataSource.setPassword(dbProperties.getPassword());
-
         basicDataSource.setInitialSize(dbProperties.getInitialSize());
         basicDataSource.setMaxTotal(dbProperties.getMaxTotal());
         basicDataSource.setMaxIdle(dbProperties.getMaxIdle());

@@ -1,9 +1,8 @@
 package com.nhnacademy.blog.common.db;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-
 /**
  * db.properties 파일을 기반으로 데이터베이스 접속 정보 객체화
  *
@@ -14,7 +13,11 @@ import org.springframework.context.annotation.PropertySource;
  */
 @SuppressWarnings("java:S107")
 @Configuration
-@PropertySource("classpath:db.properties") // db.properties 파일을 로드
+@Slf4j
+/**
+ * TODO#4 - profile에 따라서 환경을 로드 합니다. 따라서 @PropertySource는 사용하지 않습니다.
+ */
+//@PropertySource("classpath:db.properties") // db.properties 파일을 로드
 public class DbProperties {
 
     // 기본 Bean 이름을 설정합니다.
@@ -42,6 +45,9 @@ public class DbProperties {
     private boolean testOnBorrow; // 커넥션 풀에서 커넥션을 빌릴 때 검증 여부
     @Value("${db.spy}")
     private boolean spy; // P6Spy 로깅 사용 여부
+    //TODO#3 - diriverClassName 바인딩
+    @Value("${db.driverClassName}")
+    private String driverClassName;
 
     // getter 메소드 구현. setter 메소드는 구현하지 않음.
 
@@ -89,6 +95,10 @@ public class DbProperties {
         return spy;
     }
 
+    public String getDriverClassName() {
+        return driverClassName;
+    }
+
     // toString() 메서드를 오버라이드하여 DbProperties 객체를 문자열로 출력
     @Override
     public String toString() {
@@ -104,6 +114,7 @@ public class DbProperties {
                 ", validationQuery='" + validationQuery + '\'' +
                 ", testOnBorrow=" + testOnBorrow +
                 ", spy=" + spy +
+                ", driverClassName='" + driverClassName + '\'' +
                 '}';
     }
 }
