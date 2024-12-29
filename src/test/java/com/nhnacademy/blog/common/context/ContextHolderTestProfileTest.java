@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.Map;
+
 //TODO#18 -  @ActiveProfiles, test환경 - application-test.properties 환경 구성
 @ActiveProfiles("test")
 @ExtendWith({SpringExtension.class})

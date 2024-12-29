@@ -11,6 +11,7 @@ import java.util.Arrays;
 
 @Slf4j
 @Configuration
+@SuppressWarnings("squid:S1118")
 public class PropertyConfig {
 
     /** TODO#5 - spring.profiles.active=test 기본설정
