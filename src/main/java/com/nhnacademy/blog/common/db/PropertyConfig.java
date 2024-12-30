@@ -14,7 +14,7 @@ import java.util.Arrays;
 @SuppressWarnings("squid:S1118")
 public class PropertyConfig {
 
-    /** TODO#5 - spring.profiles.active=test 기본설정
+    /** spring.profiles.active=test 기본설정
      * - spring.profiles.active는 Spring 프레임워크에서 애플리케이션의 활성화된 프로파일을 설정하는 데 사용되는 속성입니다.
      * 이 속성은 애플리케이션이 실행될 때 어떤 프로파일을 사용할지를 지정하며, 이를 통해 다양한 환경(예: 개발, 테스트, 프로덕션)별로 다른 설정을 적용할 수 있습니다.
      *

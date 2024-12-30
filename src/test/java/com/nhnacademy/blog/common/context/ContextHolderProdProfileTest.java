@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
- * TODO#12 - @ActiveProfiles, prod환경 - application-prod.properties 환경 구성
+ * @ActiveProfiles, prod환경 - application-prod.properties 환경 구성
  * Spring 테스트 컨텍스트에서 특정 프로파일을 활성화하는 데 사용됩니다.
  * 이 애노테이션을 사용하면 테스트 실행 시 특정 프로파일을 활성화하여 해당 프로파일의 설정을 적용할 수 있습니다.
  * 이는 개발, 테스트, 프로덕션 등의 환경별로 다른 설정을 테스트할 때 유용합니다.
@@ -33,13 +33,13 @@ import java.util.Map;
 class ContextHolderProdProfileTest {
 
     /**
-     * TODO#13 - applicationContext 주입
+     * applicationContext 주입
      */
     @Autowired
     ApplicationContext applicationContext;
 
     /**
-     * TODO#14 - environment 주입
+     * environment 주입
      */
     @Autowired
     Environment environment;
@@ -48,7 +48,7 @@ class ContextHolderProdProfileTest {
     @DisplayName("load context")
     void getApplicationContext(){
 
-        //TODO#15 - prod  context Test
+        //prod  context Test
 
         DbProperties dbProperties = (DbProperties) applicationContext.getBean("dbProperties");
         log.debug("dbProperties:{}", dbProperties);
@@ -76,7 +76,7 @@ class ContextHolderProdProfileTest {
     @Test
     @DisplayName("profile : prod")
     void profileTest(){
-        //TODO#16 - active prod profile
+        //active prod profile
         boolean actual = Arrays.stream(environment.getActiveProfiles()).toList().contains("prod");
         Assertions.assertTrue(actual);
     }
@@ -92,7 +92,7 @@ class ContextHolderProdProfileTest {
     @Test
     @DisplayName("environment test")
     void environmentTest(){
-        //TODO#17 - 시스템 환경변수 출력
+        //시스템 환경변수 출력
         for (PropertySource<?> propertySource : ((StandardEnvironment) environment).getPropertySources()) {
             if (propertySource.getSource() instanceof java.util.Map) {
                 @SuppressWarnings("unchecked")

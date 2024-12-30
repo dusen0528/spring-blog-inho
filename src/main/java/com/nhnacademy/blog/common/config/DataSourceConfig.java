@@ -49,7 +49,7 @@ public class DataSourceConfig {
      * @return 설정된 DataSource 객체
      */
 
-    //TODO#8 - dataSource Bean 생성
+    //dataSource Bean 생성
     @Bean
     public DataSource dataSource(DbProperties dbProperties){
         log.debug("datasource-dbProperties: {}", dbProperties);

@@ -20,7 +20,7 @@ import java.util.Map;
 @Configuration
 
 /**
- * TODO#9 - @EnableJpaRepositories 애노테이션은 Spring Data JPA 리포지토리를 활성화하는 역할을 합니다.
+ * @EnableJpaRepositories 애노테이션은 Spring Data JPA 리포지토리를 활성화하는 역할을 합니다.
  * 이 애노테이션을 사용하면 JPA 리포지토리 인터페이스()가 Spring 애플리케이션 컨텍스트에 자동으로 등록됩니다.
  */
 @EnableJpaRepositories(
@@ -40,7 +40,7 @@ import java.util.Map;
 public class JpaConfig {
 
     /**
-     * TODO#10 - LocalContainerEntityManagerFactoryBean을 설정합니다.
+     * LocalContainerEntityManagerFactoryBean을 설정합니다.
      * 이 메서드는 데이터 소스를 기반으로 엔티티 매니저 팩토리를 생성합니다.
      * @param dataSource , Application Context에 등록된  dataSource Bean 주입됩니다.
      * @return
@@ -62,7 +62,7 @@ public class JpaConfig {
     }
 
     /**
-     * TODO#10-1  test(테스트) 환경에서의 jpaPropertyMap
+     * test(테스트) 환경에서의 jpaPropertyMap
      *  - test(테스트) 환경에서의 jpa설정
      *  - @Profile("test") <-- test profile에서만 Bean 생성됨.
      * @return
@@ -97,7 +97,7 @@ public class JpaConfig {
 
 
     /**
-     * TODO#10-2  prod(운영) 환경에서의 jpaPropertyMap
+     * prod(운영) 환경에서의 jpaPropertyMap
      *  - prod(운영) 환경에서의 jpa설정
      *  - @Profile("prod") <-- prod profile에서만 Bean 생성됨.
      * @return
@@ -130,7 +130,7 @@ public class JpaConfig {
     }
 
     /**
-     * TODO#11 - 트랜잭션 매니저 설정
+     * 트랜잭션 매니저 설정
      * - jdbc : DataSourceTransactionManager
      * - jpa : JpaTransactionManager
      * @param entityManagerFactory

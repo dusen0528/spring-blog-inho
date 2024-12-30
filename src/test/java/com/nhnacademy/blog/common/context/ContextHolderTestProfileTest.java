@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.Map;
 
-//TODO#18 -  @ActiveProfiles, test환경 - application-test.properties 환경 구성
+//@ActiveProfiles, test환경 - application-test.properties 환경 구성
 @ActiveProfiles("test")
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = ApplicationConfig.class)
@@ -35,7 +35,7 @@ class ContextHolderTestProfileTest {
     @Test
     @DisplayName("load context")
     void getApplicationContext(){
-        //TODO#19 - context load test
+        //context load test
 
         DbProperties dbProperties = (DbProperties) applicationContext.getBean("dbProperties");
         log.debug("dbProperties:{}", dbProperties);
@@ -64,7 +64,7 @@ class ContextHolderTestProfileTest {
     @Test
     @DisplayName("profile : test")
     void profileTest(){
-        //TODO#20 - active test profile
+        //active test profile
         boolean actual = Arrays.stream(environment.getActiveProfiles()).toList().contains("test");
         Assertions.assertTrue(actual);
     }
@@ -81,7 +81,7 @@ class ContextHolderTestProfileTest {
     @Test
     @DisplayName("environment test")
     void environmentTest(){
-        //TODO#21 - 시스템 환경변수 출력
+        //시스템 환경변수 출력
         for (PropertySource<?> propertySource : ((StandardEnvironment) environment).getPropertySources()) {
             if (propertySource.getSource() instanceof java.util.Map) {
                 @SuppressWarnings("unchecked")

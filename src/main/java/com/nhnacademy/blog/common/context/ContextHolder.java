@@ -33,7 +33,7 @@ public class ContextHolder {
      */
     private static final ApplicationContext context;
     static {
-        //TODO#6 - ApplicationContext 생성
+        //ApplicationContext 생성
         context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
     }
 

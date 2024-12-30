@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @Slf4j
 /**
- * TODO#4 - profile에 따라서 환경을 로드 합니다. 따라서 @PropertySource는 사용하지 않습니다.
+ * profile에 따라서 환경을 로드 합니다. 따라서 @PropertySource는 사용하지 않습니다.
  */
 //@PropertySource("classpath:db.properties") // db.properties 파일을 로드
 public class DbProperties {
@@ -45,7 +45,7 @@ public class DbProperties {
     private boolean testOnBorrow; // 커넥션 풀에서 커넥션을 빌릴 때 검증 여부
     @Value("${db.spy}")
     private boolean spy; // P6Spy 로깅 사용 여부
-    //TODO#3 - diriverClassName 바인딩
+    //diriverClassName 바인딩
     @Value("${db.driverClassName}")
     private String driverClassName;
 

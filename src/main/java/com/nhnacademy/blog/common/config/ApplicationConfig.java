@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Import;
  */
 
 /*
- * TODO#7 - @Import:
+ * @Import:
  * - 외부 구성 클래스를 가져와 현재 애플리케이션 컨텍스트의 설정으로 포함합니다.
  * - 여기서는 DataSourceConfig와 JpaConfig 가져옵니다.
  * - 이를 통해 데이터베이스 연결 및 트랜잭션 관리 관련 설정을 통합합니다.
@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Import;
 @Import(value = {DataSourceConfig.class, JpaConfig.class})
 
 /*
-  TODO#8 - @ComponentScan:
+@ComponentScan:
  * - 지정된 RootPackageBase.class 를 기준으로 하위 패키지에서 Spring의 특정 애노테이션(@Component, @Service, @Repository, @Controller)을 검색합니다.
  * - basePackageClasses 속성을 통해 특정 클래스를 기준으로 기본 패키지를 설정합니다.
  * - 여기서는 RootPackageBase 를 기준으로 스캔 범위를 정의합니다.
