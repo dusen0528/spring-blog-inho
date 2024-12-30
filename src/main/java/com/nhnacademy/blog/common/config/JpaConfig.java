@@ -1,8 +1,10 @@
 package com.nhnacademy.blog.common.config;
 
 import jakarta.persistence.EntityManagerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -11,7 +13,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
+@Slf4j
 @Configuration
 
 /**
@@ -41,23 +46,87 @@ public class JpaConfig {
      * @return
      */
     @Bean(name = "jpaEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean jpaEntityManagerFactory(DataSource dataSource) {
+    public LocalContainerEntityManagerFactoryBean jpaEntityManagerFactory(DataSource dataSource, Map<String,String> jpaPropertyMap) {
+        log.debug("configJpaPropertyMap:{}", jpaPropertyMap);
+
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
         factoryBean.setDataSource(dataSource);
         factoryBean.setPackagesToScan("com.nhnacademy.blog");  // 엔티티 클래스가 위치한 패키지 설정
 
         // Hibernate 관련 설정
-        factoryBean.getJpaPropertyMap().put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        factoryBean.getJpaPropertyMap().put("hibernate.hbm2ddl.auto", "create-drop");
-        factoryBean.getJpaPropertyMap().put("hibernate.show_sql", "true");
-        factoryBean.getJpaPropertyMap().put("hibernate.format_sql", "true");
-        factoryBean.getJpaPropertyMap().put("hibernate.use_sql_comments", "true");
-        factoryBean.getJpaPropertyMap().put("hibernate.naming.physical-strategy", org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl.class.getName());
-        factoryBean.getJpaPropertyMap().put("hibernate.naming.impersonalize-strategy", org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl.class.getName());
+        factoryBean.setJpaPropertyMap(jpaPropertyMap);
         factoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         factoryBean.setPersistenceProviderClass(org.hibernate.jpa.HibernatePersistenceProvider.class);
 
         return factoryBean;
+    }
+
+    /**
+     * TODO#10-1  test(테스트) 환경에서의 jpaPropertyMap
+     *  - test(테스트) 환경에서의 jpa설정
+     *  - @Profile("test") <-- test profile에서만 Bean 생성됨.
+     * @return
+     */
+    @Bean("jpaPropertyMap")
+    @Profile("test")
+    public Map<String, String> testJpaPropertyMap() {
+        Map<String, String> map = new HashMap<>();
+
+        // Hibernate가 사용할 방언(dialect)을 설정합니다.
+        // 여기서는 H2 데이터베이스 방언을 사용합니다.
+        map.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+
+        // Hibernate가 데이터베이스 스키마를 처리하는 방식을 설정합니다.
+        // 'create-drop'은 애플리케이션 시작 시 스키마를 생성하고, 종료 시 삭제합니다.
+        map.put("hibernate.hbm2ddl.auto", "create-drop");
+
+        // SQL 쿼리를 로그에 출력할지 여부를 설정합니다.
+        // 'true'로 설정하면 SQL 쿼리가 로그에 출력됩니다.
+        map.put("hibernate.show_sql", "true");
+
+        // SQL 쿼리를 포맷할지 여부를 설정합니다.
+        // 'true'로 설정하면 SQL 쿼리가 포맷되어 읽기 쉽게 정렬됩니다.
+        map.put("hibernate.format_sql", "true");
+
+        // SQL 쿼리에 주석을 추가할지 여부를 설정합니다.
+        // 'true'로 설정하면 SQL 쿼리에 주석이 추가됩니다.
+        map.put("hibernate.use_sql_comments", "true");
+
+        return map;
+    }
+
+
+    /**
+     * TODO#10-2  prod(운영) 환경에서의 jpaPropertyMap
+     *  - prod(운영) 환경에서의 jpa설정
+     *  - @Profile("prod") <-- prod profile에서만 Bean 생성됨.
+     * @return
+     */
+    @Bean("jpaPropertyMap")
+    @Profile("prod")
+    public Map<String, String> prodJpaPropertyMap() {
+        Map<String, String> map = new HashMap<>();
+
+        // Hibernate가 사용할 방언(dialect)을 설정합니다.
+        // 여기서는 MySQL 데이터베이스 방언을 사용합니다.
+        map.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+
+        // Hibernate가 데이터베이스 스키마를 처리하는 방식을 설정합니다.
+        // 'validate'는 엔티티와 테이블 구조가 일치하는지 확인하지만, 실제로 변경하지는 않습니다.
+        map.put("hibernate.hbm2ddl.auto", "validate");
+
+        // SQL 쿼리를 로그에 출력할지 여부를 설정합니다.
+        // 'false'로 설정하면 SQL 쿼리가 로그에 출력되지 않습니다.
+        map.put("hibernate.show_sql", "false");
+
+        // SQL 쿼리를 포맷할지 여부를 설정합니다.
+        // 'false'로 설정하면 SQL 쿼리가 포맷되지 않습니다.
+        map.put("hibernate.format_sql", "false");
+
+        // SQL 쿼리에 주석을 추가할지 여부를 설정합니다.
+        // 'false'로 설정하면 SQL 쿼리에 주석이 추가되지 않습니다.
+        map.put("hibernate.use_sql_comments", "false");
+        return map;
     }
 
     /**
