@@ -31,6 +31,7 @@ public class Member {
 
     //TODO#1-4 @GeneratedValue 를 사용하여 ID생성 전략을 설정 합니다.
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "mb_no")
     private Long mbNo;
 
     //회원_이메일
@@ -41,6 +42,10 @@ public class Member {
     *  - nullable : not null 여부 설정,
     *  - unique  : unique 제약조건 설정
     *  - length : 100 <-- varcahr(100), 즉 컬럼의 길이 설정
+    *
+    *  가능한 이유는
+    *  @see JpaConfig.java
+    *  의 hibernate.physical_naming_strategy 설정을 참고하세요.
     * */
     @Column(name="mb_email",nullable = false, unique = true, length = 100)
     private String mbEmail;

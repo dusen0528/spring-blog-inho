@@ -2,6 +2,7 @@ package com.nhnacademy.blog.common.config;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.boot.model.naming.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -88,9 +89,19 @@ public class JpaConfig {
         // 'true'로 설정하면 SQL 쿼리가 포맷되어 읽기 쉽게 정렬됩니다.
         map.put("hibernate.format_sql", "true");
 
+        //ANSI 이스케이프 코드를 통해 구문 강조 표시와 함께 SQL을 기록합니다 .
+        map.put("hibernate.highlight_sql", "true");
+
         // SQL 쿼리에 주석을 추가할지 여부를 설정합니다.
-        // 'true'로 설정하면 SQL 쿼리에 주석이 추가됩니다.
         map.put("hibernate.use_sql_comments", "true");
+
+        //CamelCase를 snake_case로 변경 한다.
+        //모든 문자를 소문자로 변경 한다.
+        map.put("hibernate.physical_naming_strategy", CamelCaseToUnderscoresNamingStrategy.class.getName());
+
+        //parameter 출력
+        //[참고] https://docs.jboss.org/hibernate/orm/6.6/userguide/html_single/Hibernate_User_Guide.html#best-practices-logging
+        map.put("logging.level.org.hibernate.orm", "trace");
 
         return map;
     }
@@ -123,9 +134,18 @@ public class JpaConfig {
         // 'false'로 설정하면 SQL 쿼리가 포맷되지 않습니다.
         map.put("hibernate.format_sql", "false");
 
+        //ANSI 이스케이프 코드를 통해 구문 강조 표시와 함께 SQL을 기록합니다 .
+        map.put("hibernate.highlight_sql", "false");
+
         // SQL 쿼리에 주석을 추가할지 여부를 설정합니다.
         // 'false'로 설정하면 SQL 쿼리에 주석이 추가되지 않습니다.
         map.put("hibernate.use_sql_comments", "false");
+
+        //CamelCase를 snake_case로 변경 한다.
+        //모든 문자를 소문자로 변경 한다.
+        map.put("hibernate.physical_naming_strategy", CamelCaseToUnderscoresNamingStrategy.class.getName());
+
+
         return map;
     }
 
@@ -139,5 +159,15 @@ public class JpaConfig {
     @Bean
     public PlatformTransactionManager jpaTransactionManager(EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
+    }
+
+    @Bean
+    public PhysicalNamingStrategy physical() {
+        return new PhysicalNamingStrategyStandardImpl();
+    }
+
+    @Bean
+    public ImplicitNamingStrategy implicit() {
+        return new ImplicitNamingStrategyLegacyJpaImpl();
     }
 }
