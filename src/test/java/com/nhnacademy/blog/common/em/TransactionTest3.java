@@ -17,20 +17,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 
-//TODO#4-1 @ActiveProfiles을 사용해 test profile 환경을 설정합니다.
+//@ActiveProfiles을 사용해 test profile 환경을 설정합니다.
 @ActiveProfiles("test")
 
-//TODO#4-2 @ExtendWith()을 사용해 Spring 기반의 test 환경을 구성합니다.
+//@ExtendWith()을 사용해 Spring 기반의 test 환경을 구성합니다.
 @ExtendWith({SpringExtension.class})
 
-//TODO#4-3 @ContextConfiguration()을 사용하여 ApplicationConfig.class 기반으로 Context환경을 구성 합니다.
+//@ContextConfiguration()을 사용하여 ApplicationConfig.class 기반으로 Context환경을 구성 합니다.
 @ContextConfiguration(classes = ApplicationConfig.class)
 
-//TODO#4-4 @Transactional annotation을 사용하여 스프링에 의해서 트렌젝션처리를 관리 받을 수 있도록 설정 합니다.
+//@Transactional annotation을 사용하여 스프링에 의해서 트렌젝션처리를 관리 받을 수 있도록 설정 합니다.
 @Transactional
 public class TransactionTest3 {
 
-    //TODO#4-5 EntityManager를 주입 받습니다.
+    //EntityManager를 주입 받습니다.
     @Autowired
     EntityManager entityManager;
 
@@ -38,7 +38,7 @@ public class TransactionTest3 {
     @Test
     void transactionTestUsingTransactional(){
 
-        //TODO#4-6 member entity 생성
+        //member entity 생성
         Member member = Member.ofNewMember(
                 "marco@nhnacademy.com",
                 "마르코",
@@ -46,12 +46,12 @@ public class TransactionTest3 {
                 "01012345678"
         );
 
-        //TODO#4-7 member entity 영속화
+        //member entity 영속화
         entityManager.persist(member);
 
         log.debug("member: {}", member);
 
-        //TODO#4-8 mbNo, createdAt not null 여부를 검증(Assertions) 합니다.
+        //mbNo, createdAt not null 여부를 검증(Assertions) 합니다.
         Assertions.assertNotNull(member.getMbNo());
         Assertions.assertNotNull(member.getCreatedAt());
     }

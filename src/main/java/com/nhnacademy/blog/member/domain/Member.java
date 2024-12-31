@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @SuppressWarnings("java:S107")
 
-/** TODO#1 - Member Entity
+/** Member Entity
  * JPA 엔티티의 조건
  *  - @Entity 애노테이션: 클래스에 @Entity 애노테이션이 있어야 합니다.
  *  - final 사용 금지: 클래스는 final로 선언될 수 없습니다.
@@ -19,23 +19,23 @@ import java.util.Objects;
  *  - final 사용 금지: 필드와 메서드는 final로 선언될 수 없습니다.
  *  - 접근 제한자: 필드는 private 또는 protected로 선언되고, 접근자 메서드(게터와 세터)를 통해 접근해야 합니다.
  */
-//TODO#1-1 @Entity anootation을 선언하세요.
+//@Entity anootation을 선언하세요.
 @Entity
-//TODO#1-2 @Table annotation을 사용하여 TableName을 지정합니다.
+//@Table annotation을 사용하여 TableName을 지정합니다.
 @Table(name = "members")
 public class Member {
 
-    //TODO#1-3 @Id annotation을 사용하여 entity를 식별할 수 있는 ID Field를 지정합니다.
+    //@Id annotation을 사용하여 entity를 식별할 수 있는 ID Field를 지정합니다.
     //회원_번호
     @Id
 
-    //TODO#1-4 @GeneratedValue 를 사용하여 ID생성 전략을 설정 합니다.
+    //@GeneratedValue 를 사용하여 ID생성 전략을 설정 합니다.
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mb_no")
     private Long mbNo;
 
     //회원_이메일
-    /*TODO#1-5 mbEmail의 @Column annotation을 참고하여 나머지 필드를 수정 합니다.
+    /*mbEmail의 @Column annotation을 참고하여 나머지 필드를 수정 합니다.
     *  - name = 'mb_email' 맵핑할 column name입니다.
     *    db 컬럼(스네이크 표현식) -> entity(카멜표현식) 자동 맵핑 됩니다.
     *    ex) mb_email -> mbEmail , 이럴때는 name을 생략할 수 있습니다.
@@ -50,47 +50,47 @@ public class Member {
     @Column(name="mb_email",nullable = false, unique = true, length = 100)
     private String mbEmail;
 
-    //TODO#1-6 @Column annotation 선언
+    //@Column annotation 선언
     //회원_이름
     @Column(nullable = false, length = 50)
     private String mbName;
 
-    //TODO#1-7 @Column annotation 선언
+    //@Column annotation 선언
     //비밀_번호
     @Column(nullable = false, length = 200)
     private String mbPassword;
 
-    //TODO#1-8 @Column annotation 선언
+    //@Column annotation 선언
     //모바일 연락처
     @Column(nullable = false, unique = true, length = 100)
     private String mbMobile;
 
-    //TODO#1-9 @Column annotation 선언
+    //@Column annotation 선언
     //생성일(가입일)
     @CreationTimestamp // entity 생성시 날짜가 자동 설정 됩니다.
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    //TODO#1-10 @Column annotation 선언
+    //@Column annotation 선언
     //수정일
     private LocalDateTime updatedAt;
 
-    //TODO#1-11 @Column annotation 선언
+    //@Column annotation 선언
     //탈퇴일
     private LocalDateTime withdrawalAt;
 
-    //TODO#1-12 entity는 반드시 기본생성자가 있어야 합니다.
+    //entity는 반드시 기본생성자가 있어야 합니다.
     public Member() {
 
     }
 
-    //TODO#1-13  엔티티가 영속화 되기전(@PrePersist)에 null로 추기화 합니다.
+    //엔티티가 영속화 되기전(@PrePersist)에 null로 추기화 합니다.
     @PrePersist
     public void prePersistForUpdatedAt() {
         this.updatedAt = null;
     }
 
-    //TODO#1-14 entity가 업데이트 하기전(@PreUpdate)에 updateAt = 현재시간으로 설정 합니다.
+    //entity가 업데이트 하기전(@PreUpdate)에 updateAt = 현재시간으로 설정 합니다.
     @PreUpdate
     public void preUpdateForUpdatedAt() {
         this.updatedAt = LocalDateTime.now();
@@ -111,24 +111,24 @@ public class Member {
         return new Member(null, mbEmail, mbName, mbPassword, mbMobile, null, null, null);
     }
 
-    //TODO#1-15 member정보를 업데이트 하는 method를 구현 합니다.
+    //member정보를 업데이트 하는 method를 구현 합니다.
     public void update(String mbEmail, String mbName, String mbMobile){
         this.mbEmail = mbEmail;
         this.mbName = mbName;
         this.mbMobile= mbMobile;
     }
 
-    //TODO#1-15 비밀번호를 수정하는 하는 method를 구현 합니다.
+    //비밀번호를 수정하는 하는 method를 구현 합니다.
     public void changePassword(String mbPassword){
         this.mbPassword = mbPassword;
     }
 
-    //TODO#1-16 회원탈퇴하는 method를 구현합니다.,withdrawalAt(탈퇴일자)를 현재 시간으로 설정 합니다.
+    //회원탈퇴하는 method를 구현합니다.,withdrawalAt(탈퇴일자)를 현재 시간으로 설정 합니다.
     public void withdraw(){
         this.withdrawalAt = LocalDateTime.now();
     }
 
-    //TODO#1-17 해당 method를 참고하여 getter Method를 구현합니다.
+    //해당 method를 참고하여 getter Method를 구현합니다.
     //될 수 있으면 Setter Method는 사용하지 않습니다.
 
     public Long getMbNo() {
@@ -163,7 +163,7 @@ public class Member {
         return withdrawalAt;
     }
 
-    //TODO#1-18 equals(),  hashCode(), toString() method를 구현 합니다.
+    //equals(),  hashCode(), toString() method를 구현 합니다.
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
