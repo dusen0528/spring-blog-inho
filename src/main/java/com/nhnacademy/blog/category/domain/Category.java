@@ -7,6 +7,7 @@ import java.util.Objects;
 
 /**
  * TODO#3 - Category entity 구현
+ *  - category_pid 컬럼에 index를 생성하세요.
  */
 
 @SuppressWarnings("java:S107")

@@ -9,8 +9,11 @@ import java.time.LocalDateTime;
 
 //TODO#1-1 @Entity annotation을 작성 합니다.
 @Entity
-
-//TODO#1-2 @Table annotation을 작성 합니다.
+/**
+ * TODO#1-2 @Table annotation을 작성 합니다.
+ * - talbe name = "topics"입니다., erd를 참고하세요
+ * - @Index annotation을 사용하여 'topic_pid'에 index를 설정 합니다.
+ */
 @Table(name = "topics",
     indexes = {
         @Index(name = "idx_topic_pid", columnList = "topic_pid", unique = false )

@@ -7,7 +7,7 @@ import jakarta.persistence.*;
  */
 
 @Entity
-@Table(name = "blog_member_mapping")
+@Table(name = "blog_member_mappings")
 public class BlogMemberMapping {
 
     @Id

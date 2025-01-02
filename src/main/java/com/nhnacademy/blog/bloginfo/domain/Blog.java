@@ -20,7 +20,7 @@ public class Blog {
     @Column(nullable = false, unique = true, length = 50)
     private String blogFid;
 
-    @Column(nullable = false)
+    @Column(nullable = false,columnDefinition = "tinyint")
     private boolean blogMain;
 
     @Column(nullable = false, length = 100)
@@ -40,7 +40,7 @@ public class Blog {
 
     private LocalDateTime updatedAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "tinyint")
     private Boolean blogIsPublic = true;
 
     private Blog(Long blogId, String blogFid, boolean blogMain, String blogName, String blogMbNickname, String blogDescription, Boolean blogIsPublic, LocalDateTime createdAt, LocalDateTime updatedAt) {
