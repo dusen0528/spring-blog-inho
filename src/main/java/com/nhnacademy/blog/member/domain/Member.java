@@ -67,7 +67,7 @@ public class Member {
 
     //@Column annotation 선언
     //생성일(가입일)
-    @CreationTimestamp // entity 생성시 날짜가 자동 설정 됩니다.
+    // entity 생성시 날짜가 자동 설정 됩니다.
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -86,13 +86,14 @@ public class Member {
 
     //엔티티가 영속화 되기전(@PrePersist)에 null로 추기화 합니다.
     @PrePersist
-    public void prePersistForUpdatedAt() {
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
         this.updatedAt = null;
     }
 
     //entity가 업데이트 하기전(@PreUpdate)에 updateAt = 현재시간으로 설정 합니다.
     @PreUpdate
-    public void preUpdateForUpdatedAt() {
+    public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 
