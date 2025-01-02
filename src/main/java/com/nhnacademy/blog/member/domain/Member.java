@@ -1,7 +1,6 @@
 package com.nhnacademy.blog.member.domain;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

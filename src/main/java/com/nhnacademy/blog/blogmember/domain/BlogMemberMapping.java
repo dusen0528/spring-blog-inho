@@ -3,7 +3,7 @@ package com.nhnacademy.blog.blogmember.domain;
 import jakarta.persistence.*;
 
 /**
- * TODO#4 BlogMemberMapping entity 구현
+ * TODO#5 BlogMemberMapping entity 구현
  */
 
 @Entity
