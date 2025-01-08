@@ -12,11 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * TODO#2 - TEST
- * - Role Entity 검증
- */
-
 @ActiveProfiles("test")
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = ApplicationConfig.class)

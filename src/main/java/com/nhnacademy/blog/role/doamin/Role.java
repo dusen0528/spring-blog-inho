@@ -10,12 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Comment;
 
-/**
- * TODO#2 - Role entity mapping
- * erd : https://www.erdcloud.com/d/Q8FBdJLcNApqBp5mt 참고하여 entity mapping을 진행 합니다.
- */
-
-
 @Entity
 @Table(name = "roles")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

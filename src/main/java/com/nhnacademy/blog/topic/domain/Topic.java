@@ -7,11 +7,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * TODO#3 - Topic - entity mapping
- * erd : https://www.erdcloud.com/d/Q8FBdJLcNApqBp5mt 참고하여 entity mapping을 진행 합니다.
- */
-
 @Entity
 @Table(name = "topics",
     indexes = {

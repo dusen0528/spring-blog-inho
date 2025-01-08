@@ -17,10 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * TODO#3 - Topic Entity 검증
- */
-
 @Slf4j
 @ActiveProfiles("test")
 @ExtendWith({SpringExtension.class})

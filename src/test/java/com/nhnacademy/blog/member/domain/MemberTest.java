@@ -15,10 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 
-/**
- * TODO#1 - TEST
- * - Member Entity 검증
- */
 @ActiveProfiles("test")
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = ApplicationConfig.class)

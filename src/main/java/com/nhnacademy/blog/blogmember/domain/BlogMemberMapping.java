@@ -6,12 +6,6 @@ import com.nhnacademy.blog.role.doamin.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
-/**
- * TODO#5 - BlogMemberMapping entity mapping
- * - erd : https://www.erdcloud.com/d/Q8FBdJLcNApqBp5mt 참고하여 entity mapping을 진행 합니다.
- */
-
-
 @Entity
 @Table(name = "blog_member_mappings",
     indexes = {

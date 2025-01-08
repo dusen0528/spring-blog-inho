@@ -14,10 +14,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * TODO#4 - Category entity 검증
- */
-
 @ActiveProfiles("test")
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = ApplicationConfig.class)

@@ -5,54 +5,10 @@ import lombok.*;
 import org.hibernate.annotations.Comment;
 import java.time.LocalDateTime;
 
-/**
- * TODO#1 - members entity mapping
- * erd : https://www.erdcloud.com/d/Q8FBdJLcNApqBp5mt 참고하여 entity mapping을 진행 합니다.
- * - Member Entity는 예시로 제공해 드립니다.
- * - Member Entity를 기반으로 나머지 Entity를 매핑 하세요.
- */
 @Entity
 @Table(name = "members")
-
-/**
- *  public Member(){}  기본생성자를 생성해주는 역할을 합니다.
- *  - 엔티티 클래스의 인스턴스가 외부에서 무분별하게 생성되지 않도록 하기 위해서 protected로 access level을 설정 합니다.
- *  - procted Member(){} <-- 접근 제한자가 protected로 생성됨
- */
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-
-/**
- * public Long getMbNo(){
- *  return this.mbNo
- * } <-- 형태의 getter method를 자동 생성 합니다.
- *
- * - @Setter annotation을 사용하면 아래와 같은 method를 자동생성 합니다.
- * public void setMbNo(Long mbNo){
- *     this.mbNo = mbNo
- * }
- *
- * - @Setter annotation은 무분별하게 사용하지 않습니다.
- * - 반드시 필요한 곳에 사용하세요.
- */
 @Getter
-
-/**
- *  - 아래와 같은 toString method를 자동 생성 합니다.
- *     @Override
- *     public String toString() {
- *         return "Member{" +
- *                 "mbNo=" + mbNo +
- *                 ", mbEmail='" + mbEmail + '\'' +
- *                 ", mbName='" + mbName + '\'' +
- *                 ", mbPassword='" + mbPassword + '\'' +
- *                 ", mbMobile='" + mbMobile + '\'' +
- *                 ", createdAt=" + createdAt +
- *                 ", updatedAt=" + updatedAt +
- *                 ", withdrawalAt=" + withdrawalAt +
- *                 '}';
- *     }
- *
- */
 @ToString
 public class Member {
 
