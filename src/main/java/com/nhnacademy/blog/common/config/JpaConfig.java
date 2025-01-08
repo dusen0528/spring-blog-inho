@@ -21,6 +21,7 @@ import java.util.Map;
 @Configuration
 
 /**
+ * TODO#1 - JPA 환경설정
  * @EnableJpaRepositories 애노테이션은 Spring Data JPA 리포지토리를 활성화하는 역할을 합니다.
  * 이 애노테이션을 사용하면 JPA 리포지토리 인터페이스()가 Spring 애플리케이션 컨텍스트에 자동으로 등록됩니다.
  */
