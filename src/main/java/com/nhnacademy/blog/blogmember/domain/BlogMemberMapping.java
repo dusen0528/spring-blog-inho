@@ -1,50 +1,54 @@
 package com.nhnacademy.blog.blogmember.domain;
 
+import com.nhnacademy.blog.bloginfo.domain.Blog;
+import com.nhnacademy.blog.member.domain.Member;
+import com.nhnacademy.blog.role.doamin.Role;
 import jakarta.persistence.*;
+import lombok.*;
 
 /**
- * TODO#5 BlogMemberMapping entity 구현
+ * TODO#5 - BlogMemberMapping entity mapping
+ * - erd : https://www.erdcloud.com/d/Q8FBdJLcNApqBp5mt 참고하여 entity mapping을 진행 합니다.
  */
 
+
 @Entity
-@Table(name = "blog_member_mappings")
+@Table(name = "blog_member_mappings",
+    indexes = {
+        @Index(name = "uk_blog_member_mapping",columnList = "mb_no, blog_id, role_id", unique = true)
+    }
+)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
+@Getter
 public class BlogMemberMapping {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "blog_member_id")
     private Long blogMemberId;
-    private Long mbNo;
-    private Long blogId;
-    private String roleId;
 
-    public BlogMemberMapping() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mb_no", referencedColumnName = "mb_no", nullable = false)
+    private Member member;
 
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="blog_id", referencedColumnName = "blog_id", nullable = false)
+    private Blog blog;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="role_id", referencedColumnName = "role_id", nullable = false)
+    private Role role;
+
+    private BlogMemberMapping(Member member, Blog blog, Role role) {
+        this.member = member;
+        this.blog = blog;
+        this.role = role;
     }
 
-    private BlogMemberMapping(Long blogMemberId, Long mbNo, Long blogId, String roleId) {
-        this.blogMemberId = blogMemberId;
-        this.mbNo = mbNo;
-        this.blogId = blogId;
-        this.roleId = roleId;
+    public static BlogMemberMapping ofNewBlogMemberMapping(Member member, Blog blog, Role role) {
+        return new BlogMemberMapping(member,blog,role);
     }
 
-    public static BlogMemberMapping ofNewBlogMemberMapping(Long mbNo, Long blogId, String roleId) {
-        return new BlogMemberMapping(null, mbNo, blogId, roleId);
-    }
-
-    public Long getBlogMemberId() {
-        return blogMemberId;
-    }
-
-    public Long getMbNo() {
-        return mbNo;
-    }
-
-    public Long getBlogId() {
-        return blogId;
-    }
-
-    public String getRoleId() {
-        return roleId;
-    }
 }

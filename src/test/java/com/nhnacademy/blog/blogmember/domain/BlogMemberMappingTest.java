@@ -16,7 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * TODO#5-Test BlogMemberMapping entity 테스트 구현
+ * TODO#5 - BlogMemberMapping entity mapping 검증
  */
 
 @ActiveProfiles("test")
@@ -61,17 +61,17 @@ class BlogMemberMappingTest {
 
         BlogMemberMapping mapping = BlogMemberMapping
                 .ofNewBlogMemberMapping(
-                        memberNo,
-                        blogId,
-                        roleId
+                        member,
+                        blog,
+                        role
                 );
         entityManager.persist(mapping);
 
         Assertions.assertNotNull(mapping);
         Assertions.assertAll(
-                ()->Assertions.assertEquals(memberNo, mapping.getMbNo()),
-                ()->Assertions.assertEquals(blogId, mapping.getBlogId()),
-                ()->Assertions.assertEquals(roleId, mapping.getRoleId())
+                ()->Assertions.assertEquals(memberNo, mapping.getMember().getMbNo()),
+                ()->Assertions.assertEquals(blogId, mapping.getBlog().getBlogId()),
+                ()->Assertions.assertEquals(roleId, mapping.getRole().getRoleId())
         );
     }
 
@@ -108,16 +108,16 @@ class BlogMemberMappingTest {
 
         BlogMemberMapping mapping = BlogMemberMapping
                 .ofNewBlogMemberMapping(
-                        memberNo,
-                        blogId,
-                        roleId
+                        member,
+                        blog,
+                        role
                 );
         entityManager.persist(mapping);
 
         entityManager.remove(mapping);
         entityManager.flush();
 
-        BlogMemberMapping newMapping = entityManager.find(BlogMemberMapping.class, mapping.getMbNo());
+        BlogMemberMapping newMapping = entityManager.find(BlogMemberMapping.class, mapping.getMember().getMbNo());
         Assertions.assertNull(newMapping);
     }
 }

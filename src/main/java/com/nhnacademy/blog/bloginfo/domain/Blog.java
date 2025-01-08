@@ -1,23 +1,44 @@
 package com.nhnacademy.blog.bloginfo.domain;
 
+import com.nhnacademy.blog.blogmember.domain.BlogMemberMapping;
+import com.nhnacademy.blog.category.domain.Category;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 import java.time.LocalDateTime;
-@SuppressWarnings("java:S107")
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
- * TODO#2 - blog Entity 구현
+ * TODO#6 - Blog Entity mapping
+ * erd : https://www.erdcloud.com/d/Q8FBdJLcNApqBp5mt 참고하여 entity mapping을 진행 합니다.
  */
 
 @Entity
 @Table(name = "blogs")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
+@Getter
 public class Blog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
+    @Column(name="blog_id",nullable = false)
     private Long blogId;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @OneToMany(mappedBy = "blog", fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @ToString.Exclude
+    private List<Category> categories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "blog", fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @ToString.Exclude
+    private List<BlogMemberMapping> blogMemberMappings = new ArrayList<>();
+
+    @Column(name="blog_fid",nullable = false, unique = true, length = 50)
     private String blogFid;
 
     @Column(nullable = false,columnDefinition = "tinyint")
@@ -43,43 +64,54 @@ public class Blog {
     @Column(nullable = false, columnDefinition = "tinyint")
     private Boolean blogIsPublic = true;
 
-    private Blog(Long blogId, String blogFid, boolean blogMain, String blogName, String blogMbNickname, String blogDescription, Boolean blogIsPublic, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.blogId = blogId;
+    private Blog(String blogFid, boolean blogMain, String blogName, String blogMbNickname, String blogDescription, Boolean blogIsPublic) {
         this.blogFid = blogFid;
         this.blogMain = blogMain;
         this.blogName = blogName;
         this.blogMbNickname = blogMbNickname;
         this.blogDescription = blogDescription;
         this.blogIsPublic = blogIsPublic;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
-    public Blog() {
-
     }
 
     public static Blog ofNewBlog(String blogFid, Boolean blogMain, String blogName, String blogMbNickname, String blogDescription){
         return new Blog(
-            null,
                 blogFid,
                 blogMain,
                 blogName,
                 blogMbNickname,
                 blogDescription,
-                true,
-                LocalDateTime.now(), null);
+                true
+        );
     }
 
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
-        this.updatedAt = null;
     }
 
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public void addCategory(Category category){
+        categories.add(category);
+        category.setBlog(this);
+    }
+
+    public void removeCategory(Category category){
+        categories.remove(category);
+        category.setBlog(null);
+    }
+
+    public void addBlogMemberMapping(BlogMemberMapping blogMemberMapping){
+        blogMemberMappings.add(blogMemberMapping);
+        blogMemberMapping.setBlog(this);
+    }
+
+    public void removeBlogMemberMapping(BlogMemberMapping blogMemberMapping){
+        blogMemberMappings.remove(blogMemberMapping);
+        blogMemberMapping.setBlog(null);
     }
 
     public void update(String blogName, String blogMbNickname, String blogDescription, Boolean blogIsPublic){
@@ -95,48 +127,5 @@ public class Blog {
      */
     public void enableBlogPublicAccess(boolean blogIsPublic){
         this.blogIsPublic = blogIsPublic;
-    }
-
-    public Long getBlogId() {
-        return blogId;
-    }
-    public String getBlogFid() {
-        return blogFid;
-    }
-    public boolean isBlogMain() {
-        return blogMain;
-    }
-    public String getBlogName() {
-        return blogName;
-    }
-    public String getBlogMbNickname() {
-        return blogMbNickname;
-    }
-    public String getBlogDescription() {
-        return blogDescription;
-    }
-    public Boolean getBlogIsPublic() {
-        return blogIsPublic;
-    }
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    @Override
-    public String toString() {
-        return "Blog{" +
-                "blogId=" + blogId +
-                ", blogFid='" + blogFid + '\'' +
-                ", blogMain=" + blogMain +
-                ", blogName='" + blogName + '\'' +
-                ", blogMbNickname='" + blogMbNickname + '\'' +
-                ", blogDescription='" + blogDescription + '\'' +
-                ", blogIsPublic=" + blogIsPublic +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
     }
 }

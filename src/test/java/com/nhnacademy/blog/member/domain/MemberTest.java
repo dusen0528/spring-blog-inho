@@ -16,7 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 
 /**
- * JPA 기반의 테스트 환경을 구성 합니다.
+ * TODO#1 - TEST
+ * - Member Entity 검증
  */
 @ActiveProfiles("test")
 @ExtendWith({SpringExtension.class})

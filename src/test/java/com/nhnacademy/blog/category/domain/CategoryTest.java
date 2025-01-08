@@ -15,7 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * TODO#3-Test
+ * TODO#4 - Category entity 검증
  */
 
 @ActiveProfiles("test")
@@ -30,11 +30,6 @@ class CategoryTest {
     @Test
     @DisplayName("category 저장")
     void saveTest(){
-        Topic topic = Topic.ofNewRootTopic("Internet",
-                1
-        );
-
-        entityManager.persist(topic);
 
         Blog blog = Blog.ofNewBlog(
                 "marco",
@@ -45,13 +40,17 @@ class CategoryTest {
         );
         entityManager.persist(blog);
 
+        Topic topic = Topic.ofNewRootTopic("Internet",
+                1
+        );
+        entityManager.persist(topic);
+
         Category category = Category.ofNewRootCategory(
-                blog.getBlogId(),
-                topic.getTopicId(),
+                blog,
+                topic,
                 "spring-data-jpa",
                 1
         );
-
         entityManager.persist(category);
 
         Category newCategory = entityManager.find(Category.class, category.getCategoryId());
@@ -65,10 +64,10 @@ class CategoryTest {
                     Assertions.assertEquals(1,newCategory.getCategorySec());
                 },
                 ()->{
-                    Assertions.assertEquals( blog.getBlogId(), newCategory.getBlogId());
+                    Assertions.assertEquals( blog.getBlogId(), newCategory.getBlog().getBlogId());
                 },
                 ()->{
-                    Assertions.assertEquals( topic.getTopicId(), newCategory.getTopicId());
+                    Assertions.assertEquals( topic.getTopicId(), newCategory.getTopic().getTopicId());
                 },
                 ()->{
                     Assertions.assertNotNull(newCategory.getCreatedAt());
@@ -98,15 +97,15 @@ class CategoryTest {
         entityManager.persist(blog);
 
         Category category = Category.ofNewRootCategory(
-                blog.getBlogId(),
-                topic.getTopicId(),
+                blog,
+                topic,
                 "spring-data-jpa",
                 1
         );
 
         entityManager.persist(category);
 
-        category.update(category.getCategoryPid(), category.getTopicId(),"spring-data-elasticsearch",10);
+        category.update(category.getParentCategory(), category.getTopic(),"spring-data-elasticsearch",10);
 
         entityManager.flush();
 
@@ -121,10 +120,10 @@ class CategoryTest {
                 Assertions.assertEquals(10,newCategory.getCategorySec());
             },
             ()->{
-                Assertions.assertEquals( blog.getBlogId(), newCategory.getBlogId());
+                Assertions.assertEquals( blog.getBlogId(), newCategory.getBlog().getBlogId());
             },
             ()->{
-                Assertions.assertEquals( topic.getTopicId(), newCategory.getTopicId());
+                Assertions.assertEquals( topic.getTopicId(), newCategory.getTopic().getTopicId());
             },
             ()->{
                 Assertions.assertNotNull(newCategory.getCreatedAt());
@@ -154,8 +153,8 @@ class CategoryTest {
         entityManager.persist(blog);
 
         Category category = Category.ofNewRootCategory(
-                blog.getBlogId(),
-                topic.getTopicId(),
+                blog,
+                topic,
                 "spring-data-jpa",
                 1
         );
@@ -165,5 +164,86 @@ class CategoryTest {
         entityManager.flush();
         Category newCategory = entityManager.find(Category.class, category.getCategoryId());
         Assertions.assertNull(newCategory);
+    }
+
+    @Test
+    @DisplayName("자식 카테고리 등록")
+    void addChildCategoryTest(){
+        Topic topic = Topic.ofNewRootTopic("Internet",
+                1
+        );
+
+        entityManager.persist(topic);
+
+        Blog blog = Blog.ofNewBlog(
+                "marco",
+                true,
+                "NHN아카데미-blog",
+                "nhn-academy-marco",
+                "NHN아카데미-블로그 입니다."
+        );
+        entityManager.persist(blog);
+
+        Category category = Category.ofNewRootCategory(
+                blog,
+                topic,
+                "spring-data",
+                1
+        );
+
+        category.addChildCategory(Category.ofNewSubCategory(category,blog,topic,"spring-data-jpa",1));
+        category.addChildCategory(Category.ofNewSubCategory(category,blog,topic,"spring-data-redis",2));
+        category.addChildCategory(Category.ofNewSubCategory(category,blog,topic,"spring-data-elasticsearch",3));
+        entityManager.persist(category);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        Category newCategory = entityManager.find(Category.class, category.getCategoryId());
+        Assertions.assertEquals(3, category.getChildrenCategories().size());
+
+    }
+
+    @Test
+    @DisplayName("자식 카테고리 삭제")
+    void removeChildCategoryTest(){
+        Topic topic = Topic.ofNewRootTopic("Internet",
+                1
+        );
+
+        entityManager.persist(topic);
+
+        Blog blog = Blog.ofNewBlog(
+                "marco",
+                true,
+                "NHN아카데미-blog",
+                "nhn-academy-marco",
+                "NHN아카데미-블로그 입니다."
+        );
+        entityManager.persist(blog);
+
+        Category category = Category.ofNewRootCategory(
+                blog,
+                topic,
+                "spring-data",
+                1
+        );
+
+        category.addChildCategory(Category.ofNewSubCategory(category,blog,topic,"spring-data-jpa",1));
+        category.addChildCategory(Category.ofNewSubCategory(category,blog,topic,"spring-data-redis",2));
+        category.addChildCategory(Category.ofNewSubCategory(category,blog,topic,"spring-data-elasticsearch",3));
+        entityManager.persist(category);
+
+        Category removeTargetCategory = category.getChildrenCategories().get(0);
+        category.removeChildCategory(removeTargetCategory);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        Category newCategory = entityManager.find(Category.class, category.getCategoryId());
+        Assertions.assertEquals(2, category.getChildrenCategories().size());
+
+        Category removedCategory = entityManager.find(Category.class, removeTargetCategory.getCategoryId());
+        Assertions.assertNull(removedCategory);
     }
 }

@@ -4,24 +4,36 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
-import java.util.Objects;
-
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.hibernate.annotations.Comment;
 
 /**
- * TODO#4 Role Entity 구현
+ * TODO#2 - Role entity mapping
+ * erd : https://www.erdcloud.com/d/Q8FBdJLcNApqBp5mt 참고하여 entity mapping을 진행 합니다.
  */
+
 
 @Entity
 @Table(name = "roles")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@ToString
 public class Role {
 
     @Id
-    @Column(nullable = false,length = 50)
+    @Column(name="role_id",nullable = false,length = 50)
+    @Comment("권한_아이디")
     private String roleId;
+
     @Column(nullable = false,length = 100)
+    @Comment("권한_이름")
     private String roleName;
+
     @Column(nullable = true,length = 200)
+    @Comment("권한_설정")
     private String roleDescription;
 
     public Role(String roleId, String roleName, String roleDescription) {
@@ -30,36 +42,9 @@ public class Role {
         this.roleDescription = roleDescription;
     }
 
-    public Role() {
-
-    }
-
     public void update(String roleName, String roleDescription){
         this.roleName = roleName;
         this.roleDescription = roleDescription;
     }
 
-    public String getRoleId() {
-        return roleId;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public String getRoleDescription() {
-        return roleDescription;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Role role = (Role) o;
-        return Objects.equals(roleId, role.roleId) && Objects.equals(roleName, role.roleName) && Objects.equals(roleDescription, role.roleDescription);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(roleId, roleName, roleDescription);
-    }
 }

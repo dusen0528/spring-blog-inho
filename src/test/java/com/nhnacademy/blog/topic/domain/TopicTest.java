@@ -2,20 +2,26 @@ package com.nhnacademy.blog.topic.domain;
 
 import com.nhnacademy.blog.common.config.ApplicationConfig;
 import jakarta.persistence.EntityManager;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
- * TODO#1-TEST TopicTest를 구현 합니다.
+ * TODO#3 - Topic Entity 검증
  */
 
+@Slf4j
 @ActiveProfiles("test")
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = ApplicationConfig.class)
@@ -96,5 +102,52 @@ class TopicTest {
         entityManager.flush();
         Topic newTopic = entityManager.find(Topic.class, topic.getTopicId());
         Assertions.assertNull(newTopic);
+    }
+
+    @Test
+    @DisplayName("자식 추가")
+    @Rollback(false)
+    void  addChildTest(){
+
+        Topic parentTopic = Topic.ofNewRootTopic("language",1);
+        parentTopic.addChildTopic(Topic.ofNewSubTopic(parentTopic,"java",1));
+        parentTopic.addChildTopic(Topic.ofNewSubTopic(parentTopic,"c#",2));
+        parentTopic.addChildTopic(Topic.ofNewSubTopic(parentTopic,"go",3));
+        entityManager.persist(parentTopic);
+        entityManager.flush();
+        entityManager.clear();
+
+        Topic topic = entityManager.find(Topic.class, parentTopic.getTopicId());
+
+        log.debug("childrenTopics: {}", topic.getChildrenTopics().size());
+        log.debug("topic: {}", topic);
+
+        Assertions.assertEquals(3, topic.getChildrenTopics().size());
+    }
+
+    @Test
+    @DisplayName("자식-topic-삭체")
+    void removeChildTest(){
+        Topic parentTopic = Topic.ofNewRootTopic("language",1);
+        parentTopic.addChildTopic(Topic.ofNewSubTopic(parentTopic,"java",1));
+        parentTopic.addChildTopic(Topic.ofNewSubTopic(parentTopic,"c#",2));
+        parentTopic.addChildTopic(Topic.ofNewSubTopic(parentTopic,"go",3));
+        entityManager.persist(parentTopic);
+
+        List<Topic> childrenTopics = parentTopic.getChildrenTopics();
+        log.debug("childrenTopics: {}", childrenTopics);
+
+        Topic removeTarget = entityManager.find(Topic.class, childrenTopics.get(0).getTopicId());
+        parentTopic.removeChildTopic(removeTarget);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        Topic topic = entityManager.find(Topic.class, parentTopic.getTopicId());
+        log.debug("topic: {}", topic);
+        Assertions.assertEquals(2, topic.getChildrenTopics().size());
+
+        Topic removedTopic = entityManager.find(Topic.class, removeTarget.getTopicId());
+        Assertions.assertNull(removedTopic);
     }
 }

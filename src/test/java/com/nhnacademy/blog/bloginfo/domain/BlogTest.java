@@ -13,9 +13,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * TODO#2-TEST blog entity Test 구현
- */
 
 @ActiveProfiles("test")
 @ExtendWith({SpringExtension.class})
@@ -90,6 +87,7 @@ class BlogTest {
     @Test
     @DisplayName("blog 삭제")
     void deleteTest(){
+
         Blog blog = Blog.ofNewBlog(
                 "marco",
                 true,
