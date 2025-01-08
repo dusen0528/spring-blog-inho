@@ -13,7 +13,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @ActiveProfiles("test")
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = ApplicationConfig.class)
