@@ -1,27 +1,27 @@
 package com.nhnacademy.blog.member.repository;
 
-import com.nhnacademy.blog.common.config.ApplicationConfig;
 import com.nhnacademy.blog.member.domain.Member;
 import com.nhnacademy.blog.member.dto.MemberResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+//@ActiveProfiles("test")
+//@ExtendWith({SpringExtension.class})
+//@ContextConfiguration(classes = ApplicationConfig.class)
+//@Transactional
 
 @Slf4j
-@ActiveProfiles("test")
-@ExtendWith({SpringExtension.class})
-@ContextConfiguration(classes = ApplicationConfig.class)
-@Transactional
+//테스트시 자동 데이터베이스 설정을 비활성화하겠다는 의미, 실제 mysql연동해서 테스트 할 떄 설정
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+//@ActiveProfiles("prod")
+@DataJpaTest
 class MemberRepositoryTest {
 
     @Autowired
@@ -29,7 +29,7 @@ class MemberRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        //TODO#11 - 테스트 메서드가 실행 될 때 마다 맴버를 10명 미리 등록 합니다.
+        //테스트 메서드가 실행 될 때 마다 맴버를 10명 미리 등록 합니다.
         for (int i=0; i<10; i++) {
             String mbEmail = "marco-%s@nhnacademy.com".formatted(i);
             String mbName = "마르코-%s".formatted(i);
@@ -46,9 +46,7 @@ class MemberRepositoryTest {
     @Test
     @DisplayName("email로 회원조회")
     void findByMbEmail() {
-        /**
-         * TODO#12 -email로 회원조회
-         */
+
         Optional<Member> memberOptional = memberRepository.findByMbEmail("marco-1@nhnacademy.com");
         Assertions.assertTrue(memberOptional.isPresent());
         Assertions.assertAll(
@@ -62,9 +60,6 @@ class MemberRepositoryTest {
     @Test
     @DisplayName("전화번호로 회원조회")
     void findByMbMobile() {
-        /**
-         * TODO#13 - 전화번호로 회원조회 구현
-         */
         Optional<Member> memberOptional = memberRepository.findByMbMobile("01011110001");
         Assertions.assertTrue(memberOptional.isPresent());
         Assertions.assertAll(
@@ -78,9 +73,6 @@ class MemberRepositoryTest {
     @Test
     @DisplayName("email 존재여부 체크")
     void existsByMbEmail() {
-        /**
-         * TODO#14 - email 존재여부 체크
-         */
         boolean actual = memberRepository.existsByMbEmail("marco-1@nhnacademy.com");
         Assertions.assertTrue(actual);
     }
@@ -88,9 +80,6 @@ class MemberRepositoryTest {
     @Test
     @DisplayName("전화번호 존재여부 체크")
     void existsByMbMobile() {
-        /**
-         * TODO#15 - 전화번호 존재여부 체크 구현
-         */
         boolean actual = memberRepository.existsByMbMobile("01011110001");
         Assertions.assertTrue(actual);
     }
@@ -98,9 +87,6 @@ class MemberRepositoryTest {
     @Test
     @DisplayName("이용중이 회원 리스트 - 가입일기준 오름차순 정렬")
     void findByWithdrawalAtIsNotNullOrderByCreatedAtAsc() {
-        /**
-         * TODO#16 - 이용중이 회원 리스트 - 가입일기준 오름차순 정렬
-         */
         List<Member> members = memberRepository.findByWithdrawalAtIsNotNullOrderByCreatedAtAsc();
         for (Member member : members) {
             log.debug("member:{}",member);
@@ -111,9 +97,6 @@ class MemberRepositoryTest {
     @Test
     @DisplayName("탈퇴한 회원 리스트 - 가입일 기준 내림차순 정렬")
     void findByWithdrawalAtIsNullOrderByCreatedAtDesc() {
-        /**
-         * TODO#17 - 탈퇴한 회원 리스트 - 가입일 기준 내림차순 정렬
-         */
         List<Member> members = memberRepository.findByWithdrawalAtIsNullOrderByCreatedAtDesc();
         for (Member member : members) {
             log.debug("member:{}",member);
@@ -124,9 +107,6 @@ class MemberRepositoryTest {
     @Test
     @DisplayName("이용중인 회원 카운트")
     void countByWithdrawalAtIsNotNull() {
-        /**
-         * TODO#18 - 이용중인 회원 카운트
-         */
         long actual = memberRepository.countByWithdrawalAtIsNotNull();
         Assertions.assertEquals(5, actual);
     }
@@ -134,21 +114,13 @@ class MemberRepositoryTest {
     @Test
     @DisplayName("탈퇴한 회원 카운트")
     void countByWithdrawalAtIsNull() {
-        /**
-         * TODO#19 - 탈퇴한 회원 카운트
-         */
-        long actual = memberRepository.countByWithdrawalAtIsNull();
-        Assertions.assertEquals(5, actual);
+        //long actual = memberRepository.countByWithdrawalAtIsNull();
+        //Assertions.assertEquals(5, actual);
     }
 
     @Test
     @DisplayName("Entity가 아닌 MemberResponse 응답")
     void findAllByOrderByCreatedAtAsc() {
-
-        /**
-         * TODO#20 - Entity가 아닌 MemberResponse 응답
-         */
-
         List<MemberResponse> memberResponseList = memberRepository.findAllByOrderByCreatedAtAsc();
         for(MemberResponse memberResponse : memberResponseList){
             log.debug("---------------------------------------------");

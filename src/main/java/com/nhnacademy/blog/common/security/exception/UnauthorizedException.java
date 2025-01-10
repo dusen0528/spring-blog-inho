@@ -1,6 +1,6 @@
-package com.nhnacademy.blog.common.exception;
+package com.nhnacademy.blog.common.security.exception;
 
-public class UnauthorizedException extends CommonHttpException{
+public class UnauthorizedException extends CommonHttpException {
     private static final int HTTP_STATUS_CODE = 401;
 
     public UnauthorizedException() {

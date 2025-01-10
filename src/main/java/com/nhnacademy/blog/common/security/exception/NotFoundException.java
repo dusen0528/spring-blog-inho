@@ -1,6 +1,6 @@
-package com.nhnacademy.blog.common.exception;
+package com.nhnacademy.blog.common.security.exception;
 
-public class NotFoundException extends CommonHttpException{
+public class NotFoundException extends CommonHttpException {
     private static final int HTTP_STATUS_CODE = 404;
 
     public NotFoundException() {

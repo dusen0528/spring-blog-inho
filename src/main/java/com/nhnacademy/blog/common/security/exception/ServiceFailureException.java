@@ -1,4 +1,4 @@
-package com.nhnacademy.blog.common.exception;
+package com.nhnacademy.blog.common.security.exception;
 
 public class ServiceFailureException extends CommonHttpException {
     private static final int HTTP_STATUS_CODE = 500;
