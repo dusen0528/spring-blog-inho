@@ -19,8 +19,8 @@
     </logger>
 
     <logger name="org.hibernate.orm.results.graph.AST" level="off" additivity="false"></logger>
-<!--    <root level="debug">-->
-<!--        <appender-ref ref="CONSOLE" />-->
-<!--    </root>-->
+    <root level="debug">
+        <appender-ref ref="CONSOLE" />
+    </root>
 
 </configuration>

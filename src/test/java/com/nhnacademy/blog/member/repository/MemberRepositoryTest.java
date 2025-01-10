@@ -20,7 +20,7 @@ import java.util.Optional;
 @Slf4j
 //테스트시 자동 데이터베이스 설정을 비활성화하겠다는 의미, 실제 mysql연동해서 테스트 할 떄 설정
 //@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-//@ActiveProfiles("prod")
+@ActiveProfiles("test")
 @DataJpaTest
 class MemberRepositoryTest {
 
