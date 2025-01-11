@@ -11,6 +11,8 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.sql.DataSource;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+//TODO#18 - dbcp2 환경설정이 잘  되었다면 아래 테스코드가 통화 합니다.
+//아래 테스트 코드는 운영환경을 기준으로 테스트 합니다.
 
 @Slf4j
 @SpringBootTest

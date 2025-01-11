@@ -17,6 +17,19 @@ import java.util.Optional;
 //@ContextConfiguration(classes = ApplicationConfig.class)
 //@Transactional
 
+/**
+ * TODO#19 - 더이상 jpa 관련된 테스트할 때 복잡하게 위 처럼 annotation들을 선언할 필요 없습니다.
+ * @DataJpaTest , profile 변경이 필요하다면 @ActiveProfiles("test") 사용하면 됩니다.
+ *  - @DataJpaTest은 jpa와 관련된 Bean들만 생성해서 테스트할 수 있는 환경을 구성합니다.
+ *  - @Transactional도 포함되어 있습니다.
+ *  - 참고로 테스트시 @Transactional을 사용하면 테스트 메서드 실행 후 항상 rollback이 됩니다.
+ *  - 테스트 환경에서 설제 mysql 데이터베이스를 기준으로 테스트를 수행하려면 아래와 같이 사용하세요.
+ *  - 테스트 데이터베이스(h2)를 사용하지 않습니다.
+ *  @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+ *  @ActiveProfiles("test")
+ *  @DataJpaTest
+ */
+
 @Slf4j
 //테스트시 자동 데이터베이스 설정을 비활성화하겠다는 의미, 실제 mysql연동해서 테스트 할 떄 설정
 //@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

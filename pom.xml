@@ -3,7 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    <!--
+        TODO#11 - Spring Boot의 전체적인 의존성들의 버전관리를 하는 부모 pom 입니다.
+    -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -23,11 +25,21 @@
 
     <dependencies>
 
+        <!--
+            TODO#12 - spring boot의 시작점이자 기본 환경을 설정하는데 필요한 라이브러리들을 포함하고 있습니다.
+        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
+        <!--
+            TODO#13 - Junit 관련된 Start 입니다.
+            더이상 테스트를 위해서 junit 관련된 의존성 (platform, vintage, jupiter ) , 서비스 테스트를 위해서 사용했던 mockito 등등 테스트에
+            필요한 의존성을 직접 추가할 필요 없습니다.
+            vintage는 junit 5 이전 버전들에 대한 호환성을 위해서 제공한다고 했습니다.
+            새로운 프로젝트를 생성해서 진행 한다면 구지 이전 버전인 junit4를 지원할 필요 없습니다. 그래서 org.junit.vintage에 대해서는 exclude 처리 했습니다.
+        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -40,6 +52,9 @@
             </exclusions>
         </dependency>
 
+        <!--
+            TODO#14 - p6spy-spring-boot-starter
+        -->
         <!-- https://mvnrepository.com/artifact/com.github.gavlyukovskiy/p6spy-spring-boot-starter -->
         <dependency>
             <groupId>com.github.gavlyukovskiy</groupId>
@@ -47,11 +62,15 @@
             <version>1.10.0</version>
         </dependency>
 
-        <!--jpa-->
+        <!--TODO#15 - spring-boot-starter-data-jpa -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+
+        <!--
+            나머지는 프로젝트에서 필요한 mysql, h2, lombok, dbcp2, jbcrypt 등이 포함되었습니다.
+        -->
 
         <!-- mysql -->
         <dependency>
@@ -92,13 +111,20 @@
 
     <build>
         <plugins>
-            <!-- spring boot 전용 maven plugin -->
+            <!-- TODO#16 - spring boot 전용 maven plugin
+                spring-boot-maven-plugin을 통해 Spring Boot 애플리케이션을 JAR 또는 WAR 파일로 패키징하고, 실행할 수 있습니다.
+            -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
+
+    <!-- TODO#17  SpringBoot 기반의 환경설정과 Spring 기반의 환경설정을 비교해보세요
+        - 아래 의존성 설정을 하기위해서 추가 했던 것과 위 Spring-boot-starter 기반으로 설정된 것과 비교해보세요
+        - spring-Boot-Starter를 이용하면 개발자가 복잡한 의존관계를 고려할 필요 없습니다.
+    -->
 
     <!--    -->
 <!--    <dependencyManagement>-->
