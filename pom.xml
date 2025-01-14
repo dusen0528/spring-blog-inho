@@ -3,14 +3,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <!--
-        TODO#11 - Spring Boot의 전체적인 의존성들의 버전관리를 하는 부모 pom 입니다.
-    -->
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.4.1</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
 
     <groupId>com.nhnacademy</groupId>
@@ -24,22 +22,11 @@
     </properties>
 
     <dependencies>
-
-        <!--
-            TODO#12 - spring boot의 시작점이자 기본 환경을 설정하는데 필요한 라이브러리들을 포함하고 있습니다.
-        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
-        <!--
-            TODO#13 - Junit 관련된 Start 입니다.
-            더이상 테스트를 위해서 junit 관련된 의존성 (platform, vintage, jupiter ) , 서비스 테스트를 위해서 사용했던 mockito 등등 테스트에
-            필요한 의존성을 직접 추가할 필요 없습니다.
-            vintage는 junit 5 이전 버전들에 대한 호환성을 위해서 제공한다고 했습니다.
-            새로운 프로젝트를 생성해서 진행 한다면 구지 이전 버전인 junit4를 지원할 필요 없습니다. 그래서 org.junit.vintage에 대해서는 exclude 처리 했습니다.
-        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -52,9 +39,6 @@
             </exclusions>
         </dependency>
 
-        <!--
-            TODO#14 - p6spy-spring-boot-starter
-        -->
         <!-- https://mvnrepository.com/artifact/com.github.gavlyukovskiy/p6spy-spring-boot-starter -->
         <dependency>
             <groupId>com.github.gavlyukovskiy</groupId>
@@ -62,10 +46,29 @@
             <version>1.10.0</version>
         </dependency>
 
-        <!--TODO#15 - spring-boot-starter-data-jpa -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- TODO#1 - Spring web 관련 starter
+            json,tomcat,web,mvc 포함되어 있음
+         -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- TODO#2 - thymeleaf template engine, Spring boot 부터는 jsp를 사용하지 않습니다. 사용법은 jsp와 비슷 합니다. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <!-- TODO#3 - 개발 편의도구-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
         </dependency>
 
         <!--
@@ -111,187 +114,11 @@
 
     <build>
         <plugins>
-            <!-- TODO#16 - spring boot 전용 maven plugin
-                spring-boot-maven-plugin을 통해 Spring Boot 애플리케이션을 JAR 또는 WAR 파일로 패키징하고, 실행할 수 있습니다.
-            -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
-
-    <!-- TODO#17  SpringBoot 기반의 환경설정과 Spring 기반의 환경설정을 비교해보세요
-        - 아래 의존성 설정을 하기위해서 추가 했던 것과 위 Spring-boot-starter 기반으로 설정된 것과 비교해보세요
-        - spring-Boot-Starter를 이용하면 개발자가 복잡한 의존관계를 고려할 필요 없습니다.
-    -->
-
-    <!--    -->
-<!--    <dependencyManagement>-->
-<!--        <dependencies>-->
-<!--            <dependency>-->
-<!--                <groupId>org.junit</groupId>-->
-<!--                <artifactId>junit-bom</artifactId>-->
-<!--                <version>5.10.0</version>-->
-<!--                <type>pom</type>-->
-<!--                <scope>import</scope>-->
-<!--            </dependency>-->
-<!--        </dependencies>-->
-<!--    </dependencyManagement>-->
-
-<!--    <dependencies>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.junit.platform</groupId>-->
-<!--            <artifactId>junit-platform-launcher</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.junit.jupiter</groupId>-->
-<!--            <artifactId>junit-jupiter-engine</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.junit.vintage</groupId>-->
-<!--            <artifactId>junit-vintage-engine</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.junit.jupiter</groupId>-->
-<!--            <artifactId>junit-jupiter-params</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.projectlombok</groupId>-->
-<!--            <artifactId>lombok</artifactId>-->
-<!--            <version>1.18.34</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>ch.qos.logback</groupId>-->
-<!--            <artifactId>logback-classic</artifactId>-->
-<!--            <version>1.5.6</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.mockito</groupId>-->
-<!--            <artifactId>mockito-core</artifactId>-->
-<!--            <version>5.13.0</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; dbcp2 &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.commons</groupId>-->
-<!--            <artifactId>commons-dbcp2</artifactId>-->
-<!--            <version>2.12.0</version>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; p6spy - jdbc logging &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>p6spy</groupId>-->
-<!--            <artifactId>p6spy</artifactId>-->
-<!--            <version>3.9.1</version>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; mysql driver&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>com.mysql</groupId>-->
-<!--            <artifactId>mysql-connector-j</artifactId>-->
-<!--            <version>9.1.0</version>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; reflection api &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.reflections</groupId>-->
-<!--            <artifactId>reflections</artifactId>-->
-<!--            <version>0.10.2</version>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; password encoder, https://github.com/djmdjm/jBCrypt &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.mindrot</groupId>-->
-<!--            <artifactId>jbcrypt</artifactId>-->
-<!--            <version>0.4</version>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; Spring관련 의존성 추가-->
-<!--              - spring-core - 핵심코어-->
-<!--              - spring-context - Application Context-->
-<!--              - spring-tx - 트랜잭션 처리-->
-<!--              - spring-jdbc - JdbcTemplate-->
-<!--              - spring-test - 테스트-->
-<!--        &ndash;&gt;-->
-
-<!--        &lt;!&ndash; Spring core&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>spring-core</artifactId>-->
-<!--            <version>6.2.1</version>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; Spring context&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>spring-context</artifactId>-->
-<!--            <version>6.2.1</version>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; Spring tx&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>spring-tx</artifactId>-->
-<!--            <version>6.2.1</version>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; Spring jdbc &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>spring-jdbc</artifactId>-->
-<!--            <version>6.2.1</version>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; Spring test &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>spring-test</artifactId>-->
-<!--            <version>6.2.1</version>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; @MockitoExtension 사용하기 위해서 &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.mockito</groupId>-->
-<!--            <artifactId>mockito-junit-jupiter</artifactId>-->
-<!--            <version>5.12.0</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-
-<!--        &lt;!&ndash; jpa 환경설정 &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.data</groupId>-->
-<!--            <artifactId>spring-data-jpa</artifactId>-->
-<!--            <version>3.4.1</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.hibernate</groupId>-->
-<!--            <artifactId>hibernate-core</artifactId>-->
-<!--            <version>6.5.2.Final</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>com.h2database</groupId>-->
-<!--            <artifactId>h2</artifactId>-->
-<!--            <version>2.3.232</version>-->
-<!--            <scope>runtime</scope>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>jakarta.transaction</groupId>-->
-<!--            <artifactId>jakarta.transaction-api</artifactId>-->
-<!--            <version>2.0.1</version>-->
-<!--        </dependency>-->
-
-<!--    </dependencies>-->
 
 </project>
