@@ -22,11 +22,11 @@ public class Role {
     @Comment("권한_아이디")
     private String roleId;
 
-    @Column(nullable = false,length = 100)
+    @Column(name="role_name", nullable = false,length = 100)
     @Comment("권한_이름")
     private String roleName;
 
-    @Column(nullable = true,length = 200)
+    @Column(name="role_description", nullable = true,length = 200)
     @Comment("권한_설정")
     private String roleDescription;
 

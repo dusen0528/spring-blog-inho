@@ -18,10 +18,12 @@
         <appender-ref ref="CONSOLE" />
     </logger>
 
-<!--    <logger name="org.hibernate.orm.results.graph.AST" level="off" additivity="false"></logger>-->
+    <logger name="org.hibernate.orm.results.graph.AST" level="off" additivity="false"></logger>
+    <logger name="sun.rmi" level="off"></logger>
+    <logger name="javax.management.remote" level="off"></logger>
 
-    <root level="info">
-        <appender-ref ref="CONSOLE" />
+    <root level="debug">
+        <appender-ref ref="CONSOLE"/>
     </root>
 
 </configuration>

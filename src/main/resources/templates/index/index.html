@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+</head>
+<body>
+    <h1>welcome page</h1>
+    <ul th:if="${session.loginMember eq null}">
+        <li>
+            <a href="/member/register.do">회원가입</a>
+        </li>
+
+        <li>
+            <a href="/member/login.do">로그인</a>
+        </li>
+
+    </ul>
+
+    <ul th:if="${session.loginMember != null}">
+        <li>
+            <span th:text="${session.loginMember.mbName}"></span>(<span th:text="${session.loginMember.mbEmail}"></span>)
+        </li>
+        <li>
+            <a href="/member/myinfo.do">내정보 조회</a>
+        </li>
+        <li>
+            <form method="post" action="/member/logoutAction.do">
+                <button type="submit">로그아웃</button>
+            </form>
+        </li>
+    </ul>
+
+</body>
+</html>

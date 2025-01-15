@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>내 정보</title>
+    <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <h1>회원정보 조회</h1>
+  <table>
+    <tbody>
+      <tr>
+        <th>회원번호</th>
+        <td th:text="${memberResponse.mbNo}"></td>
+      </tr>
+      <tr>
+        <th>이메일</th>
+        <td th:text="${memberResponse.mbEmail}"></td>
+      </tr>
+      <tr>
+        <th>이름</th>
+        <td th:text="${memberResponse.mbName}"></td>
+      </tr>
+      <tr>
+        <th>연락처</th>
+        <td th:text="${memberResponse.mbMobile}"></td>
+      </tr>
+      <tr>
+        <th>가입일</th>
+        <td th:text="${#temporals.format(memberResponse.createdAt,'yyyy-MM-dd HH:mm:ss')}"></td>
+      </tr>
+      <tr>
+        <th>수정일</th>
+        <td th:text="${#temporals.format(memberResponse.updatedAt,'yyyy-MM-dd HH:mm:ss')}"></td>
+      </tr>
+      <tr>
+        <th>탈퇴여부</th>
+        <td th:if="${memberResponse.withdrawalAt eq null}">이용</td>
+        <td th:unless="${memberResponse.withdrawalAt eq null}">탈퇴</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2">
+          <a href="/index.do">index 바로가기</a>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</body>
+</html>

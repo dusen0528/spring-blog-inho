@@ -51,7 +51,7 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- TODO#1 - Spring web 관련 starter
+        <!--Spring web 관련 starter
             json,tomcat,web,mvc 포함되어 있음
          -->
         <dependency>
@@ -59,13 +59,13 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- TODO#2 - thymeleaf template engine, Spring boot 부터는 jsp를 사용하지 않습니다. 사용법은 jsp와 비슷 합니다. -->
+        <!--thymeleaf template engine, Spring boot 부터는 jsp를 사용하지 않습니다. 사용법은 jsp와 비슷 합니다. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
-        <!-- TODO#3 - 개발 편의도구-->
+        <!--개발 편의도구-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>error</title>
+</head>
+<body>
+    <h1>error</h1>
+    <h2 th:text="${errorMessage}"></h2>
+    <p>url : <span th:text="${referer}"></span></p>
+    <p>
+        <a href="/index.do">index 바로가기 </a>
+    </p>
+</body>
+</html>
