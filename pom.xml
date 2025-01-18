@@ -71,7 +71,7 @@
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
 
-        <!-- TODO#1 - spring-boot-starter-validation -->
+        <!-- spring-boot-starter-validation -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
