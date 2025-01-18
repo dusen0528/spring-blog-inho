@@ -71,6 +71,12 @@
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
 
+        <!-- TODO#1 - spring-boot-starter-validation -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
         <!--
             나머지는 프로젝트에서 필요한 mysql, h2, lombok, dbcp2, jbcrypt 등이 포함되었습니다.
         -->
