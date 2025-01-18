@@ -5,6 +5,7 @@ import com.nhnacademy.blog.member.auth.LoginMember;
 import com.nhnacademy.blog.member.dto.LoginRequest;
 import com.nhnacademy.blog.member.dto.MemberRegisterRequest;
 import com.nhnacademy.blog.member.dto.MemberResponse;
+import com.nhnacademy.blog.member.dto.validator.LoginRequestValidator;
 import com.nhnacademy.blog.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -30,19 +31,16 @@ import java.util.Objects;
 public class MemberController {
     private final MemberService memberService;
 
+    //TODO#3 - Component로 등록된 loginRequestValidator를 주입 합니다.
+    private final LoginRequestValidator loginRequestValidator;
+
     @RequestMapping(value = "/register.do")
     public String register() {
         return "member/register";
     }
 
-    /**
-     * TODO#4 - MemberRegisterRequest validation 합니다.
-     * '@Valid' or '@Validated' annotation을 사용할 수 있습니다.
-     * @see jakarta.validation.Valid
-     * @see org.springframework.validation.annotation.Validated
-     */
     @PostMapping(value = "/registerAction.do")
-    public String registerAction(/*TODO#4-1 @Validated를 선언 합니다.*/@Validated MemberRegisterRequest memberRegisterRequest,/*TODO#4-2 이번에는 bindingResult를 사용하지 않습니다.*/ RedirectAttributes redirectAttributes) {
+    public String registerAction(@Validated MemberRegisterRequest memberRegisterRequest,/*TODO#4-2 이번에는 bindingResult를 사용하지 않습니다.*/ RedirectAttributes redirectAttributes) {
         log.debug("memberRegisterReques1t: {}", memberRegisterRequest);
         memberService.registerMember(memberRegisterRequest);
         redirectAttributes.addFlashAttribute("memberRegisterRequest", memberRegisterRequest);
@@ -63,11 +61,20 @@ public class MemberController {
         return "member/login";
     }
 
+    /**
+     * TODO#4 - LoginRequestValidator적용
+     * @Valid or @Validated는 사용하지 않습니다.
+     */
     @PostMapping("/loginAction.do")
-    public String loginAction(/* TODO#2-1 검증한 dto 앞에 @Valid or @Validated 선언 합니다. */@Valid LoginRequest loginRequest,/* TODO#2-2 검증을한 dto 바로 뒤에 BindingResult를 선언 합니다. */ BindingResult bindingResult, HttpSession session) {
+    public String loginAction(LoginRequest loginRequest, BindingResult bindingResult, HttpSession session) {
+
+        // TODO#4-1 - loginRequestValidator.validate() 메서드를 호출해서 검증합니다. 검증된 결과는 bindingResult에 반영 됨니다.
+        loginRequestValidator.validate(loginRequest, bindingResult);
 
         /**
-         * TODO#2-3 loginRequest dto  검증 합니다.
+         * TODO#4-2 나머지 로직은 @Valid or @validated  사용했을 때 로직과 동일하게 처리 하면 됨니다.
+         * - 실제로 적용이 되었는지 로그인 페이지에 접속하여 테스트 합니다.
+         * loginRequest dto  검증 합니다.
          * bindingResult.hasErrors() 호출하면 error가 발생 했다면 true를 반환 합니다.
          */
         if(bindingResult.hasErrors()) {
@@ -110,13 +117,6 @@ public class MemberController {
         return "member/myinfo";
     }
 
-    /**
-     * TODO#5 - bbindExceptionHandler 구현
-     * @ResponseStatus() 선언 합니다.400 BAD_REQUEST를 응답 합니다.
-     * @valid or @Validated annotation에 의해서 발생한 예외는 BindExcetpion.class 로 핸들링 할 수 있습니다.
-     * @ExceptionHandler() 메서드를 이용해서 BindException.class를 catch 합니다.
-     *
-     */
     @ResponseStatus(code=HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BindException.class)
     public String bindExceptionHandler(BindException e, HttpServletRequest httpServletRequest, Model model) {
@@ -128,11 +128,7 @@ public class MemberController {
 
         //sb에 담길 error message를 작성하세요.
         e.getBindingResult().getAllErrors().forEach(error ->{
-            //java 21에서 새롭게 추가 되었습니다. 새로변 변경된 instanceoof 에 대해서 공부해보세요
-            //[참고] - https://www.baeldung.com/java-lts-21-new-features
             if(error instanceof FieldError fieldError){
-
-                //TODO#5-1 sb.append이용해서 message를 buffer에 저장 합니다.
                 log.error("BindException - error : {}", error.getDefaultMessage());
                 sb.append("%s : %s".formatted(fieldError.getField(),fieldError.getDefaultMessage()));
                 sb.append("<br/>");
@@ -145,11 +141,6 @@ public class MemberController {
         return "error/common-error";
     }
 
-    /**
-     * TODO#2-4 UnauthorizedException handler 구현
-     *  - 아래 exceptionHandler()를 참고해서 구현 합니다.
-     *  - http response status code = 401 , 응답 될 수 있도록   @ResponseStatus 사용 합니다.
-     */
     @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UnauthorizedException.class)
     public String unauthorizedHandler(UnauthorizedException e, HttpServletRequest httpServletRequest, Model model) {

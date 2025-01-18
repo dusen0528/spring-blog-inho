@@ -5,16 +5,16 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Value;
 
 /**
- * TODO#1 - LoginRequest dto를 검증 합니다.
+ * TODO#1 - Spring's Validator를 사용해서 dto validation 하려고 합니다.
+ * @Email, @NotBlank annotation으 사용하지 않습니다.
+ * - 해당 annotation은 주석처리 해주세요
  */
 @Value
 public class LoginRequest {
 
-    //TODO#1-1 @Email - 유효한 이메일 형식인지 검증
-    @Email
+    //@Email
     private String mbEmail;
 
-    //TODO#1-2 @NotBlank - 문자열이 null이 아니고, 공백 문자만 포함하지 않는지 검증.
-    @NotBlank
+    //@NotBlank
     private String mbPassword;
 }
