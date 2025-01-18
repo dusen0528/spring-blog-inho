@@ -3,6 +3,7 @@ package com.nhnacademy.blog.common.advice;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *  - 모든 controller(핸들러)에서 발생하는 Exception을 핸들링 합니다.(공통 ExceptionHandler)
  * @ControllerAdvice를 선언합니다.
  */
+@ControllerAdvice
 public class CommonAdvice {
 
     /**

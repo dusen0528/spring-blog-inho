@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * - 대상 클래스 : LoginController.class 입니다.
  * - @ControllerAdvice(basePackageClasses) 선언 합니다.
  */
+@ControllerAdvice(basePackageClasses = {LoginController.class})
 public class LoginAdvice {
 
     /**

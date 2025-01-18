@@ -28,16 +28,20 @@ import java.util.Objects;
 /**
  * TODO#1-1 /auth Controller를 선언 합니다.
  */
+@Controller
+@RequestMapping("/auth")
+@RequiredArgsConstructor
 public class LoginController {
     /**
      * TODO#1-2 memberService, loginRequestValidator 생성자 주입 합니다.
      */
-    private MemberService memberService;
-    private LoginRequestValidator loginRequestValidator;
+    private final MemberService memberService;
+    private final LoginRequestValidator loginRequestValidator;
 
     /**
      * TODO#1-3 GET /login.do 될수 있도록 구현 합니다.
      */
+    @GetMapping("/login.do")
     public String login(Model model, @SessionAttribute(required = false) LoginMember loginMember) {
         if (Objects.nonNull(loginMember)) {
             return "redirect:/index.do";
@@ -48,6 +52,7 @@ public class LoginController {
     /**
      * TODO#1-4 POST /loginAction.do 될수 있도록 구현 합니다.
      */
+    @PostMapping("/loginAction.do")
     public String loginAction(LoginRequest loginRequest, BindingResult bindingResult, HttpSession session) {
 
         // loginRequestValidator.validate() 메서드를 호출해서 검증합니다. 검증된 결과는 bindingResult에 반영 됨니다.
@@ -82,6 +87,7 @@ public class LoginController {
     /**
      * TODO#1-5 POST /logoutAction.do 동작하도록 구현 합니다.
      */
+    @PostMapping("/logoutAction.do")
     public String logoutAction(HttpSession session,@SessionAttribute(required = false) LoginMember loginMember) {
         if(Objects.isNull(loginMember)) {
             throw new UnauthorizedException();
