@@ -13,7 +13,7 @@ public class FilterConfig {
     public FilterRegistrationBean<Filter> filterRegistrationBean() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new LoginCheckFilter());
-        filterRegistrationBean.addUrlPatterns("/member/myinfo.do","/member/logout.do");
+        filterRegistrationBean.addUrlPatterns("/member/myinfo.do","/auth/logout.do");
         filterRegistrationBean.setOrder(1);
         return filterRegistrationBean;
     }

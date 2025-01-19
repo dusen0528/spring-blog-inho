@@ -2,6 +2,8 @@ package com.nhnacademy.blog.common.advice;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,17 +14,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Slf4j
-/**
- *  TODO#4 - CommonAdvice
- *  - 모든 controller(핸들러)에서 발생하는 Exception을 핸들링 합니다.(공통 ExceptionHandler)
- * @ControllerAdvice를 선언합니다.
- */
+@Order(Ordered.LOWEST_PRECEDENCE)
 @ControllerAdvice
 public class CommonAdvice {
 
-    /**
-     * TODO#4-1 MemberController에서 이동한 bindExceptionHandler 입니다.
-     */
     @ResponseStatus(code= HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BindException.class)
     public String bindExceptionHandler(BindException e, HttpServletRequest httpServletRequest, Model model) {
@@ -47,9 +42,6 @@ public class CommonAdvice {
         return "error/common-error";
     }
 
-    /**
-     * TODO#4-2 MemberController에서 이동한 exceptionHandler 입니다.
-     */
     @ExceptionHandler(Throwable.class)
     public String exceptionHandler(Exception e, HttpServletRequest httpServletRequest, Model model) {
         log.error(e.getMessage(), e);

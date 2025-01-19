@@ -23,7 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
 
                 //.addPathPatterns() method를 사용해서 /member/myinfo.do, /member/logout.do 지정하세요.
                 // /member/login.do <-- 로그인 form 임으로 로그인한 사용자도 접근할 수 있음으로  개별적으로 지정 합니다.
-                .addPathPatterns("/member/myinfo.do", "/member/logout.do")
+                .addPathPatterns("/member/myinfo.do", "/auth/logout.do")
 
                 //.excludePathPatterns()는 제외할 uri를 설정할 수 있습니다.
                 // ex) /index.do, /member/login.do

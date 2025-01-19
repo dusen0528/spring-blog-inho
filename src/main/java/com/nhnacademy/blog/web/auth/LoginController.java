@@ -18,29 +18,20 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import java.util.Objects;
 
-/** TODO#1
+/**
  * /member/login.do, /member/loginAction.do, /member/logoutAction.do 경로를
  * /auth/login.do , /auth/loginAction.do, /auth/logoutAction.do 로 변경 합니다.
  * - 인증 관련된 method를 /member/~ 로 부터 분리 합니다.
  */
 
 @Slf4j
-/**
- * TODO#1-1 /auth Controller를 선언 합니다.
- */
 @Controller
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class LoginController {
-    /**
-     * TODO#1-2 memberService, loginRequestValidator 생성자 주입 합니다.
-     */
     private final MemberService memberService;
     private final LoginRequestValidator loginRequestValidator;
 
-    /**
-     * TODO#1-3 GET /login.do 될수 있도록 구현 합니다.
-     */
     @GetMapping("/login.do")
     public String login(Model model, @SessionAttribute(required = false) LoginMember loginMember) {
         if (Objects.nonNull(loginMember)) {
@@ -49,9 +40,6 @@ public class LoginController {
         return "auth/login";
     }
 
-    /**
-     * TODO#1-4 POST /loginAction.do 될수 있도록 구현 합니다.
-     */
     @PostMapping("/loginAction.do")
     public String loginAction(LoginRequest loginRequest, BindingResult bindingResult, HttpSession session) {
 
@@ -76,6 +64,12 @@ public class LoginController {
         }
 
         LoginMember loginMember = memberService.doLogin(loginRequest.getMbEmail(), loginRequest.getMbPassword());
+
+        //추가코드
+        if (Objects.isNull(loginMember)) {
+            throw new UnauthorizedException();
+        }
+
         log.debug("loginAction: {}", loginMember);
         session.setAttribute("loginMember", loginMember);
         //30분 session 유지
@@ -84,9 +78,6 @@ public class LoginController {
         return "redirect:/index.do";
     }
 
-    /**
-     * TODO#1-5 POST /logoutAction.do 동작하도록 구현 합니다.
-     */
     @PostMapping("/logoutAction.do")
     public String logoutAction(HttpSession session,@SessionAttribute(required = false) LoginMember loginMember) {
         if(Objects.isNull(loginMember)) {
