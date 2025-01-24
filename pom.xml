@@ -77,12 +77,12 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!-- TODO#1-1 spring security 관련 의존성 -->
+        <!-- spring security 관련 의존성 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        <!-- TODO#1-2 thymeleaf에서 security 사용하기위한 의존성 -->
+        <!-- thymeleaf에서 security 사용하기위한 의존성 -->
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity6</artifactId>
