@@ -13,6 +13,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
@@ -51,12 +55,12 @@ public class MemberController {
     }
 
     @GetMapping("/myinfo.do")
-    public String myinfo(Model model, @SessionAttribute(required = false) LoginMember loginMember) {
-        if(Objects.isNull(loginMember)) {
-            throw new UnauthorizedException();
-        }
+    public String myinfo(Model model, @AuthenticationPrincipal User loginMember) {
+//        if(Objects.isNull(loginMember)) {
+//            throw new UnauthorizedException();
+//        }
 
-        MemberResponse memberResponse = memberService.getMember(loginMember.getMbNo());
+        MemberResponse memberResponse = memberService.getMemberByEmail(loginMember.getUsername());
         model.addAttribute("memberResponse", memberResponse);
         return "member/myinfo";
     }

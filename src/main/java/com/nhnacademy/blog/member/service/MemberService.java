@@ -9,4 +9,5 @@ public interface MemberService {
     MemberResponse registerMember(MemberRegisterRequest memberRegisterRequest);
     LoginMember doLogin(String mbEmail, String mbPassword);
     MemberResponse getMember(long mbNo);
+    MemberResponse getMemberByEmail(String mbEmail);
 }

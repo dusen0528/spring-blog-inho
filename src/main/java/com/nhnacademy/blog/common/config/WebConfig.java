@@ -3,6 +3,7 @@ package com.nhnacademy.blog.common.config;
 import com.nhnacademy.blog.common.interceptor.LoginCheckInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -16,18 +17,32 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        //registry에 LoginCheckInterceptor등록
-        registry
-                //registry에 addInterceptor() 메서드를 이용해서 LoginCheckInterceptor를 추가 합니다.
-                .addInterceptor(new LoginCheckInterceptor())
+        //TODO#3-1 Security 기반 인증을 구현 -> 더이상 loginCheck Interceptor는 사용하지 않습니다.
+//        //registry에 LoginCheckInterceptor등록
+//        registry
+//                //registry에 addInterceptor() 메서드를 이용해서 LoginCheckInterceptor를 추가 합니다.
+//                .addInterceptor(new LoginCheckInterceptor())
+//
+//                //.addPathPatterns() method를 사용해서 /member/myinfo.do, /member/logout.do 지정하세요.
+//                // /member/login.do <-- 로그인 form 임으로 로그인한 사용자도 접근할 수 있음으로  개별적으로 지정 합니다.
+//                .addPathPatterns("/member/myinfo.do", "/auth/logout.do")
+//
+//                //.excludePathPatterns()는 제외할 uri를 설정할 수 있습니다.
+//                // ex) /index.do, /member/login.do
+//                .excludePathPatterns("/index.do");
+    }
 
-                //.addPathPatterns() method를 사용해서 /member/myinfo.do, /member/logout.do 지정하세요.
-                // /member/login.do <-- 로그인 form 임으로 로그인한 사용자도 접근할 수 있음으로  개별적으로 지정 합니다.
-                .addPathPatterns("/member/myinfo.do", "/auth/logout.do")
+    /**
+     * TODO#3-2 controller 구현 없이 간단히 view로 연결할 수 있습니다.
+     *  - /  접근하면 -> /index.do redirect 합니다.
+     *  - 정적으로 페이지를 보여줘야 한다면 controller 생성없이 다음과 같이 설정할 수 있습니다.
+     *    registry.addViewController("/").setViewName("forward:/index.do");
+     */
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        //TODO#3-3 '/' <- 요청이 발생하면 -> /index.do redirect 합니다. 아래 urlPath, redirectUrl 변경하세요.
+        registry.addRedirectViewController("/", "/index.do");
 
-                //.excludePathPatterns()는 제외할 uri를 설정할 수 있습니다.
-                // ex) /index.do, /member/login.do
-                .excludePathPatterns("/index.do");
     }
 
 }

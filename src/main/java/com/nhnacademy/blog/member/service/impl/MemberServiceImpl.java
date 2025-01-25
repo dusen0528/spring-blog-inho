@@ -93,4 +93,23 @@ public class MemberServiceImpl implements MemberService {
         
         throw new NotFoundException("Member not found");
     }
+
+    @Override
+    public MemberResponse getMemberByEmail(String mbEmail) {
+        Optional<Member> memberOptional = memberRepository.findByMbEmail(mbEmail);
+        if(memberOptional.isPresent()) {
+            Member member = memberOptional.get();
+            return new MemberResponse(
+                    member.getMbNo(),
+                    member.getMbEmail(),
+                    member.getMbName(),
+                    member.getMbMobile(),
+                    member.getCreatedAt(),
+                    member.getUpdatedAt(),
+                    member.getWithdrawalAt()
+            );
+        }
+
+        throw new NotFoundException("Member not found");
+    }
 }

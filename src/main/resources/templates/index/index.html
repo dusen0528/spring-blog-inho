@@ -1,12 +1,23 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<!-- TODO#6-1 - thymeleaf에서 security지원을 사용하기 위해서는 다음과 같이 설정 합니다.
+
+    <html lang="ko" xmlns:th="http://www.thymeleaf.org"> 을 아래와 같이 변경 합니다.
+
+    <html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+-->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
     <title>index</title>
 </head>
 <body>
     <h1>welcome page</h1>
-    <ul th:if="${session.loginMember eq null}">
+    <!-- TODO#6-2 로그인 되어 있지 않다면 -->
+    <ul sec:authorize="isAnonymous()">
         <li>
             <a href="/member/register.do">회원가입</a>
         </li>
@@ -17,17 +28,27 @@
 
     </ul>
 
-    <ul th:if="${session.loginMember != null}">
+    <!-- TODO#6-3 로그인되어 있다면 -->
+    <ul sec:authorize="isAuthenticated()">
         <li>
-            <span th:text="${session.loginMember.mbName}"></span>(<span th:text="${session.loginMember.mbEmail}"></span>)
+            <span sec:authentication="principal.username" ></span>
+            <ul th:each="item : ${#authentication.authorities}">
+                <li th:text="${item}"></li>
+            </ul>
         </li>
+        <!-- InMemeory기반으로 동작하고 있어서 현제 step에서는 제외 합니다.
         <li>
             <a href="/member/myinfo.do">내정보 조회</a>
         </li>
+        -->
         <li>
-            <form method="post" action="/member/logoutAction.do">
+            <!-- TODO#6-4 로그아웃은 post method를 사용해야 합니다.
+                action은 SecurityConfig에 설정한 logout 경로를 설정 합니다.
+             -->
+            <form method="post" th:action="@{/auth/logoutAction.do}">
                 <button type="submit">로그아웃</button>
             </form>
+            
         </li>
     </ul>
 
