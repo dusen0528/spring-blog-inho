@@ -10,7 +10,7 @@ import java.io.Serial;
 
 
 /**
- * TODO#6 - GrantedAuthority는 Spring Security에서 사용자의 권한을 추상화하는 역할을 합니다.
+ * GrantedAuthority는 Spring Security에서 사용자의 권한을 추상화하는 역할을 합니다.
  * Spring Security는 인증된 사용자(UserDetails)에게 권한을 부여하는데, 이 권한을 GrantedAuthority 객체로 나타냅니다.
  * 권한은 보통 ROLE_USER, ROLE_ADMIN와 같은 문자열로 표현됩니다.
  * GrantedAuthority 인터페이스는 권한을 검증하거나 관리하는 데 필요한 메서드를 제공합니다.
@@ -33,7 +33,7 @@ public class MemberGrantedAuthority implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        //TODO#6-1 권한을 반환 합니다.
+        //권한을 반환 합니다.
         return this.roleId;
     }
 

@@ -18,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     /**
-     * TODO#4 - Spring Security에서 제공하는 loginForm을 사용하지 않고 직접 구현한 login-from : /auth/login.do 사용해서 로그인을 구현 합니다.
+     * Spring Security에서 제공하는 loginForm을 사용하지 않고 직접 구현한 login-from : /auth/login.do 사용해서 로그인을 구현 합니다.
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -55,33 +55,33 @@ public class SecurityConfig {
                      * 만약 로그인 요청 전에 사용자가 특정 페이지를 요청하지 않았다면, 그때는 기본적으로 /index.do로 리다이렉트됩니다.
                      */
                             .defaultSuccessUrl("/index.do",false)
-                            //TODO#4-1 login-form에서 사용자의 아이디를 식별할  parameter-name을 지정 : mbEmail 지정 합니다.
+                            //login-form에서 사용자의 아이디를 식별할  parameter-name을 지정 : mbEmail 지정 합니다.
                             .usernameParameter("mbEmail")
-                            //TODO#4-2 login-form에서 사용자의 패스워드를 식별할 parameter-name을 지정 : mbPassword
+                            //login-form에서 사용자의 패스워드를 식별할 parameter-name을 지정 : mbPassword
                             .passwordParameter("mbPassword")
                             .permitAll();
                 }).logout(logout ->{
                     logout
                             //로그아웃 경로를 지정  : /auth/logoutAction.do <-- 해당경론느 controller의 경로가 아닙니다. Security에서 지원하는 logout에 대한 경로를 지정 합니다. 로그아웃시 해당 경로를 호출합니다.
                             .logoutUrl("/auth/logoutAction.do")
-                            //TODO#4-3 cookie 삭제
+                            //cookie 삭제
                             .deleteCookies("JSESSIONID")
-                            //TODO#4-4  이 설정이 true일 경우, 사용자가 로그아웃할 때 서버의 HttpSession 객체가 무효화됩니다. 즉, 세션에 저장된 모든 데이터가 삭제되고, 새 세션이 생성됩니다.
+                            //이 설정이 true일 경우, 사용자가 로그아웃할 때 서버의 HttpSession 객체가 무효화됩니다. 즉, 세션에 저장된 모든 데이터가 삭제되고, 새 세션이 생성됩니다.
                             .invalidateHttpSession(true)
-                            //TODO#4-5 clearAuthentication(true)는 사용자가 로그아웃할 때 인증 정보를 제거하는 설정입니다. 이 옵션을 true로 설정하면, Spring Security는 사용자가 로그아웃할 때 SecurityContext에 저장된 인증 정보를 완전히 지웁니다.
+                            //clearAuthentication(true)는 사용자가 로그아웃할 때 인증 정보를 제거하는 설정입니다. 이 옵션을 true로 설정하면, Spring Security는 사용자가 로그아웃할 때 SecurityContext에 저장된 인증 정보를 완전히 지웁니다.
                             .clearAuthentication(true)
-                            //TODO#4-6 logout이 성공하면 이동할 경로 지정 : /index.do
+                            //logout이 성공하면 이동할 경로 지정 : /index.do
                             .logoutSuccessUrl("/index.do");
 
                 }).sessionManagement(sessionManagement ->{
 
-                    //TODO#4-7 최대 세션 수(종복 로그인 방지)
+                    //최대 세션 수(종복 로그인 방지)
                     sessionManagement.maximumSessions(1);
-                    //TODO#4-8 session 고정 공격 방지:로그인 후 새로운 세션을 생성하고, 기존 세션에서 데이터를 새 세션으로 이전합니다. 이를 통해 세션 고정 공격을 방지합니다.
+                    //session 고정 공격 방지:로그인 후 새로운 세션을 생성하고, 기존 세션에서 데이터를 새 세션으로 이전합니다. 이를 통해 세션 고정 공격을 방지합니다.
                     sessionManagement.sessionFixation().migrateSession();
 
                     /**
-                     * TODO#4-9 : 기본값을 설정 합니다.
+                     * 기본값을 설정 합니다.
                      * IF_REQUIRED: 필요할 때만 세션을 생성(기본값).
                      * ALWAYS: 항상 세션을 생성.
                      * NEVER: 세션을 절대 생성하지 않음.
@@ -94,38 +94,10 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /**
-     * TODO#4-10 - 이전 예제에서 사용하던 inMemory 기반의 UserDetils는 더이상 사용하지 않습니다.
-     * - 데이터 베이스에서 회원을 조회하는 방식으로(가장 일반적으로 사용하는 방식) 변경할 예정입니다.
-     */
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        /**
-//         * 사용자를 식별할 객체를 생성 합니다.
-//         * UserDetails는 Spring Security에서 사용자 인증 정보를 담는 인터페이스입니다. 이 인터페이스는 Spring Security가 사용자의 인증 정보를 관리하고, 이를 기반으로 인증 및 권한 부여를 처리하는 데 사용됩니다.
-//         * @see User 는 Spring에서 기본으로 제공하는 UserDetails 인터페이스를 구현한 구현체 입니다.
-//         */
-//        UserDetails userDetails = User.withDefaultPasswordEncoder()
-//                //이메일 설정
-//                .username("marco@nhnacademy.com")
-//                //비밀번호 설정
-//                .password("nhnacademy")
-//                //권한 설정 : MEMBER
-//                .roles("MEMBER")
-//                .build();
-//
-//        /**
-//         *  InMemoryUserDetailsManager객체를 통해서 InMemory기반으로 회원의 정보가 관리될 수 있도록 생성 후 반환 합니다.
-//         *  - inMemory 기반으로 보통 테스트 용도에 사용합니다. production 환경에는 사용하지 않습니다.
-//         */
-//
-//        return new InMemoryUserDetailsManager(userDetails);
-//    }
-
     @Bean
     public AuthenticationManager authenticationManager(MemberDetailService memberDetailService,PasswordEncoder passwordEncoder) {
         /**
-         * TODO#4-11 - 사용자 인증을 처리하는 `AuthenticationManager` Bean을 생성합니다.
+         * 사용자 인증을 처리하는 `AuthenticationManager` Bean을 생성합니다.
          * - `DaoAuthenticationProvider`를 사용하여 사용자 정보를 데이터베이스에서 조회하고, 비밀번호가 일치하는지 확인하여 인증을 처리합니다.
          *
          * DaoAuthenticationProvider:

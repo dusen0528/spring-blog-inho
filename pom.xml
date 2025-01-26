@@ -99,7 +99,7 @@
             <version>8.3.0</version>
         </dependency>
 
-        <!-- TODO#2-1 - h2를 사용하기 위해서 scope를 runtime으로 설정 합니다. -->
+        <!-- h2를 사용하기 위해서 scope를 runtime으로 설정 합니다. -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -119,16 +119,6 @@
             <artifactId>commons-dbcp2</artifactId>
             <version>2.12.0</version>
         </dependency>
-
-        <!--TODO#2-2 SpringSecurity에서 bcrypt password encoder를 제공 합니다.
-            - 주석처리 합니다.,
-            - https://github.com/djmdjm/jBCrypt
-        -->
-<!--        <dependency>-->
-<!--            <groupId>org.mindrot</groupId>-->
-<!--            <artifactId>jbcrypt</artifactId>-->
-<!--            <version>0.4</version>-->
-<!--        </dependency>-->
 
     </dependencies>
 

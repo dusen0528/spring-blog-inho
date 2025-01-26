@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * TODO#3 - Spring Application 시작시 블로그 회원가입 블로그 생성
+ * Spring Application 시작시 블로그 회원가입 블로그 생성
  * - ApplicationReadyEvent 를 구독 합니다.
  * - erd를 기반으로 기본데이터를 생성합니다.
  * - 데이터는 h2에 저장됩니다.
@@ -39,15 +39,15 @@ public class ApplicationStartListener implements ApplicationListener<Application
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
 
-        //TODO#3-1.topic 등록
+        //topic 등록
         Topic topic = Topic.ofNewRootTopic("spring",1);
         topicRepository.save(topic);
 
-        //TODO#3-2.ROLE 등록
+        //ROLE 등록
         Role role = new Role("ROLE_OWNER", "블로그_소유자", "블로그의 소유자 , 운영자");
         roleRepository.save(role);
 
-        //TODO#3-3.member 등록
+        //member 등록
         Member member = Member.ofNewMember(
                 "marco@nhnacademy.com",
                 "마르코",
@@ -56,7 +56,7 @@ public class ApplicationStartListener implements ApplicationListener<Application
         );
         memberRepository.save(member);
 
-        //TODO#3-4 blog 등록
+        //blog 등록
         Blog blog = Blog.ofNewBlog(
                 "marco",
                 true,
@@ -65,7 +65,7 @@ public class ApplicationStartListener implements ApplicationListener<Application
                 "Spring Blog!"
         );
 
-        //TODO#3-5 member,blog, role 연결
+        //member,blog, role 연결
         BlogMemberMapping blogMemberMapping = BlogMemberMapping.ofNewBlogMemberMapping(
                 member,
                 blog,
@@ -74,7 +74,7 @@ public class ApplicationStartListener implements ApplicationListener<Application
         blog.addBlogMemberMapping(blogMemberMapping);
         blogRepository.save(blog);
 
-        //TODO#3-6 블로그 카테고리 저장
+        //블로그 카테고리 저장
         Category category = Category.ofNewRootCategory(
                 blog,
                 topic,

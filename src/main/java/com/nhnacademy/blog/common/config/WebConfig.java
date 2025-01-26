@@ -22,11 +22,11 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        //TODO#1-4  '/' <- 요청이 발생하면 -> /index.do redirect 합니다. 아래 urlPath, redirectUrl 변경하세요.
+        //'/' <- 요청이 발생하면 -> /index.do redirect 합니다. 아래 urlPath, redirectUrl 변경하세요.
         registry.addRedirectViewController("/", "/index.do");
 
         /**
-         * TODO#1-5 login page mapping
+         *login page mapping
          * - 간단한 view 전용 페이지는 별도의 Controller 설정없이 가볍게 맵핑 할 수 있습니다.
          *  registry.addViewController() 사용해서 /auth/login.do 의 요청의 viewName : auth/login 설정 합니다.
          */
