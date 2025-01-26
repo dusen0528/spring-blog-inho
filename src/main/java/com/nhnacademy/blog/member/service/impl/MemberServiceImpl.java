@@ -1,6 +1,6 @@
 package com.nhnacademy.blog.member.service.impl;
-import com.nhnacademy.blog.common.security.exception.ConflictException;
-import com.nhnacademy.blog.common.security.exception.NotFoundException;
+import com.nhnacademy.blog.common.exception.ConflictException;
+import com.nhnacademy.blog.common.exception.NotFoundException;
 import com.nhnacademy.blog.member.domain.Member;
 import com.nhnacademy.blog.member.dto.MemberRegisterRequest;
 import com.nhnacademy.blog.member.dto.MemberResponse;

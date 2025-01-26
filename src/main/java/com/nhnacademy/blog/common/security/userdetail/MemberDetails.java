@@ -1,7 +1,6 @@
-package com.nhnacademy.blog.common.config.security.userdetail;
+package com.nhnacademy.blog.common.security.userdetail;
 
 import com.nhnacademy.blog.member.dto.MemberResponse;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;

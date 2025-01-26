@@ -1,4 +1,4 @@
-package com.nhnacademy.blog.common.security.exception;
+package com.nhnacademy.blog.common.exception;
 
 public class CommonHttpException extends RuntimeException {
 

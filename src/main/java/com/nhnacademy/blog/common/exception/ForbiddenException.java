@@ -1,4 +1,4 @@
-package com.nhnacademy.blog.common.security.exception;
+package com.nhnacademy.blog.common.exception;
 
 public class ForbiddenException extends CommonHttpException {
     private static final int HTTP_STATUS_CODE = 403;

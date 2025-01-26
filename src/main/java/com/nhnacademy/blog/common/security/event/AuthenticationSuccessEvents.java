@@ -1,6 +1,6 @@
-package com.nhnacademy.blog.common.config.security.event;
+package com.nhnacademy.blog.common.security.event;
 
-import com.nhnacademy.blog.common.config.security.userdetail.MemberDetails;
+import com.nhnacademy.blog.common.security.userdetail.MemberDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;

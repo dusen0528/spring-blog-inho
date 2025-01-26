@@ -1,6 +1,8 @@
 package com.nhnacademy.blog.common.config;
 
-import com.nhnacademy.blog.common.config.security.userdetail.MemberDetailService;
+import com.nhnacademy.blog.common.security.handler.CustomAuthenticationSuccessHandler;
+import com.nhnacademy.blog.common.security.userdetail.MemberDetailService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,8 +17,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity(debug = true)
+@RequiredArgsConstructor
 public class SecurityConfig {
-
+    //TODO#4-1 CustomAuthenticationSuccessHandler 를 생성자 주입 받습니다.
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     /**
      * Spring Security에서 제공하는 loginForm을 사용하지 않고 직접 구현한 login-from : /auth/login.do 사용해서 로그인을 구현 합니다.
      */
@@ -44,17 +48,11 @@ public class SecurityConfig {
 
                             //login processing url 설정 : /auth/loginAction.do <-- 해당 경로는 Spring Security에서 제공하는 로그인 경로를 지정 한 것 입니다. form action을 해당 경로로 지정하세요.
                             .loginProcessingUrl("/auth/loginAction.do")
-                    /**
-                     * login 성공하면 이동될 경로 지정 : /index.do , alwysUse 값은 false로 지정 합니다.
-                     *  - defaultSuccessUrl("/index.do", true):
-                     *로그인 성공 후 무조건 지정된 URL인 /index.do로 리다이렉트됩니다.
-                     * true 값을 설정하면, Spring Security는 로그인 성공 후에 사용자가 이전에 접근하려 했던 URL을 무시하고 무조건 /index.do로 이동시킵니다.
-                     * - defaultSuccessUrl("/index.do", false):
-                     * 로그인 성공 후 이전 요청 URL이 있다면 그 페이지로 리다이렉트합니다.
-                     * 만약 사용자가 로그인 전에 보호된 리소스나 페이지(/private 등)에 접근하려 했으나 인증되지 않은 상태였다면, 로그인 후에는 그 원래의 페이지로 리다이렉트됩니다.
-                     * 만약 로그인 요청 전에 사용자가 특정 페이지를 요청하지 않았다면, 그때는 기본적으로 /index.do로 리다이렉트됩니다.
-                     */
-                            .defaultSuccessUrl("/index.do",false)
+
+                            //TODO#4-2 successHandler를 사용하기 위해서는 defaultSuccessUrl() 사용하지 않습니다.
+                            //.defaultSuccessUrl("/index.do",false)
+                            //TODO#4-3 customAuthenticationSuccessHandler를 successHandler로 등록합니다.
+                            .successHandler(customAuthenticationSuccessHandler)
                             //login-form에서 사용자의 아이디를 식별할  parameter-name을 지정 : mbEmail 지정 합니다.
                             .usernameParameter("mbEmail")
                             //login-form에서 사용자의 패스워드를 식별할 parameter-name을 지정 : mbPassword

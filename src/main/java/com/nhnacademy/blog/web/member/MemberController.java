@@ -1,6 +1,6 @@
 package com.nhnacademy.blog.web.member;
 
-import com.nhnacademy.blog.common.config.security.userdetail.MemberDetails;
+import com.nhnacademy.blog.common.security.userdetail.MemberDetails;
 import com.nhnacademy.blog.member.dto.MemberRegisterRequest;
 import com.nhnacademy.blog.member.dto.MemberResponse;
 import com.nhnacademy.blog.member.service.MemberService;

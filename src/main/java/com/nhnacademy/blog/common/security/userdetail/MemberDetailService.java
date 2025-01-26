@@ -1,4 +1,4 @@
-package com.nhnacademy.blog.common.config.security.userdetail;
+package com.nhnacademy.blog.common.security.userdetail;
 
 import com.nhnacademy.blog.blogmember.domain.BlogMemberMapping;
 import com.nhnacademy.blog.blogmember.repository.BlogMemberMappingRepository;

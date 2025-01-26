@@ -1,12 +1,10 @@
-package com.nhnacademy.blog.common.config.security.userdetail;
+package com.nhnacademy.blog.common.security.userdetail;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
-
-import java.io.Serial;
 
 
 /**
