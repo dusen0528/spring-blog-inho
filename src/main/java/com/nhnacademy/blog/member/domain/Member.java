@@ -1,8 +1,12 @@
 package com.nhnacademy.blog.member.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.Comment;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,33 +22,32 @@ public class Member {
     @Comment("회원-번호") //데이터베이스 컬럼의 주석을 표현할 때 사용하는 annotation
     private Long mbNo;
 
-    @Column(name = "mb_email", nullable = false, unique = true, length = 100)
+    @Column(name="mb_email",nullable = false, unique = true, length = 100)
     @Comment("회원-이메일")
     private String mbEmail;
 
-    @Column(name="mb_name",nullable = false, length = 50)
+    @Column(nullable = false, length = 50)
     @Comment("회원-이름")
     private String mbName;
 
-    @Column(name="mb_password",nullable = false, length = 200)
+    @Column(nullable = false, length = 200)
     @Comment("비밀번호")
     private String mbPassword;
 
-    @Column(name = "mb_mobile", nullable = false, unique = true, length = 100)
+    @Column(nullable = false, unique = true, length = 100)
     @Comment("전화번호")
     private String mbMobile;
 
-    @Column(name ="created_at", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     @Comment("가입일자")
     private LocalDateTime createdAt;
 
-    @Column(name="updated_at")
     @Comment("수정일자")
     private LocalDateTime updatedAt;
 
-    @Column(name="withdrawal_at")
     @Comment("탈퇴일자")
     private LocalDateTime withdrawalAt;
+
 
     private Member(String mbEmail, String mbName, String mbPassword, String mbMobile){
         this.mbEmail = mbEmail;

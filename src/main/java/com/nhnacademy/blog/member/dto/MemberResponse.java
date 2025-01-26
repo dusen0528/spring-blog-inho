@@ -1,12 +1,14 @@
 package com.nhnacademy.blog.member.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 import java.time.LocalDateTime;
 
 @Value
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class MemberResponse {
 
     //회원_번호

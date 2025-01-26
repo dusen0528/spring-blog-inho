@@ -1,16 +1,13 @@
 package com.nhnacademy.blog.member.service.impl;
-
-import com.nhnacademy.blog.common.security.PasswordEncoder;
 import com.nhnacademy.blog.common.security.exception.ConflictException;
 import com.nhnacademy.blog.common.security.exception.NotFoundException;
-import com.nhnacademy.blog.common.security.exception.UnauthorizedException;
-import com.nhnacademy.blog.member.auth.LoginMember;
 import com.nhnacademy.blog.member.domain.Member;
 import com.nhnacademy.blog.member.dto.MemberRegisterRequest;
 import com.nhnacademy.blog.member.dto.MemberResponse;
 import com.nhnacademy.blog.member.repository.MemberRepository;
 import com.nhnacademy.blog.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -58,24 +55,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public LoginMember doLogin(String mbEmail, String mbPassword) {
-        Optional<Member> memberOptional = memberRepository.findByMbEmail(mbEmail);
-
-        if(memberOptional.isPresent()) {
-            Member member = memberOptional.get();
-            if(passwordEncoder.matches(mbPassword, member.getMbPassword())){
-                return LoginMember.of(
-                        member.getMbNo(),
-                        member.getMbEmail(),
-                        member.getMbName()
-                );
-            }
-        }
-
-        throw new UnauthorizedException("Unauthorized");
-    }
-
-    @Override
     public MemberResponse getMember(long mbNo) {
         Optional<Member> memberOptional = memberRepository.findById(mbNo);
         if(memberOptional.isPresent()) {
@@ -97,19 +76,21 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberResponse getMemberByEmail(String mbEmail) {
         Optional<Member> memberOptional = memberRepository.findByMbEmail(mbEmail);
-        if(memberOptional.isPresent()) {
-            Member member = memberOptional.get();
-            return new MemberResponse(
-                    member.getMbNo(),
-                    member.getMbEmail(),
-                    member.getMbName(),
-                    member.getMbMobile(),
-                    member.getCreatedAt(),
-                    member.getUpdatedAt(),
-                    member.getWithdrawalAt()
-            );
+
+        if(memberOptional.isEmpty()){
+            throw new NotFoundException("Member not found");
         }
 
-        throw new NotFoundException("Member not found");
+        Member member = memberOptional.get();
+        return new MemberResponse(
+                member.getMbNo(),
+                member.getMbEmail(),
+                member.getMbName(),
+                member.getMbMobile(),
+                member.getCreatedAt(),
+                member.getUpdatedAt(),
+                member.getWithdrawalAt()
+        );
+
     }
 }

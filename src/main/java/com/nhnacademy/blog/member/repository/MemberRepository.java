@@ -55,6 +55,7 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
      */
     long countByWithdrawalAtIsNull();
 
+
     /** Entity가 아닌 MemberResponse 응답
      * select * from members order by created_at asc
      *  - JPA에서는 인터페이스 기반의 Projection을 지원합니다.
