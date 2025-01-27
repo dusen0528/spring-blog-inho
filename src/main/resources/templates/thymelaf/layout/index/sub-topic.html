@@ -1,0 +1,9 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+  <div class="p-4" th:if="${!#lists.isEmpty(subTopics)}" >
+    <h4 class="fst-italic">Sub Topics</h4>
+    <p th:text="${subTopic}"></p>
+    <ol class="list-unstyled">
+      <li th:each="subTopic : ${subTopics}"><a th:href="@{/index.do(topic_id=${topicId},topic_pid=${subTopic.topicId})}" th:text="${subTopic.topicName}" ></a></li>
+    </ol>
+  </div>
+</th:block>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link rel="stylesheet" href="/resources/css/style.css" />
+</head>
+
+<body>
+    <div id="container">
+        <div id="login-form">
+            <h1>Please Log In</h1>
+            <div th:if="${param.error}">
+                Invalid username and password.</div>
+            <form th:action="@{/auth/loginAction.do}" method="post">
+                <div class="input-holder">
+                    <input type="email" name="mbEmail" placeholder="Email"  />
+                </div>
+                <div class="input-holder">
+                    <input type="password" name="mbPassword" placeholder="Password" />
+                </div>
+                <div class="input-holder">
+                    <button type="submit">Log In</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

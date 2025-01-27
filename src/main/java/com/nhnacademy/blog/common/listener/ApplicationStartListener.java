@@ -39,6 +39,11 @@ public class ApplicationStartListener implements ApplicationListener<Application
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
 
+        boolean isExist = memberRepository.existsByMbEmail("marco@nhnacademy.com");
+        if(isExist) {
+            return;
+        }
+
         //topic 등록
         Topic topic = Topic.ofNewRootTopic("spring",1);
         topicRepository.save(topic);

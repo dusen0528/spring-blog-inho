@@ -1,0 +1,9 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+
+    <div class="nav-scroller py-1 mb-3 border-bottom" >
+        <nav class="nav nav-underline justify-content-between">
+            <a class="nav-item nav-link link-body-emphasis active" th:each="topic : ${rootTopics}" th:href="@{/index.do(topic_id=${topic.topicId})}"  th:text="${topic.topicName}" ></a>
+        </nav>
+    </div>
+
+</th:block>
