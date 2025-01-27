@@ -3,33 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>로그인</title>
-    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/resources/css/style.css" />
 </head>
-
-<!-- login-form -->
 
 <body>
     <div id="container">
         <div id="login-form">
             <h1>Please Log In</h1>
-            <!-- 로그인 fail -> /login.do?error   -> error message 출력 -->
             <div th:if="${param.error}">
                 Invalid username and password.</div>
-            <!-- action url은  SecurityConfig에 설저아한 로그인 처리 경로를 지정 합니다.
-                th:action="@{/auth/loginAction.do}"
-                thymeleaf에서 url 경로를 작성할 때 @{/url-something} 형태로 작성한다는것을 기억하세요.
-            -->
             <form th:action="@{/auth/loginAction.do}" method="post">
                 <div class="input-holder">
-                    <!-- SecurityConfig에서 설정한 username을 식별하기위한 parameter명을 작성 합니다.
-                        name="mbEmail"
-                    -->
                     <input type="email" name="mbEmail" placeholder="Email"  />
                 </div>
                 <div class="input-holder">
-                    <!-- SecurityConfig에서 설정한 password을 식별하기위한 parameter명을 작성 합니다.
-                        name="mbPassword"
-                     -->
                     <input type="password" name="mbPassword" placeholder="Password" />
                 </div>
                 <div class="input-holder">

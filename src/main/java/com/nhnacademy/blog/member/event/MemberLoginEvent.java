@@ -5,12 +5,12 @@ import org.springframework.context.ApplicationEvent;
 import java.util.Objects;
 
 /**
- * TODO#1 - MemberLoginEvent는 회원이 로그인 성공 시 발생하는 이벤트입니다.
+ * MemberLoginEvent는 회원이 로그인 성공 시 발생하는 이벤트입니다.
  */
 
 
 /**
- * TODO#1-1 - Spring에서 custom event를 생성하기 위해서는 ApplicationEvent를 상속해야 합니다.
+ * Spring에서 custom event를 생성하기 위해서는 ApplicationEvent를 상속해야 합니다.
  */
 public class MemberLoginEvent extends ApplicationEvent {
     //이메일
@@ -26,13 +26,13 @@ public class MemberLoginEvent extends ApplicationEvent {
         super(source);
         this.email = email;
 
-        //TODO#1-2 source, email validation
+        //source, email validation
         if( Objects.isNull(source) ||  Objects.isNull(email) || email.isEmpty()) {
             throw new IllegalArgumentException();
         }
     }
 
-    //TODO#1-3 email gatter method를 작성 합니다.
+    //email gatter method를 작성 합니다.
     public String getEmail() {
         return email;
     }

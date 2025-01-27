@@ -22,8 +22,6 @@ public class CommonAdvice {
     public String bindExceptionHandler(BindException e, HttpServletRequest httpServletRequest, Model model) {
         log.error(e.getMessage(), e);
         String referer = httpServletRequest.getHeader("Referer");
-
-        model.addAttribute("referer", referer);
         StringBuilder sb  = new StringBuilder();
 
         //sb에 담길 error message를 작성하세요.
