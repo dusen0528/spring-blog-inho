@@ -35,7 +35,8 @@ public class SecurityConfig {
                                     "/resources/**",
                                     "/favicon.ico",
                                     "/index.do",
-                                    "/member/register.do"
+                                    "/member/register.do",
+                                    "/blog/*/**"
                             ).permitAll()
                             .anyRequest().authenticated(); //나머지 요청은 인증이 필요
                 })

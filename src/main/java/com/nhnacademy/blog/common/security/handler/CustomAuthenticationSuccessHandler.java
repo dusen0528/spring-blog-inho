@@ -1,10 +1,13 @@
 package com.nhnacademy.blog.common.security.handler;
 
+import com.nhnacademy.blog.bloginfo.repository.BlogRepository;
+import com.nhnacademy.blog.common.security.userdetail.MemberDetails;
 import com.nhnacademy.blog.member.event.MemberLoginEvent;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -15,6 +18,8 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+
+    private final BlogRepository blogRepository;
 
     //이벤트 발행을 위한 ApplicationEventPublisher
     private final ApplicationEventPublisher eventPublisher;
@@ -30,7 +35,19 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         //ApplicationEventPublisher 객체의 publishEvent()를 호출하여 이벤트를 발생시킴니다.
         eventPublisher.publishEvent(loginEvent);
 
+        //사용자의 메인 블로그 아이디 구하기
+        MemberDetails memberDetails = (MemberDetails) authentication.getPrincipal();
+
+        long mbNo = memberDetails.getMemberResponse().getMbNo();
+        String blogFid = blogRepository.blogFidFromMainBlog(mbNo);
+        String redirectUrl;
+        if(StringUtils.isEmpty(blogFid)) {
+            redirectUrl = "/";
+        }else{
+            redirectUrl = "/blog/%s/index.do".formatted(blogFid);
+        }
+
         //로그인 성공 후 /index.do 페이지로 리다이렉션
-        response.sendRedirect("/index.do");
+        response.sendRedirect(redirectUrl);
     }
 }

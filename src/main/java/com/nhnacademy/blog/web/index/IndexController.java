@@ -20,8 +20,14 @@ import java.util.Objects;
 public class IndexController {
     private final TopicService topicService;
 
+    @ModelAttribute("rootTopics")
+    public List<TopicResponse> rootTopics() {
+        List<TopicResponse> rootTopics =  topicService.getRootTopics();
+        return rootTopics;
+    }
+
     @ModelAttribute("subTopics")
-    public List<TopicResponse> subTopics(@RequestParam(value = "topic_id", required = false) Integer topicId, Model model) {
+    public List<TopicResponse> subTopics(@RequestParam(value = "topic_id", required = false) Integer topicId) {
         if(Objects.isNull(topicId)) {
             return Collections.emptyList();
         }
@@ -31,10 +37,14 @@ public class IndexController {
     }
 
     @GetMapping(value = {"/","/index.do"})
-    public String index(Model model,@RequestParam(value = "topic_id", required = false) Integer topicId) {
-        List<TopicResponse> rootTopics =  topicService.getRootTopics();
-        model.addAttribute("rootTopics", rootTopics);
+    public String index(
+            Model model,
+            @RequestParam(value = "topic_id", required = false) Integer topicId,
+            @RequestParam(value = "topic_pid", required = false) Integer topicPid
+    ) {
         model.addAttribute("topicId", topicId);
+        model.addAttribute("topicPid", topicPid);
+
         return "index/index";
     }
 
