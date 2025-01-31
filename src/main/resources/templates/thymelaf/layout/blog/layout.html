@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ko" data-bs-theme="auto"  xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" >
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Hugo 0.122.0">
+
+  <title>Blog - Story</title>
+  <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/blog/">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+  <link href="/resources/plugins/bootstrap/assets/dist/css/bootstrap.min.css" rel="stylesheet">
+  <th:block th:insert="~{/thymelaf/layout/blog/style.html}"></th:block>
+
+  <!-- Custom styles for this template -->
+  <link href="https://fonts.googleapis.com/css?family=Playfair&#43;Display:700,900&amp;display=swap" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="/resources/plugins/bootstrap/blog/blog.css" rel="stylesheet">
+
+</head>
+<body>
+
+<th:block th:include="~{/thymelaf/common/common-theme.html}"></th:block>
+
+<div class="container">
+  <header class="border-bottom lh-1 py-3">
+    <div class="row flex-nowrap justify-content-between align-items-center">
+
+      <div class="col-4 pt-1">
+        <a class="link-secondary" href="/index.do">Blog Main</a>
+      </div>
+
+
+      <div class="col-4 text-center">
+        <a class="blog-header-logo text-body-emphasis text-decoration-none" href="/">Story</a>
+      </div>
+
+      <div class="col-4 d-flex justify-content-end align-items-center">
+
+        <!--/*
+        <a class="link-secondary" href="#" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
+        </a>
+        */-->
+        <th:block sec:authorize="isAnonymous()">
+          <a class="btn btn-sm btn-outline-secondary" href="/auth/login.do">Sign up</a>
+        </th:block>
+
+        <th:block sec:authorize="isAuthenticated()">
+          <form method="post" th:action="@{/auth/logoutAction.do}">
+            <button type="submit" class="btn btn-sm btn-outline-secondary" >Log out</button>
+          </form>
+        </th:block>
+
+
+      </div>
+    </div>
+  </header>
+
+</div>
+
+<main class="container">
+
+  <div class="row g-5">
+    <div class="col-md-8" layout:fragment="content" >
+      <th:block th:insert="~{/thymelaf/layout/blog/nav-older-new.html}"></th:block>
+    </div>
+
+    <div class="col-md-4">
+      <div class="position-sticky" style="top: 2rem;">
+        <th:block th:include="~{thymelaf/layout/blog/about.html}"></th:block>
+        <th:block th:include="~{thymelaf/layout/blog/recent-post.html}"></th:block>
+        <th:block th:include="~{thymelaf/layout/blog/archives.html}"></th:block>
+        <th:block th:include="~{thymelaf/layout/blog/elsewhere.html}"></th:block>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="py-5 text-center text-body-secondary bg-body-tertiary">
+  <p>Blog template built for <a href="https://getbootstrap.com/">Bootstrap</a> by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+  <p class="mb-0">
+    <a href="#">Back to top</a>
+  </p>
+</footer>
+<script src="/resources/plugins/bootstrap/assets/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

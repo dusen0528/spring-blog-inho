@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TopicServiceImpl implements TopicService {
     private final TopicRepository topicRepository;
-
+    
     @Override
     public List<TopicResponse> getRootTopics() {
         List<Topic> topics = topicRepository.findTopicsByParentTopicIsNullOrderByTopicSecAsc();

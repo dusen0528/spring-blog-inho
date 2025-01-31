@@ -1,0 +1,9 @@
+<th:block xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" >
+  <div class="p-4 mb-3 bg-body-tertiary rounded">
+    <h4 class="fst-italic">About</h4>
+    <th:block sec:authorize="isAuthenticated()" >
+      <p><span sec:authentication="principal.username" ></span></p>
+    </th:block>
+    <p class="mb-0">Customize this section to tell your visitors a little bit about your publication, writers, content, or something else entirely. Totally up to you.</p>
+  </div>
+</th:block>

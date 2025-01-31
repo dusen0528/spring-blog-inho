@@ -40,11 +40,11 @@ public class SecurityConfig {
                             ).permitAll()
                             .anyRequest().authenticated(); //나머지 요청은 인증이 필요
                 })
-
                 .formLogin(form->{
                     form
                             .loginPage("/auth/login.do")
                             .loginProcessingUrl("/auth/loginAction.do")
+                            //TODO#6-1 로그인 성공시점에 실행할 customAuthenticationSuccessHandler 등록
                             .successHandler(customAuthenticationSuccessHandler)
                             .usernameParameter("mbEmail")
                             .passwordParameter("mbPassword")

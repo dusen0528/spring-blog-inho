@@ -13,6 +13,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * TODO#10 이전 step에서 구현했던 MemberController 입니다. 이를 참고하여 회원가입을 구현 합니다.
+ */
+
 @Slf4j
 @Controller
 @RequestMapping("/member")

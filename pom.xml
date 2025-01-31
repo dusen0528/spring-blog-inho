@@ -88,14 +88,18 @@
             <artifactId>thymeleaf-extras-springsecurity6</artifactId>
         </dependency>
 
-        <!-- thymeleaf -layout support -->
+        <!-- TODO#2-1 thymeleaf -layout support, thymeleaf 기반의 layout을 사용하기 위해서 해당 의존성을 추가 합니다. 아래 링크를 참조 합니다.
+            - https://github.com/ultraq/thymeleaf-layout-dialect
+        -->
         <dependency>
             <groupId>nz.net.ultraq.thymeleaf</groupId>
             <artifactId>thymeleaf-layout-dialect</artifactId>
             <version>3.3.0</version>
         </dependency>
 
-        <!-- querydsl -->
+        <!-- querydsl TODO#7-1 jpa에서 repository을 이용한 method named query의 단점(복잡한 쿼지, projection .. 등)
+              해결하기 위해서 querydsl을 사용 합니다. 아래 의존성을 추가 합니다.
+         -->
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
@@ -108,7 +112,6 @@
             <version>5.1.0</version>
             <classifier>jakarta</classifier>
         </dependency>
-
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>

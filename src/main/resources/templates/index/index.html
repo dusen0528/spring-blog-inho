@@ -1,13 +1,20 @@
+<!--/* TODO#2-5 index 페이지 입니다. 해당 페이지에 작성된 내용은 /resources/templates/layout/index/layout.html 레이아웃의
+content fragment에 해당되는 곳에 추가 됩니다.
+    - thymeleaf layout 관련해서는 아래 문서를 참고하세요
+        + https://github.com/ultraq/thymeleaf-layout-dialect?tab=readme-ov-file
+        + https://ultraq.github.io/thymeleaf-layout-dialect/
+    - layout을 사용하기 위해서는 미리 지정된 layout을 html tag에 아래와 같이 설정 합니다.
+        + layout:decorate="@{/thymelaf/layout/index/layout.html}" : index layout을 지정 합니다.
+*/-->
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="@{/thymelaf/layout/index/layout.html}">
     <head>
         <title>blog - index - page</title>
-
     </head>
+
     <body>
         <div layout:fragment="content">
-
             <article class="blog-post">
                 <h2 class="display-5 link-body-emphasis mb-1">Sample blog post</h2>
                 <p class="blog-post-meta">January 1, 2021 by <a href="#">Mark</a></p>

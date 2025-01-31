@@ -1,4 +1,14 @@
 <!doctype html>
+<!--/* TODO#2-2 thymeleaf layout을 사용하기위해서는 아래와 같이 추가해야 합니다.
+  - directives
+    - thymeleaf : xmlns:th="http://www.thymeleaf.org"
+    - security support : xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    - layout : xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+
+    - /resources/templates/ <-- 직접 url을 통해서 접근할 수 없습니다. ( Controlloer에 의해서 매핑되어야 접근할 수 있습니다.)
+    - /resources/templates/layout/index/layout.html  <-- http://localhost:8080/index.do 대응되는 layout 입니다.
+       - https://getbootstrap.com/docs/5.3/examples/blog/  <-- 참고해서 만들어 졌습니다. 적절히 수정하세요.
+*/-->
 <html lang="ko" data-bs-theme="auto"  xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" >
 <head>
 
@@ -28,7 +38,7 @@
   <header class="border-bottom lh-1 py-3">
     <div class="row flex-nowrap justify-content-between align-items-center">
       <div class="col-4 pt-1">
-        <a class="link-secondary" href="#">Subscribe</a>
+        <a class="link-secondary" href="#">Random Blog</a>
       </div>
       <div class="col-4 text-center">
         <a class="blog-header-logo text-body-emphasis text-decoration-none" href="/">Story</a>
@@ -40,6 +50,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
         </a>
         */-->
+
+        <!--/* TODO#2-3 로그인 / 로그아웃 button 처리  */-->
         <th:block sec:authorize="isAnonymous()">
           <a class="btn btn-sm btn-outline-secondary" href="/auth/login.do">Sign up</a>
         </th:block>
@@ -49,7 +61,6 @@
             <button type="submit" class="btn btn-sm btn-outline-secondary" >Log out</button>
           </form>
         </th:block>
-
 
       </div>
     </div>

@@ -14,6 +14,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * - TODO#9 구현 2순위 - 블로그의 Index 페이지를 구현 합니다.
+ */
+
 @Slf4j
 @RequiredArgsConstructor
 @Controller
@@ -44,9 +48,7 @@ public class IndexController {
     ) {
         model.addAttribute("topicId", topicId);
         model.addAttribute("topicPid", topicPid);
-
         return "index/index";
     }
-
 
 }
