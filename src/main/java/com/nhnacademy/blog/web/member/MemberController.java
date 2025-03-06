@@ -30,11 +30,11 @@ public class MemberController {
     }
 
     @PostMapping(value = "/registerAction.do")
-    public String registerAction(@Validated MemberRegisterRequest memberRegisterRequest, RedirectAttributes redirectAttributes) {
-        log.debug("memberRegisterReques1t: {}", memberRegisterRequest);
-        memberService.registerMember(memberRegisterRequest);
-        redirectAttributes.addFlashAttribute("memberRegisterRequest", memberRegisterRequest);
-        return "redirect:/member/registerResult.do";
+        public String registerAction(@Validated MemberRegisterRequest memberRegisterRequest, RedirectAttributes redirectAttributes) {
+            log.debug("memberRegisterReques1t: {}", memberRegisterRequest);
+            MemberResponse memberResponse = memberService.registerMember(memberRegisterRequest);
+            redirectAttributes.addFlashAttribute("memberResponse",memberResponse);
+            return "redirect:/member/registerResult.do";
     }
 
     @GetMapping(value = "/registerResult.do")

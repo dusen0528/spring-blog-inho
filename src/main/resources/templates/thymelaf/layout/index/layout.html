@@ -53,7 +53,10 @@
 
         <!--/* TODO#2-3 로그인 / 로그아웃 button 처리  */-->
         <th:block sec:authorize="isAnonymous()">
-          <a class="btn btn-sm btn-outline-secondary" href="/auth/login.do">Sign up</a>
+          <a class="btn btn-sm btn-outline-secondary" href="/auth/login.do">Sign in</a>
+        </th:block>
+        <th:block sec:authorize="isAnonymous()">
+          <a class="btn btn-sm btn-outline-secondary" href="/member/register.do">Sign up</a>
         </th:block>
 
         <th:block sec:authorize="isAuthenticated()">

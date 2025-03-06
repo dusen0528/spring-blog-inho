@@ -43,8 +43,8 @@ public class ApplicationStartListener implements ApplicationListener<Application
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         //TODO#3-1 local에서 테스트를 위해서 사용할 이메일/비밀번호 설정
-        String username = "marco@nhnacademy.com";
-        String password = "nhnacademy";
+        String username = "inho@nhnacademy.com";
+        String password = "1234";
 
         //TODO#3-2 해당 username이 존재하면 return; 호출 합니다.
         boolean isExist = memberRepository.existsByMbEmail(username);
@@ -63,7 +63,7 @@ public class ApplicationStartListener implements ApplicationListener<Application
         //TODO#3-5 member 등록
         Member member = Member.ofNewMember(
                 username,
-                "마르코",
+                "인호",
                 passwordEncoder.encode(password),
                 "01011112222"
         );
@@ -72,10 +72,10 @@ public class ApplicationStartListener implements ApplicationListener<Application
 
         //TODO#3-6 blog 등록
         Blog blog = Blog.ofNewBlog(
-                "marco",
+                "inho",
                 true,
-                "marco's blog",
-                "marco",
+                "inho's blog",
+                "inho",
                 "Spring Blog!"
         );
 

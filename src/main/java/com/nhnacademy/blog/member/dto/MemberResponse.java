@@ -27,4 +27,7 @@ public class MemberResponse {
     /// 탈퇴일자
     private final LocalDateTime withdrawalAt;
 
+    // view -> MemberRequest -> Service 1.-> Request -> Entity -> Repository
+    //                                  2.-> Repository에서 findById -> MemberResponse 를 view로
+
 }

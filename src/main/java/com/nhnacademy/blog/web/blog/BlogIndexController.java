@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/blog/{blog-fid}")
+
 public class BlogIndexController {
 
     @GetMapping(value = {"","/","/index.do"})
     public String index(Model model, @PathVariable("blog-fid") String blogFid) {
+
         return "blog/index";
     }
 }

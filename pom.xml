@@ -100,6 +100,7 @@
         <!-- querydsl TODO#7-1 jpa에서 repository을 이용한 method named query의 단점(복잡한 쿼지, projection .. 등)
               해결하기 위해서 querydsl을 사용 합니다. 아래 의존성을 추가 합니다.
          -->
+        <!-- https://mvnrepository.com/artifact/com.querydsl/querydsl-jpa -->
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>

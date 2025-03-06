@@ -49,6 +49,7 @@ public class Member {
     private LocalDateTime withdrawalAt;
 
 
+
     private Member(String mbEmail, String mbName, String mbPassword, String mbMobile){
         this.mbEmail = mbEmail;
         this.mbName = mbName;
